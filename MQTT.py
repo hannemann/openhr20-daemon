@@ -6,6 +6,8 @@ import threading
 
 class MQTT (threading.Thread):
 
+    count = 0
+
     def __init__(self):
         threading.Thread.__init__(self)
         commands.push('lala')
@@ -14,4 +16,5 @@ class MQTT (threading.Thread):
     def run(self):
         while True:
             time.sleep(5)
-            print(' # MQTT')
+            self.count += 1
+            commands.test(' # MQTT {}'.format(self.count))

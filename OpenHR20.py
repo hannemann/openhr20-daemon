@@ -2,10 +2,14 @@ from SerialIO import serialIO
 from RTC import write as writeRTC
 import threading
 from Commands import commands
-from MQTT import mqtt
+from datetime import datetime
+import time
 
 
 class OpenHR20 (threading.Thread):
+
+    addr = -1
+    data = ''
 
     def __init__(self):
         threading.Thread.__init__(self)
@@ -13,20 +17,22 @@ class OpenHR20 (threading.Thread):
 
     def action(self, line):
 
-        addr = -1
-
-        if line is not None:
+        if line is not None and len(line) > 0:
             if len(line) >= 4 and line[0] == '(' and line[3] == ')':
-                addr = int(line[1:3], 16)
-                data = line[4:]
-            elif len(line) > 0 and line[0] == '*':
+                ''' decode addr '''
+                self.addr = int(line[1:3], 16)
+                self.data = line[4:]
+            elif line[0] == '*':
                 ''' command success '''
-                data = line[1:]
+                commands.remove_from_buffer(self.addr)
+                self.data = line[1:]
+                if not commands.has_command(self.addr):
+                    print(self.data)
+            elif line[0] == '-':
+                self.data = line[1:]
             else:
-                data = ''
-                addr = 0
-
-            #print(' Addr %d, Data: %d - %s' % (addr, len(data), data))
+                self.data = ''
+                self.addr = 0
 
             if line == 'RTC?':
                 writeRTC()
@@ -35,16 +41,23 @@ class OpenHR20 (threading.Thread):
             elif line == 'N0?' or line == 'N1?':
                 serialIO.write(self.sync_package(line))
             else:
-                if addr > 0:
-                    if len(data) > 0 and data[0] == '?':
-                        commands.send(addr)
+                if self.addr > 0:
+                    if len(self.data) > 0 and self.data[0] == '?':
+                        commands.send(self.addr)
 
     def run(self):
         print('OpenHR20 Python Daemon\n')
+        print('Wait for current minute to finish...')
+        t = datetime.now()
+        wait = 60 - (t.second + t.microsecond / 1000000.0)
+        time.sleep(wait)
         print('Starting main loop...\n')
         writeRTC()
         while True:
             self.action(serialIO.read())
+
+    def shutdown(self):
+        serialIO.shutdown()
 
     @staticmethod
     def sync_package(line):
@@ -52,7 +65,7 @@ class OpenHR20 (threading.Thread):
         pr = 0
         v = None
         if len(commands.buffer) > 0:
-            for addr in commands.sorted_by_commands_count():
+            for addr in sorted(commands.buffer, key=lambda k: len(commands.buffer[k]), reverse=True):
                 cmnds = commands.buffer[addr]
                 if line == 'N1?' and len(cmnds) > 10:
                     v = "O%02X%02X" % (addr, pr)

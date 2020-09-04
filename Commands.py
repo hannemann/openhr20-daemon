@@ -9,17 +9,14 @@ class Commands:
             self.buffer[addr] = []
 
         self.buffer[addr].append(command)
-        print(self.sorted_by_commands_count())
-
-    def sorted_by_commands_count(self):
-        return sorted(self.buffer, key=lambda k: len(self.buffer[k]), reverse=True)
+        #print(self.sorted_by_commands_count())
 
     def send(self, addr):
-        print('Send commands to device %d' % addr)
+        #print('Send commands to device %d' % addr)
         weight = 0
         bank = 0
         q = ''
-        if addr in self.buffer:
+        if self.has_command(addr):
             for cmnd in self.buffer[addr]:
                 cw = cmnd.weight
                 weight += cw
@@ -31,6 +28,19 @@ class Commands:
                 q += r
                 serialIO.write(q)
                 cmnd.sent += 1
+
+    def remove_from_buffer(self, addr):
+        if self.has_command(addr):
+            buffer = self.buffer[addr]
+            buffer = sorted(buffer, key=lambda k: k.sent)
+            buffer.pop(0)
+            if len(buffer) > 0:
+                self.buffer[addr] = buffer
+            else:
+                del self.buffer[addr]
+
+    def has_command(self, addr):
+        return addr in self.buffer and len(self.buffer[addr]) > 0
 
     def weights(self, cmnd):
         table = {

@@ -9,3 +9,6 @@ class CommandTemperature:
 
     def __init__(self, temperature):
         self.command = 'A%0.2x' % (temperature*2)
+
+    def __del__(self):
+        print('Command %s deleted' % self.command)

@@ -5,7 +5,12 @@ from MQTT import mqtt
 
 
 if __name__ == "__main__":
-    openhr20 = OpenHR20()
 
-    openhr20.start()
-    mqtt.start()
+    try:
+        openhr20 = OpenHR20()
+
+        openhr20.start()
+        mqtt.start()
+    except KeyboardInterrupt:
+        openhr20.shutdown()
+

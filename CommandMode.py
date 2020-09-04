@@ -13,3 +13,6 @@ class CommandMode:
 
     def __init__(self, mode):
         self.command = self.modes[mode]
+
+    def __del__(self):
+        print('Command %s deleted' % self.command)

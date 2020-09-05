@@ -12,7 +12,6 @@ class MQTT (threading.Thread):
 
     daemon = True
     count = 0
-    cmndBase = 'cmnd/openhr20-python/'
     mode = 'mode'
     temp = 'temp'
 
@@ -35,7 +34,7 @@ class MQTT (threading.Thread):
         sys.stdout.flush()
 
     def on_message(self, client, userdata, msg):
-        topic = msg.topic.replace(self.cmndBase, '').split('/')
+        topic = msg.topic.replace(config['mqtt'].get('cmnd_topic').strip('/') + '/', '').split('/')
         cmnd = topic[0]
         addr = int(topic[1], 10)
         print("MQTT: %d %s %s" % (addr, cmnd, msg.payload.decode('utf_8').strip()))

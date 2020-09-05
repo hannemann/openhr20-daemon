@@ -1,3 +1,5 @@
+import sys
+
 from SerialIO import serialIO
 
 
@@ -16,3 +18,4 @@ class CommandMode:
 
     def __del__(self):
         print('Command %s deleted' % self.command)
+        sys.stdout.flush()

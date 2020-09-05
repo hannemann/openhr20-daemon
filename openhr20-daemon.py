@@ -14,6 +14,7 @@ def signal_handler(sig, frame):
     serialIO.shutdown()
     mqtt.shutdown()
     print("All threads stopped... exiting")
+    sys.stdout.flush()
     sys.exit(0)
 
 

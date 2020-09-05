@@ -1,3 +1,5 @@
+import sys
+
 import paho.mqtt.client as mqttc
 from Commands import commands
 import threading
@@ -21,14 +23,17 @@ class MQTT (threading.Thread):
         self.client.on_message = self.on_message
         self.client.connect(config['mqtt'].get('host'), int(config['mqtt'].get('port')), 60)
         print('MQTT initialized')
+        sys.stdout.flush()
 
     def on_connect(self, client, userdata, flags, rc):
         print("Connected to MQTT Broker with result code " + str(rc))
+        sys.stdout.flush()
         #self.client.subscribe("$SYS/#")
-        self.client.subscribe(config['mqtt'].cmnd_topic.strip('/') + "/#")
+        self.client.subscribe(config['mqtt'].get('cmnd_topic').strip('/') + "/#")
 
     def on_message(self, client, userdata, msg):
         print(msg.topic + " " + msg.payload.decode('utf_8').strip())
+        sys.stdout.flush()
         topic = msg.topic.replace(self.cmndBase, '').split('/')
         cmnd = topic[0]
         addr = int(topic[1], 10)
@@ -56,6 +61,7 @@ class MQTT (threading.Thread):
         self.client.loop_stop()
         self.client.disconnect()
         print('MQTT connection closed')
+        sys.stdout.flush()
 
 
 mqtt = MQTT()

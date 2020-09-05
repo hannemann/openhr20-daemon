@@ -1,3 +1,5 @@
+import sys
+
 from SerialIO import serialIO
 from RTC import write as write_rtc
 import threading
@@ -16,14 +18,17 @@ class OpenHR20 (threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         print('OpenHR20 Thread Initialized')
+        sys.stdout.flush()
 
     def run(self):
         write_rtc()
         print('OpenHR20: Starting main loop...')
+        sys.stdout.flush()
         while self.alive:
             self.action(serialIO.read())
 
         print('OpenHR20: Main loop stopped')
+        sys.stdout.flush()
         self.stopped.set()
 
     def action(self, line):

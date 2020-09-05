@@ -10,6 +10,7 @@ config = configparser.ConfigParser()
 def write_file():
     config.write(open(file, 'w'))
     print('Example config file written to %s.\nPlease adjust and restart.' % file)
+    sys.stdout.flush()
     sys.exit(0)
 
 

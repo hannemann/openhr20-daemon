@@ -50,6 +50,6 @@ class Stats:
         message['synced'] = not commands.has_command(addr)
 
         mqtt.publish(
-            config['mqtt'].stats_topic.strip('/') + '/%d' % addr,
+            config['mqtt'].get('stats_topic').strip('/') + '/%d' % addr,
             json.dumps(message)
         )

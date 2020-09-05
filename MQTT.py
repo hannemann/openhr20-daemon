@@ -29,14 +29,17 @@ class MQTT (threading.Thread):
         print("Connected to MQTT Broker with result code " + str(rc))
         sys.stdout.flush()
         #self.client.subscribe("$SYS/#")
-        self.client.subscribe(config['mqtt'].get('cmnd_topic').strip('/') + "/#")
+        cmnd_topic = config['mqtt'].get('cmnd_topic').strip('/') + "/#"
+        self.client.subscribe(cmnd_topic)
+        print('MQTT: Subscribed to topic %s' % cmnd_topic)
+        sys.stdout.flush()
 
     def on_message(self, client, userdata, msg):
-        print(msg.topic + " " + msg.payload.decode('utf_8').strip())
-        sys.stdout.flush()
         topic = msg.topic.replace(self.cmndBase, '').split('/')
         cmnd = topic[0]
         addr = int(topic[1], 10)
+        print("MQTT: %d %s %s" % (addr, cmnd, msg.payload.decode('utf_8').strip()))
+        sys.stdout.flush()
 
         if 0 < addr < 30:
             payload = msg.payload.decode('utf_8').strip()

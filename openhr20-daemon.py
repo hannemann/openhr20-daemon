@@ -2,15 +2,26 @@
 
 from OpenHR20 import OpenHR20
 from MQTT import mqtt
+import sys
+import signal
+from SerialIO import serialIO
+
+openhr20 = OpenHR20()
+
+
+def signal_handler(sig, frame):
+    openhr20.shutdown()
+    serialIO.shutdown()
+    mqtt.shutdown()
+    print("All threads stopped... exiting")
+    sys.exit(0)
 
 
 if __name__ == "__main__":
 
-    openhr20 = OpenHR20()
-    try:
+    signal.signal(signal.SIGINT, signal_handler)
 
-        openhr20.start()
-        mqtt.start()
-    except KeyboardInterrupt:
-        openhr20.shutdown()
-
+    mqtt.start()
+    openhr20.start()
+    mqtt.join()
+    openhr20.join()

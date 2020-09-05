@@ -1,5 +1,22 @@
 from SerialIO import serialIO
 
+
+def weights(cmnd):
+    table = {
+        'D': 10,
+        'S': 4,
+        'W': 4,
+        'G': 2,
+        'R': 2,
+        'T': 2
+    }
+
+    if cmnd in table:
+        return table[cmnd]
+    else:
+        return 10
+
+
 class Commands:
 
     buffer = {}
@@ -9,10 +26,8 @@ class Commands:
             self.buffer[addr] = []
 
         self.buffer[addr].append(command)
-        #print(self.sorted_by_commands_count())
 
     def send(self, addr):
-        #print('Send commands to device %d' % addr)
         weight = 0
         bank = 0
         q = ''
@@ -41,21 +56,6 @@ class Commands:
 
     def has_command(self, addr):
         return addr in self.buffer and len(self.buffer[addr]) > 0
-
-    def weights(self, cmnd):
-        table = {
-            'D': 10,
-            'S': 4,
-            'W': 4,
-            'G': 2,
-            'R': 2,
-            'T': 2
-        }
-
-        if cmnd in table:
-            return table[cmnd]
-        else:
-            return 10
 
     def test(self, command):
         self.buffer[0] = command

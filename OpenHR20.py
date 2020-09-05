@@ -1,20 +1,30 @@
 from SerialIO import serialIO
-from RTC import write as writeRTC
+from RTC import write as write_rtc
 import threading
 from Commands import commands
-from datetime import datetime
-import time
 from Stats import Stats
 
 
 class OpenHR20 (threading.Thread):
 
+    daemon = True
+    alive = True
     addr = -1
     data = ''
+    stopped = threading.Event()
 
     def __init__(self):
         threading.Thread.__init__(self)
-        print('Initialized')
+        print('OpenHR20 Thread Initialized')
+
+    def run(self):
+        write_rtc()
+        print('OpenHR20: Starting main loop...')
+        while self.alive:
+            self.action(serialIO.read())
+
+        print('OpenHR20: Main loop stopped')
+        self.stopped.set()
 
     def action(self, line):
 
@@ -36,7 +46,7 @@ class OpenHR20 (threading.Thread):
                 self.addr = 0
 
             if line == 'RTC?':
-                writeRTC()
+                write_rtc()
             elif line == 'OK' or (line[0] == 'd' and len(line) > 2 and line[2] == ' '):
                 '''noop'''
             elif line == 'N0?' or line == 'N1?':
@@ -47,22 +57,6 @@ class OpenHR20 (threading.Thread):
                         commands.send(self.addr)
                     elif (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
                         Stats.create_message(self.addr, self.data)
-
-    def run(self):
-        print('OpenHR20 Python Daemon')
-        '''
-        print('Wait for current minute to finish...')
-        t = datetime.now()
-        wait = float("%.2f" % (60 - (t.second + t.microsecond / 1000000.0)))
-        #time.sleep(wait)
-        '''
-        writeRTC()
-        print('Starting main loop...')
-        while True:
-            self.action(serialIO.read())
-
-    def shutdown(self):
-        serialIO.shutdown()
 
     def sync_package(self, line):
         req = [0, 0, 0, 0]
@@ -82,3 +76,8 @@ class OpenHR20 (threading.Thread):
             v = "P%02x%02x%02x%02x" % (req[0], req[1], req[2], req[3])
 
         return v
+
+    def shutdown(self):
+        self.alive = False
+        ''' wait for loop to be stopped '''
+        self.stopped.wait(2)

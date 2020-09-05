@@ -21,6 +21,7 @@ class SerialIO:
 
     def shutdown(self):
         self.ser.close()
+        print('Serial connection closed')
 
 
 serialIO = SerialIO()

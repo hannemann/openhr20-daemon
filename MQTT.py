@@ -7,6 +7,7 @@ from CommandMode import CommandMode
 
 class MQTT (threading.Thread):
 
+    daemon = True
     count = 0
     cmndBase = 'cmnd/openhr20-python/'
     preset = 'preset'
@@ -22,7 +23,7 @@ class MQTT (threading.Thread):
         print('MQTT initialized')
 
     def on_connect(self, client, userdata, flags, rc):
-        print("Connected with result code " + str(rc))
+        print("Connected to MQTT Broker with result code " + str(rc))
         #self.client.subscribe("$SYS/#")
         self.client.subscribe(self.cmndBase + "#")
 
@@ -45,6 +46,11 @@ class MQTT (threading.Thread):
 
     def run(self):
         self.client.loop_forever()
+
+    def shutdown(self):
+        self.client.loop_stop()
+        self.client.disconnect()
+        print('MQTT connection closed')
 
 
 mqtt = MQTT()

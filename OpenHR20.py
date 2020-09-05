@@ -4,6 +4,7 @@ import threading
 from Commands import commands
 from datetime import datetime
 import time
+from Stats import Stats
 
 
 class OpenHR20 (threading.Thread):
@@ -27,7 +28,7 @@ class OpenHR20 (threading.Thread):
                 commands.remove_from_buffer(self.addr)
                 self.data = line[1:]
                 if not commands.has_command(self.addr):
-                    print(self.data)
+                    Stats.create_message(self.addr, self.data)
             elif line[0] == '-':
                 self.data = line[1:]
             else:
@@ -41,9 +42,11 @@ class OpenHR20 (threading.Thread):
             elif line == 'N0?' or line == 'N1?':
                 serialIO.write(self.sync_package(line))
             else:
-                if self.addr > 0:
-                    if len(self.data) > 0 and self.data[0] == '?':
+                if len(self.data) > 0 and self.addr > 0:
+                    if self.data[0] == '?':
                         commands.send(self.addr)
+                    elif (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
+                        Stats.create_message(self.addr, self.data)
 
     def run(self):
         print('OpenHR20 Python Daemon')

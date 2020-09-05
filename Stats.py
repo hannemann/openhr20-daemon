@@ -2,6 +2,7 @@ from MQTT import mqtt
 import time
 from Commands import commands
 import json
+from Config import config
 
 
 class Stats:
@@ -49,6 +50,6 @@ class Stats:
         message['synced'] = not commands.has_command(addr)
 
         mqtt.publish(
-            'stat/openhr20-python/RESULT/%d' % addr,
+            config['mqtt'].stats_topic.strip('/') + '/%d' % addr,
             json.dumps(message)
         )

@@ -1,0 +1,11 @@
+[Unit]
+Description=Start openhr20 python daemon
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/tmp
+ExecStart=/usr/local/bin/openhr20-daemon/openhr20-daemon.py
+
+[Install]
+WantedBy=multi-user.target

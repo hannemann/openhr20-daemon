@@ -1,4 +1,5 @@
 import serial
+from Config import config
 
 
 class SerialIO:
@@ -6,7 +7,10 @@ class SerialIO:
     ser = None
 
     def __init__(self):
-        self.ser = serial.Serial('/dev/ttyUSB0', 38400, timeout=1)
+        self.ser = serial.Serial(
+            config['openhr20'].get('master', '/dev/ttyUSB0'),
+            config['openhr20'].get('baud', 38400),
+            timeout=int(config['openhr20'].get('timeout', 1)))
         print('Serial connection initialized')
 
     def write(self, payload):

@@ -22,7 +22,12 @@ if __name__ == "__main__":
 
     signal.signal(signal.SIGINT, signal_handler)
 
-    mqtt.start()
-    openhr20.start()
-    mqtt.join()
-    openhr20.join()
+    serialIO.connected.wait(5)
+
+    if serialIO.ser:
+        mqtt.start()
+        openhr20.start()
+        mqtt.join()
+        openhr20.join()
+    else:
+        sys.exit(1)

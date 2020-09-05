@@ -1,5 +1,4 @@
 import sys
-
 import paho.mqtt.client as mqttc
 from Commands import commands
 import threading
@@ -21,7 +20,6 @@ class MQTT (threading.Thread):
         self.client = mqttc.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
-        self.client.connect(config['mqtt'].get('host'), int(config['mqtt'].get('port')), 60)
         print('MQTT initialized')
         sys.stdout.flush()
 
@@ -61,6 +59,7 @@ class MQTT (threading.Thread):
         self.client.publish(topic, payload, qos, retain)
 
     def run(self):
+        self.client.connect(config['mqtt'].get('host'), int(config['mqtt'].get('port')), 60)
         self.client.loop_forever()
 
     def shutdown(self):

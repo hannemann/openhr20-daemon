@@ -42,7 +42,7 @@ class OpenHR20 (threading.Thread):
                 ''' command success '''
                 commands.remove_from_buffer(self.addr)
                 self.data = line[1:]
-                if not commands.has_command(self.addr):
+                if not commands.has_command(self.addr) and self.data[0] != ' ':
                     Stats.create_message(self.addr, self.data)
             elif line[0] == '-':
                 self.data = line[1:]

@@ -6,6 +6,7 @@ import threading
 from CommandTemperature import CommandTemperature
 from CommandMode import CommandMode
 from CommandStatus import CommandStatus
+from CommandReboot import CommandReboot
 from Config import config
 
 
@@ -48,6 +49,8 @@ class MQTT (threading.Thread):
                 commands.add(addr, CommandTemperature(payload))
             elif cmnd == CommandStatus.abbr:
                 commands.add(addr, CommandStatus())
+            elif cmnd == CommandReboot.abbr:
+                commands.add(addr, CommandReboot())
 
     def publish(self,
                 topic,

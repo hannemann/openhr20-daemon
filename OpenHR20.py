@@ -36,7 +36,7 @@ class OpenHR20 (threading.Thread):
 
             if line == 'RTC?':
                 writeRTC()
-            elif line == 'OK' or line[0] == 'd' or len(line) > 2 and line[2] == ' ':
+            elif line == 'OK' or (line[0] == 'd' and len(line) > 2 and line[2] == ' '):
                 '''noop'''
             elif line == 'N0?' or line == 'N1?':
                 serialIO.write(self.sync_package(line))
@@ -46,36 +46,36 @@ class OpenHR20 (threading.Thread):
                         commands.send(self.addr)
 
     def run(self):
-        print('OpenHR20 Python Daemon\n')
+        print('OpenHR20 Python Daemon')
+        '''
         print('Wait for current minute to finish...')
         t = datetime.now()
-        wait = 60 - (t.second + t.microsecond / 1000000.0)
-        time.sleep(wait)
-        print('Starting main loop...\n')
+        wait = float("%.2f" % (60 - (t.second + t.microsecond / 1000000.0)))
+        #time.sleep(wait)
+        '''
         writeRTC()
+        print('Starting main loop...')
         while True:
             self.action(serialIO.read())
 
     def shutdown(self):
         serialIO.shutdown()
 
-    @staticmethod
-    def sync_package(line):
+    def sync_package(self, line):
         req = [0, 0, 0, 0]
+        v = 'O0000'
         pr = 0
-        v = None
         if len(commands.buffer) > 0:
-            for addr in sorted(commands.buffer, key=lambda k: len(commands.buffer[k]), reverse=True):
-                cmnds = commands.buffer[addr]
+            for self.addr in sorted(commands.buffer, key=lambda k: len(commands.buffer[k]), reverse=True):
+                v = None
+                cmnds = commands.buffer[self.addr]
                 if line == 'N1?' and len(cmnds) > 10:
-                    v = "O%02X%02X" % (addr, pr)
-                    pr = addr
+                    v = "O%02x%02x" % (self.addr, pr)
+                    pr = self.addr
                 else:
-                    req[int(addr/8)] |= int(pow(2, addr % 8))
+                    req[int(self.addr/8)] |= int(pow(2, self.addr % 8))
 
-            if v is None:
-                v = "P%02X%02X%02X%02X" % (req[0], req[1], req[2], req[3])
-        else:
-            v = 'O0000'
+        if v is None:
+            v = "P%02x%02x%02x%02x" % (req[0], req[1], req[2], req[3])
 
         return v

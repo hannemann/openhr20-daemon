@@ -3,6 +3,7 @@ import sys
 
 class CommandMode:
 
+    abbr = 'mode'
     sent = 0
     command = ''
     weight = 10

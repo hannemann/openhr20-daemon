@@ -3,6 +3,7 @@ import sys
 
 class CommandTemperature:
 
+    abbr = 'temp'
     sent = 0
     command = ''
     weight = 10

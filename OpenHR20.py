@@ -60,7 +60,7 @@ class OpenHR20 (threading.Thread):
                 if len(self.data) > 0 and self.addr > 0:
                     if self.data[0] == '?':
                         commands.send(self.addr)
-                    elif (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
+                    elif line[0] != '*' and (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
                         Stats.create_message(self.addr, self.data)
 
     def sync_package(self, line):

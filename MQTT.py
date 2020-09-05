@@ -5,6 +5,7 @@ from Commands import commands
 import threading
 from CommandTemperature import CommandTemperature
 from CommandMode import CommandMode
+from CommandStatus import CommandStatus
 from Config import config
 
 
@@ -12,7 +13,6 @@ class MQTT (threading.Thread):
 
     daemon = True
     count = 0
-    mode = 'mode'
     temp = 'temp'
 
     def __init__(self):
@@ -42,10 +42,12 @@ class MQTT (threading.Thread):
 
         if 0 < addr < 30:
             payload = msg.payload.decode('utf_8').strip()
-            if cmnd == self.mode:
+            if cmnd == CommandMode.abbr:
                 commands.add(addr, CommandMode(payload))
-            elif cmnd == self.temp:
+            elif cmnd == CommandTemperature.abbr:
                 commands.add(addr, CommandTemperature(payload))
+            elif cmnd == CommandStatus.abbr:
+                commands.add(addr, CommandStatus())
 
     def publish(self,
                 topic,

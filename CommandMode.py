@@ -1,12 +1,10 @@
 import sys
 
-from SerialIO import serialIO
-
 
 class CommandMode:
 
     sent = 0
-    command = 'M00'
+    command = ''
     weight = 10
     modes = {
         'MANU': 'M%0.2x' % 0,

@@ -45,8 +45,7 @@ class MQTT (threading.Thread):
             if cmnd == self.mode:
                 commands.add(addr, CommandMode(payload))
             elif cmnd == self.temp:
-                temperature = int(payload)
-                commands.add(addr, CommandTemperature(temperature))
+                commands.add(addr, CommandTemperature(payload))
 
     def publish(self,
                 topic,

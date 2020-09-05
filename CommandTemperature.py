@@ -1,7 +1,5 @@
 import sys
 
-from SerialIO import serialIO
-
 
 class CommandTemperature:
 
@@ -10,7 +8,7 @@ class CommandTemperature:
     weight = 10
 
     def __init__(self, temperature):
-        self.command = 'A%0.2x' % (temperature*2)
+        self.command = 'A%02x' % int(float(temperature)*2)
 
     def __del__(self):
         print('Command %s deleted' % self.command)

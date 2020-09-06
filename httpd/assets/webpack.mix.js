@@ -6,7 +6,10 @@ mix.browserSync({
         ws: true
     },
     watch: true,
-    files: './**/*.css'
+    files: [
+        './dist/**/*.css',
+        './dist/**/*.js'
+    ]
 });
 
 mix.sass('src/app.scss', 'dist')

@@ -1,0 +1,13 @@
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    background: var(--dark-bg-color);
+    color: var(--light-fg-color);
+    padding: calc(var(--grid-base) * 2);
+    font-size: var(--font-size-big);
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}

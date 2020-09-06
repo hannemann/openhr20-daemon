@@ -838,6 +838,16 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
+"@iconify/iconify@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@iconify/iconify/-/iconify-1.0.7.tgz#22e6d384482995738746eeb38b9b76588df41d57"
+  integrity sha512-qCbH1V/Ceg302lrgBiiXCZAyqMAq8KqsHYokCpUvgBH6yYfAmvlSkEEBrmJdHofQvfY/+xaeQcsOOTjW7JakNw==
+
+"@iconify/icons-mdi@^1.0.133":
+  version "1.0.133"
+  resolved "https://registry.yarnpkg.com/@iconify/icons-mdi/-/icons-mdi-1.0.133.tgz#fc628b90486384372b360d07205fed4bb382b1ce"
+  integrity sha512-5aj+LSCNys+orr4FYANlikMYsXruu8Eld38zCY7a6rfDM/2aXKEW9ZqozeDC/MGQV7wY0zf3zUbcfwy3BxNVtQ==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"

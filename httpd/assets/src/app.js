@@ -1,1 +1,1 @@
-console.log('Lala')
+import Iconify from '@iconify/iconify';

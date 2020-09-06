@@ -15,16 +15,20 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@iconify/icons-mdi": "^1.0.133",
     "browser-sync": "^2.26.12",
     "browser-sync-webpack-plugin": "^2.0.1",
+    "cross-env": "^7.0.2",
     "laravel-mix": "^5.0.5",
     "resolve-url-loader": "^3.1.0",
     "sass": "^1.26.10",
     "sass-loader": "^8.0.2",
+    "style-loader": "^1.2.1",
     "vue-template-compiler": "^2.6.12",
     "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12",
-    "cross-env": "^7.0.2",
-    "style-loader": "^1.2.1"
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "@iconify/iconify": "^1.0.7"
   }
 }

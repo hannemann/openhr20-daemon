@@ -1,5 +1,4 @@
     % include('head', title=title)
     % include('header')
-    % include('nav')
     % include('main', base=base)
     % include('foot')

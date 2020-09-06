@@ -91,10 +91,23 @@ main {
   padding: var(--grid-base);
 }
 
+.thermostats {
+  display: flex;
+  margin-right: calc(-1 * var(--grid-base));
+  flex-wrap: wrap;
+}
+
 .thermostat-card {
   background-color: var(--card-bg-color);
   padding: var(--grid-base);
   margin-bottom: var(--grid-base);
   border-radius: 4px;
+  flex: 1 0 calc(360px - (2 * var(--grid-base)));
+  margin-right: var(--grid-base);
+}
+
+.thermostat-card .thermostat-card--item {
+  display: flex;
+  justify-content: space-between;
 }
 

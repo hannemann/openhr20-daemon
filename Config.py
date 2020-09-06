@@ -28,11 +28,5 @@ if not os.path.exists(file):
         'stats_topic': 'stat/openhr20-python/RESULT/',
         'cmnd_topic': 'cmnd/openhr20-python/'
     }
-    config['devices'] = {
-        'living': 10,
-        'bathroom': 11
-    }
-
-    write_file()
 else:
     config.read(file)

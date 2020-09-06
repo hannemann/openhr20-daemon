@@ -1,10 +1,11 @@
 import sys
-
 from SerialIO import serialIO
 from RTC import write as write_rtc
 import threading
 from Commands.Commands import commands
 from Stats import Stats
+from Devices import devices, write_file as write_devices
+import json
 
 
 class OpenHR20 (threading.Thread):
@@ -14,11 +15,27 @@ class OpenHR20 (threading.Thread):
     addr = -1
     data = ''
     stopped = threading.Event()
+    devices = {}
 
     def __init__(self):
         threading.Thread.__init__(self)
+        self.init_devices()
         print('OpenHR20 Thread Initialized')
         sys.stdout.flush()
+
+    def init_devices(self):
+        for addr in devices['names']:
+            self.devices[addr] = {
+                'name': devices.get('names', addr),
+                'stats': json.loads(devices.get('stats', addr, fallback='{}')),
+                'timer': json.loads(devices.get('stats', addr, fallback='{}')),
+                'settings': json.loads(devices.get('stats', addr, fallback='{}')),
+            }
+
+    def update_device(self, stats):
+        self.devices[self.addr] = stats
+        devices.set('stats', '%s' % self.addr, json.dumps(stats))
+        write_devices()
 
     def run(self):
         write_rtc()
@@ -43,7 +60,7 @@ class OpenHR20 (threading.Thread):
                 commands.remove_from_buffer(self.addr)
                 self.data = line[1:]
                 if not commands.has_command(self.addr) and self.data[0] != ' ':
-                    Stats.create_message(self.addr, self.data)
+                    self.update_device(Stats.create_message(self.addr, self.data))
             elif line[0] == '-':
                 self.data = line[1:]
             else:
@@ -61,7 +78,7 @@ class OpenHR20 (threading.Thread):
                     if self.data[0] == '?':
                         commands.send(self.addr)
                     elif line[0] != '*' and (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
-                        Stats.create_message(self.addr, self.data)
+                        self.update_device(Stats.create_message(self.addr, self.data))
 
     def sync_package(self, line):
         req = [0, 0, 0, 0]

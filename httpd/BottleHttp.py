@@ -2,6 +2,7 @@ from bottle import route, run, template, static_file
 import bottle
 import sys
 from Config import config
+from Devices import devices
 
 bottle.TEMPLATE_PATH.insert(0, './httpd/views/')
 bottle.debug(True)
@@ -13,7 +14,7 @@ def server_static(filepath):
 
 @route('/')
 def index():
-    return template('index', title='Lala?')
+    return template('index', title='Lala?', devices=devices)
 
 
 def run_http():

@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
-from OpenHR20 import OpenHR20
+from OpenHR20 import openhr20
 from MQTT import mqtt
 import sys
 import signal
 from SerialIO import serialIO
 from httpd.BottleHttp import run_http
-
-openhr20 = OpenHR20()
 
 
 def signal_handler(sig, frame):

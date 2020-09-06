@@ -28,5 +28,7 @@ if not os.path.exists(file):
         'stats_topic': 'stat/openhr20-python/RESULT/',
         'cmnd_topic': 'cmnd/openhr20-python/'
     }
+
+    write_file()
 else:
     config.read(file)

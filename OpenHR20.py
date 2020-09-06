@@ -11,7 +11,7 @@ import json
 class OpenHR20 (threading.Thread):
 
     daemon = True
-    alive = True
+    alive = False
     addr = -1
     data = ''
     stopped = threading.Event()
@@ -19,13 +19,14 @@ class OpenHR20 (threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
+        self.devices = {}
         self.init_devices()
         print('OpenHR20 Thread Initialized')
         sys.stdout.flush()
 
     def init_devices(self):
         for addr in devices['names']:
-            self.devices[addr] = {
+            self.devices[int(addr)] = {
                 'name': devices.get('names', addr),
                 'stats': json.loads(devices.get('stats', addr, fallback='{}')),
                 'timer': json.loads(devices.get('stats', addr, fallback='{}')),
@@ -33,11 +34,12 @@ class OpenHR20 (threading.Thread):
             }
 
     def update_device(self, stats):
-        self.devices[self.addr] = stats
+        self.devices[self.addr]['stats'] = stats
         devices.set('stats', '%s' % self.addr, json.dumps(stats))
         write_devices()
 
     def run(self):
+        self.alive = True
         write_rtc()
         print('OpenHR20: Starting main loop...')
         sys.stdout.flush()
@@ -99,7 +101,13 @@ class OpenHR20 (threading.Thread):
 
         return v
 
+    def get_devices(self):
+        return self.devices
+
     def shutdown(self):
         self.alive = False
         ''' wait for loop to be stopped '''
         self.stopped.wait(2)
+
+
+openhr20 = OpenHR20()

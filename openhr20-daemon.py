@@ -5,6 +5,7 @@ from MQTT import mqtt
 import sys
 import signal
 from SerialIO import serialIO
+from httpd.BottleHttp import run_http
 
 openhr20 = OpenHR20()
 
@@ -27,6 +28,7 @@ if __name__ == "__main__":
     if serialIO.ser:
         mqtt.start()
         openhr20.start()
+        run_http()
         mqtt.join()
         openhr20.join()
     else:

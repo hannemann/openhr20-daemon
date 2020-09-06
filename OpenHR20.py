@@ -3,7 +3,7 @@ import sys
 from SerialIO import serialIO
 from RTC import write as write_rtc
 import threading
-from Commands import commands
+from Commands.Commands import commands
 from Stats import Stats
 
 

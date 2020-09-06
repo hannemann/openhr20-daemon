@@ -1,11 +1,11 @@
 import sys
 import paho.mqtt.client as mqttc
-from Commands import commands
+from Commands.Commands import commands
 import threading
-from CommandTemperature import CommandTemperature
-from CommandMode import CommandMode
-from CommandStatus import CommandStatus
-from CommandReboot import CommandReboot
+from Commands.CommandTemperature import CommandTemperature
+from Commands.CommandMode import CommandMode
+from Commands.CommandStatus import CommandStatus
+from Commands.CommandReboot import CommandReboot
 from Config import config
 
 

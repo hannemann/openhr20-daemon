@@ -10,7 +10,7 @@ Goals:
 ## Installation
 ### Ubuntu:
 ```bash
-sudo apt install python3-paho-mqtt
+sudo apt install python3-paho-mqtt python3-bottle
 ```
 Install the systemd service file (tbd)
 ```bash

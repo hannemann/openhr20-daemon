@@ -1,6 +1,6 @@
 from MQTT import mqtt
 import time
-from Commands import commands
+from Commands.Commands import commands
 import json
 from Config import config
 

@@ -1,4 +1,4 @@
 <header>
     OpenHR20
-    % include('nav')
+    % include('layout/nav')
 </header>

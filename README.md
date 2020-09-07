@@ -21,15 +21,19 @@ sudo apt install python3-bottle
 git clone https://github.com/hannemann/openhr20-daemon.git
 ```
 ## Prerequisites
-### Init configuration
-Run the daemon once as root and the config file will be created: /etc/openhr20/daemon.conf  
-Adjust to your needs
 
 Install the systemd service file
 ```bash
+mkdir /etc/openhr20
+mkdir/var/cache/openhr20
 systemctl start openhr20-python-daemon
 ```
-Maybe you want to adjust the path since it currently points to /usr/local/bin/  
+### Init configuration
+Adjust the path to the main python file openhr20-daemon.py since it currently points to /usr/local/bin/  
+Run the daemon once as root to create the config and devices files:
+* /etc/openhr20/daemon.conf
+* /var/cache/openhr20  
+Adjust to your needs
 
 Enable and start the daemon
 ```bash

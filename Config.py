@@ -18,7 +18,8 @@ if not os.path.exists(file):
     config['openhr20'] = {
         'master': '/dev/ttyUSB0',
         'baud': 38400,
-        'timeout': 1
+        'timeout': 1,
+        'debug': False
     }
     config['mqtt'] = {
         'host': 'heimomat',

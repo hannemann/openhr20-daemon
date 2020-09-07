@@ -2,7 +2,7 @@ import configparser
 import os
 import json
 
-file = './devices.conf'
+file = '/var/cache/openhr20/devices.conf'
 devices = configparser.ConfigParser()
 
 

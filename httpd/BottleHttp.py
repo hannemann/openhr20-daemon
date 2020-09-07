@@ -1,11 +1,14 @@
 from bottle import route, run, template, static_file
 import bottle
 import sys
+import os
+import pathlib
 from Config import config
 from Devices import get_devices_dict
 
 debug = config.getboolean('openhr20', 'debug')
-bottle.TEMPLATE_PATH.insert(0, './httpd/views/')
+httpd_path = '/' + str(pathlib.Path(__file__).parent.absolute()).strip('/')
+bottle.TEMPLATE_PATH.insert(0, httpd_path + '/views')
 bottle.debug(debug)
 
 
@@ -17,7 +20,7 @@ def run_http():
 
 @route('/static/<filepath:path>')
 def server_static(filepath):
-    return static_file(filepath, root='./httpd/assets/dist')
+    return static_file(filepath, root=httpd_path + '/assets/dist')
 
 
 @route('/')

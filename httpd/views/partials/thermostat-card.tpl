@@ -3,6 +3,15 @@
         <span class="iconify" data-icon="mdi-home-thermometer-outline"></span>
         {{ device['name'] }}
     </h3>
+    % if 'mode' in device['stats']:
+    <div class="thermostat-card--item" data-item="mode">
+        % if device['stats']["mode"] == 'MANU':
+        <span class="iconify" data-icon="mdi-hand-left"></span>
+        % else:
+        <span class="iconify" data-icon="mdi-calendar-clock"></span>
+        %end
+    </div>
+    %end
     % if 'wanted' in device['stats']:
     <div class="thermostat-card--item" data-item="wanted">
         <label for="{{ device['stats']["addr"] }}-wanted">

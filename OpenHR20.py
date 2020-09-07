@@ -44,7 +44,7 @@ class OpenHR20 (threading.Thread):
         print('OpenHR20: Starting main loop...')
         sys.stdout.flush()
         while self.alive:
-            self.action(serialIO.read())
+            self.action(serialIO.read(''))
 
         print('OpenHR20: Main loop stopped')
         sys.stdout.flush()
@@ -57,8 +57,14 @@ class OpenHR20 (threading.Thread):
                 ''' decode addr '''
                 self.addr = int(line[1:3], 16)
                 self.data = line[4:]
+                print(
+                    ' %s' %
+                    '(' + devices['names'][str(self.addr)] + ')' if str(self.addr) in devices['names'] else '',
+                    end=''
+                )
             elif line[0] == '*':
                 ''' command success '''
+                print('')
                 commands.remove_from_buffer(self.addr)
                 self.data = line[1:]
                 if not commands.has_command(self.addr) and self.data[0] != ' ':
@@ -68,6 +74,8 @@ class OpenHR20 (threading.Thread):
             else:
                 self.data = ''
                 self.addr = 0
+
+            print('')
 
             if line == 'RTC?':
                 write_rtc()

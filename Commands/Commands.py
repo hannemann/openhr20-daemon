@@ -1,4 +1,6 @@
+import sys
 from SerialIO import serialIO
+from Devices import devices
 
 
 def weights(cmnd):
@@ -41,7 +43,8 @@ class Commands:
                     weight = cw
                 r = "(%02x-%x)%s" % (addr, bank, cmnd.command)
                 q += r
-                serialIO.write(q)
+                serialIO.write(q, '')
+                print(' %s' % '(' + devices['names'][str(addr)] + ')' if str(addr) in devices['names'] else '')
                 cmnd.sent += 1
 
     def remove_from_buffer(self, addr):

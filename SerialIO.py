@@ -24,15 +24,15 @@ class SerialIO:
                   config['openhr20'].get('master', '/dev/ttyUSB0'))
             sys.stdout.flush()
 
-    def write(self, payload):
-        print(' > ' + payload)
+    def write(self, payload, end='\n'):
+        print(' > ' + payload, end=end)
         sys.stdout.flush()
         self.ser.write((payload + '\n').encode('utf_8'))
 
-    def read(self):
+    def read(self, end='\n'):
         line = self.ser.readline(256).decode('utf_8').strip()
         if line != '' and line is not None and len(line) > 0:
-            print(' < ' + line)
+            print(' < ' + line, end=end)
             sys.stdout.flush()
             return line
 

@@ -43,7 +43,7 @@ class MQTT (threading.Thread):
             payload = msg.payload.decode('utf_8').strip()
             if cmnd == CommandMode.abbr:
                 commands.add(addr, CommandMode(payload))
-            elif cmnd == CommandTemperature.abbr:
+            elif cmnd == CommandTemperature.abbr and CommandTemperature.valid(payload):
                 commands.add(addr, CommandTemperature(payload))
             elif cmnd == CommandStatus.abbr:
                 commands.add(addr, CommandStatus())

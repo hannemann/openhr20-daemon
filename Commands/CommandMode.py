@@ -15,6 +15,10 @@ class CommandMode:
     def __init__(self, mode):
         self.command = self.modes[mode]
 
+    @staticmethod
+    def valid(mode):
+        return mode in CommandMode.modes
+
     def __del__(self):
         print('Command %s deleted' % self.command)
         sys.stdout.flush()

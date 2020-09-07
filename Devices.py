@@ -17,7 +17,6 @@ def read_file():
 
 
 def get_devices_dict():
-    read_file()
     devs = {}
     for addr in devices['names']:
         devs[int(addr)] = {

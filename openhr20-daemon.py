@@ -5,13 +5,15 @@ from MQTT import mqtt
 import sys
 import signal
 from SerialIO import serialIO
-from httpd.BottleHttp import run_http
+from Httpd import httpd
 
 
 def signal_handler(sig, frame):
     openhr20.shutdown()
     serialIO.shutdown()
     mqtt.shutdown()
+    httpd.shutdown()
+    sys.stderr.close()
     print("All threads stopped... exiting")
     sys.stdout.flush()
     sys.exit(0)
@@ -25,9 +27,10 @@ if __name__ == "__main__":
 
     if serialIO.ser:
         mqtt.start()
+        httpd.start()
         openhr20.start()
-        run_http()
         mqtt.join()
+        httpd.join()
         openhr20.join()
     else:
         sys.exit(1)

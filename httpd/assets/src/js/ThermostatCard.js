@@ -47,7 +47,7 @@ class ThermostatCard {
         this.wantedTimeout = setTimeout(() => {
             try {
                 if (this.data.wanted !== this.wanted.value) {
-                    let response = axios.post('http://localhost:3000/temp', {
+                    let response = axios.post(`${location.origin}/temp`, {
                         addr: this.addr.toString(),
                         temp: this.wanted.value.toString()
                     })

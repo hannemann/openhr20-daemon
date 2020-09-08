@@ -28,7 +28,7 @@ class MyWSGIRefServer(ServerAdapter):
             class QuietHandler(WSGIRequestHandler):
                 def log_request(*args, **kw): pass
             self.options['handler_class'] = QuietHandler
-        self.server = make_server(self.host, self.port, handler, **self.options)
+        self.server = make_server('0.0.0.0', self.port, handler, **self.options)
         self.server.serve_forever()
 
     def stop(self):

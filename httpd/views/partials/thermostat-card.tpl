@@ -1,4 +1,4 @@
-<div class="thermostat-card">
+<div class="thermostat-card" data-name="{{ device['name'] }}" data-addr="{{ device['stats']['addr'] if 'addr' in device['stats'] else '' }}">
     <h3>
         <span class="iconify" data-icon="mdi-home-thermometer-outline"></span>
         {{ device['name'] }}
@@ -28,7 +28,10 @@
     </div>
     % end
     % if 'valve' in device['stats']:
-    <div class="thermostat-card--item" data-item="valve">Valve: {{ device['stats']["valve"] }}</div>
+    <div class="thermostat-card--item" data-item="valve">
+        <span>Valve:</span>
+        <span>{{ device['stats']["valve"] }}</span>
+    </div>
     % end
     % if 'battery' in device['stats']:
     <div class="thermostat-card--item" data-item="battery">Battery: {{ device['stats']["battery"] }}</div>

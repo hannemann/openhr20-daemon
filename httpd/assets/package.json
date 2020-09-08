@@ -29,6 +29,7 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
-    "@iconify/iconify": "^1.0.7"
+    "@iconify/iconify": "^1.0.7",
+    "axios": "^0.20.0"
   }
 }

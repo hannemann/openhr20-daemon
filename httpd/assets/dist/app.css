@@ -110,6 +110,15 @@ main {
 
 .thermostat-card .thermostat-card--item {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+}
+
+.thermostat-card .thermostat-card--item > *:first-child {
+  margin-right: auto;
+}
+
+.thermostat-card .thermostat-card--item .value-display {
+  text-align: right;
+  flex-basis: 70px;
 }
 

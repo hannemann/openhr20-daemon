@@ -53,15 +53,15 @@ class Httpd(threading.Thread):
         return template('index', title='OpenHR20', devices=get_devices_dict())
 
     def set_temp(self):
-        addr = int(request.forms.get('addr'))
-        temp = int(request.forms.get('temp'))
+        addr = int(request.json.get('addr'))
+        temp = float(request.json.get('temp'))
         if addr in get_devices_dict() and CommandTemperature.valid(temp):
             commands.add(addr, CommandTemperature(temp))
-        print('HTTP: %d temp %d' % (addr, temp))
+        print('HTTP: %d temp %f' % (addr, temp))
 
     def set_mode(self):
-        addr = int(request.forms.get('addr'))
-        mode = request.forms.get('mode')
+        addr = int(request.json.get('addr'))
+        mode = request.json.get('mode')
         if addr in get_devices_dict() and CommandMode.valid(mode):
             commands.add(addr, CommandMode(mode))
         print('HTTP: %d mode %s' % (addr, mode))

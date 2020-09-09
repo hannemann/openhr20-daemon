@@ -93,10 +93,6 @@ main {
   padding: var(--grid-base);
 }
 
-.hidden {
-  display: none;
-}
-
 .thermostats {
   display: flex;
   margin-right: calc(-1 * var(--grid-base));
@@ -124,5 +120,48 @@ main {
 .thermostat-card .thermostat-card--item .value-display {
   text-align: right;
   flex-basis: 70px;
+}
+
+.thermostat-card[data-synced=false] .value-display span.synced {
+  display: none;
+}
+
+.thermostat-card[data-synced=false] .value-display span.not-synced {
+  display: initial;
+}
+
+.thermostat-card[data-synced=true] .value-display span.synced {
+  display: initial;
+}
+
+.thermostat-card[data-synced=true] .value-display span.not-synced {
+  display: none;
+}
+
+.thermostat-card[data-mode=auto] .value-display span.mode-manu,
+.thermostat-card[data-mode=auto] .value-display span.mode-- {
+  display: none;
+}
+
+.thermostat-card[data-mode=auto] .value-display span.mode-auto {
+  display: initial;
+}
+
+.thermostat-card[data-mode=manu] .value-display span.mode-auto,
+.thermostat-card[data-mode=manu] .value-display span.mode-- {
+  display: none;
+}
+
+.thermostat-card[data-mode=manu] .value-display span.mode-manu {
+  display: initial;
+}
+
+.thermostat-card[data-mode="-"] .value-display span.mode-auto,
+.thermostat-card[data-mode="-"] .value-display span.mode-manu {
+  display: none;
+}
+
+.thermostat-card[data-mode="-"] .value-display span.mode-- {
+  display: initial;
 }
 

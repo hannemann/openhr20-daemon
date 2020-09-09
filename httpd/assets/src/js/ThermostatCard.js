@@ -7,7 +7,6 @@ class ThermostatCard {
         this.name = this.card.dataset.name;
         if (this.addr !== '') {
             this.initElements()
-                .initData()
                 .initHandler()
                 .addObserver()
         }
@@ -19,22 +18,19 @@ class ThermostatCard {
         return this;
     }
 
-    initData() {
-        this.data = {
-            wanted: this.wanted.value
-        }
-        return this;
-    }
-
     initHandler() {
         this.handleWanted = this.wantedHandler.bind(this);
         this.handleWantedInout = this.wantedInputHandler.bind(this);
+        this.handleAttributeMutation = this.attributeMutationHandler.bind(this);
         return this;
     }
 
     addObserver() {
+        this.observer = new MutationObserver(mutations => mutations.forEach(this.handleAttributeMutation));
+        this.observer.observe(this.card, { attributes: true });
 
         if (this.wanted) {
+            this.wanted.addEventListener('pointerdown', () => this.card.dataset.preventupdate = 'true');
             this.wanted.addEventListener('pointerup', this.handleWanted);
             this.wanted.addEventListener('input', this.handleWantedInout)
         }
@@ -42,14 +38,36 @@ class ThermostatCard {
         return this;
     }
 
-    async wantedHandler() {
+    attributeMutationHandler(mutation) {
+            let attribute = mutation.attributeName.replace('data-', '');
+            let value = this.card.dataset[attribute];
+
+            if (['wanted', 'synced'].indexOf(attribute) < -1) {
+                this.card.querySelector(`[data-item="${attribute}"] .value-display span`).innerText = value;
+            }
+
+            if (!this.card.dataset.preventupdate) {
+                if ('wanted' === attribute && this.card.dataset.synced === 'true') {
+                    this.wanted.value = value;
+                    this.wanted.dispatchEvent(new Event("input"));
+                }
+            }
+
+            if ('synced' === attribute) {
+                this.wanted.disabled = value === 'false'
+            }
+    }
+
+    wantedHandler() {
         if ("undefined" !== typeof this.wantedTimeout) {
             clearTimeout(this.wantedTimeout)
         }
-        this.wantedTimeout = setTimeout(() => {
+        this.wantedTimeout = setTimeout(async () => {
             try {
-                if (this.data.wanted !== this.wanted.value) {
-                    let response = axios.post(`${location.origin}/temp`, {
+                delete this.card.dataset.preventupdate;
+                if (this.card.dataset.wanted !== this.wanted.value) {
+                    this.card.dataset.synced = 'false';
+                    await axios.post(`${location.origin}/temp`, {
                         addr: this.addr.toString(),
                         temp: this.wanted.value.toString()
                     })
@@ -65,7 +83,7 @@ class ThermostatCard {
 
     wantedInputHandler() {
 
-        let precision = this.wanted.value >= 10 ? 4 : 3
+        let precision = this.wanted.value >= 10 ? 3 : 2
         this.wanted.closest('.thermostat-card--item')
             .querySelector('.value-display span').innerText = parseFloat(this.wanted.value)
             .toPrecision(precision).padStart(5, ' ')

@@ -8,8 +8,8 @@ class CommandMode:
     command = ''
     weight = 10
     modes = {
-        'MANU': 'M%0.2x' % 0,
-        'AUTO': 'M%0.2x' % 1,
+        'manu': 'M%0.2x' % 0,
+        'auto': 'M%0.2x' % 1,
     }
 
     def __init__(self, mode):

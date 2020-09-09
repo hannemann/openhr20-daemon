@@ -27,6 +27,14 @@ def get_devices_dict():
         }
     return devs
 
+
+def set_synced(addr, synced):
+    if str(addr) in devices['stats']:
+        stats = json.loads(devices.get('stats', str(addr)))
+        stats['synced'] = synced
+        devices.set('stats', str(addr), json.dumps(stats))
+
+
 if not os.path.exists(file):
     devices['names'] = {
         '10': 'Livingroom',

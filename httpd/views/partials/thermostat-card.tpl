@@ -1,17 +1,29 @@
-<div class="thermostat-card" data-name="{{ device['name'] }}" data-addr="{{ device['stats']['addr'] if 'addr' in device['stats'] else '' }}">
+<div class="thermostat-card"
+     data-name="{{ device['name'] }}"
+     % for attr in device['stats']:
+         data-{{attr}}="{{ str(device['stats'][attr]).lower() }}"
+    % end
+>
     <h3>
         <span class="iconify" data-icon="mdi-home-thermometer-outline"></span>
         {{ device['name'] }}
     </h3>
     % if 'mode' in device['stats']:
     <div class="thermostat-card--item" data-item="mode">
-        % if device['stats']["mode"] == 'MANU':
-        <span class="iconify" data-icon="mdi-hand-left"></span>
-        % else:
-        <span class="iconify" data-icon="mdi-calendar-clock"></span>
-        %end
+        <span>Mode</span>
+        <span class="value-display">
+            <span class="mode-manu">
+                <span class="iconify" data-icon="mdi-hand-left"></span>
+            </span>
+            <span class="mode-auto">
+                <span class="iconify" data-icon="mdi-calendar-clock"></span>
+            </span>
+            <span class="mode--">
+                -
+            </span>
+        </span>
     </div>
-    %end
+    % end
     % if 'wanted' in device['stats']:
     <div class="thermostat-card--item" data-item="wanted">
         <label for="{{ device['stats']["addr"] }}-wanted">

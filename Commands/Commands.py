@@ -1,6 +1,5 @@
-import sys
 from SerialIO import serialIO
-from Devices import devices
+from Devices import devices, set_synced
 
 
 def weights(cmnd):
@@ -28,6 +27,7 @@ class Commands:
             self.buffer[addr] = []
 
         self.buffer[addr].append(command)
+        set_synced(addr, False)
 
     def send(self, addr):
         weight = 0
@@ -58,7 +58,9 @@ class Commands:
                 del self.buffer[addr]
 
     def has_command(self, addr):
-        return addr in self.buffer and len(self.buffer[addr]) > 0
+        result = addr in self.buffer and len(self.buffer[addr]) > 0
+        set_synced(addr, not result)
+        return result
 
     def test(self, command):
         self.buffer[0] = command

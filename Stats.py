@@ -17,11 +17,11 @@ class Stats:
         items = response.split(' ')
         for item in items:
             if item[0] == 'A':
-                stats['mode'] = 'AUTO'
+                stats['mode'] = 'auto'
             elif item[0] == '-':
                 stats['mode'] = '-'
             elif item[0] == 'M':
-                stats['mode'] = 'MANU'
+                stats['mode'] = 'manu'
             elif item[0] == 'S':
                 stats['wanted'] = int(item[1:]) / 100
             elif item[0] == 'V':

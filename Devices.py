@@ -22,8 +22,8 @@ def get_devices_dict():
         devs[int(addr)] = {
             'name': devices.get('names', addr),
             'stats': json.loads(devices.get('stats', addr, fallback='{}')),
-            'timer': json.loads(devices.get('stats', addr, fallback='{}')),
-            'settings': json.loads(devices.get('stats', addr, fallback='{}')),
+            'timer': json.loads(devices.get('timer', addr, fallback='{}')),
+            'settings': json.loads(devices.get('settings', addr, fallback='{}')),
         }
     return devs
 

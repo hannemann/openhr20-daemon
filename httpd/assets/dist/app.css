@@ -93,6 +93,10 @@ main {
   padding: var(--grid-base);
 }
 
+.hidden {
+  display: none;
+}
+
 .thermostats {
   display: flex;
   margin-right: calc(-1 * var(--grid-base));

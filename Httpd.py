@@ -1,4 +1,4 @@
-from bottle import ServerAdapter, route, template, static_file, request
+from bottle import ServerAdapter, route, template, static_file, request, response
 import bottle
 import sys
 from Commands.Commands import commands
@@ -8,6 +8,7 @@ import pathlib
 from Config import config
 from Devices import get_devices_dict
 import threading
+import json
 
 debug = config.getboolean('openhr20', 'debug')
 httpd_path = '/' + str(pathlib.Path(__file__).parent.absolute()).strip('/') + '/httpd/'
@@ -66,6 +67,10 @@ class Httpd(threading.Thread):
             commands.add(addr, CommandMode(mode))
         print('HTTP: %d mode %s' % (addr, mode))
 
+    def get_stats(self):
+        response.content_type = 'application/json'
+        return json.dumps(get_devices_dict())
+
     def shutdown(self):
         self.server.stop()
 
@@ -75,3 +80,4 @@ route('/static/<filepath:path>')(httpd.server_static)
 route('/')(httpd.index)
 route('/temp', method='POST')(httpd.set_temp)
 route('/mode', method='POST')(httpd.set_mode)
+route('/stats', method='GET')(httpd.get_stats)

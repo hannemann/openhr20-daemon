@@ -24,19 +24,31 @@
     % if 'real' in device['stats']:
     <div class="thermostat-card--item" data-item="real">
         <span>Real:</span>
-        <span>{{ device['stats']["real"] }} °C</span>
+        <span class="value-display"><span>{{ device['stats']["real"] }}</span> °C</span>
     </div>
     % end
     % if 'valve' in device['stats']:
     <div class="thermostat-card--item" data-item="valve">
         <span>Valve:</span>
-        <span>{{ device['stats']["valve"] }}</span>
+        <span class="value-display"><span>{{ device['stats']["valve"] }}</span> %</span>
     </div>
     % end
     % if 'battery' in device['stats']:
-    <div class="thermostat-card--item" data-item="battery">Battery: {{ device['stats']["battery"] }}</div>
+    <div class="thermostat-card--item" data-item="battery">
+        <span>Battery:</span>
+        <span class="value-display"><span>{{ device['stats']["battery"] }}</span> V</div>
     % end
     % if 'synced' in device['stats']:
-    <div class="thermostat-card--item" data-item="synced">Synced: {{ device['stats']["synced"] }}</div>
+    <div class="thermostat-card--item" data-item="synced">
+        <span>Synced:</span>
+        <span class="value-display">
+            <span class="synced {{ '' if device['stats']['synced'] is True else 'hidden' }}">
+                <span class="iconify" data-icon="mdi-check-box-outline"></span>
+            </span>
+            <span class="not-synced {{ 'hidden' if device['stats']['synced'] is True else '' }}">
+                <span class="iconify" data-icon="mdi-checkbox-blank-outline"></span>
+            </span>
+        </span>
+    </div>
     % end
 </div>

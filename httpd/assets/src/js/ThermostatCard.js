@@ -28,6 +28,7 @@ class ThermostatCard {
 
     initHandler() {
         this.handleWanted = this.wantedHandler.bind(this);
+        this.handleWantedInout = this.wantedInputHandler.bind(this);
         return this;
     }
 
@@ -35,6 +36,7 @@ class ThermostatCard {
 
         if (this.wanted) {
             this.wanted.addEventListener('pointerup', this.handleWanted);
+            this.wanted.addEventListener('input', this.handleWantedInout)
         }
 
         return this;
@@ -59,6 +61,14 @@ class ThermostatCard {
                 delete this.wantedTimeout
             }
         }, 1000)
+    }
+
+    wantedInputHandler() {
+
+        let precision = this.wanted.value >= 10 ? 4 : 3
+        this.wanted.closest('.thermostat-card--item')
+            .querySelector('.value-display span').innerText = parseFloat(this.wanted.value)
+            .toPrecision(precision).padStart(5, ' ')
     }
 }
 

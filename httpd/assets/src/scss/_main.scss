@@ -3,3 +3,7 @@ main {
   min-height: calc(100vh - (var(--grid-base) * 4) - var(--font-size-big) - (var(--font-size-big) / 4));
   padding: var(--grid-base);
 }
+
+.hidden {
+  display: none;
+}

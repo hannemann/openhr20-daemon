@@ -45,23 +45,36 @@ class ThermostatCard {
     }
 
     attributeMutationHandler(mutation) {
-            let attribute = mutation.attributeName.replace('data-', '');
-            let value = this.card.dataset[attribute];
+        let attribute = mutation.attributeName.replace('data-', ''),
+            value = this.card.dataset[attribute],
+            selector = `[data-item="${attribute}"] .value-display span`
+        ;
 
-            if (['wanted', 'synced'].indexOf(attribute) < -1) {
-                this.card.querySelector(`[data-item="${attribute}"] .value-display span`).innerText = value;
-            }
+        if (['wanted', 'synced', 'time'].indexOf(attribute) < -1) {
+            this.card.querySelector(selector).innerText = value;
+        }
 
-            if (!this.card.dataset.preventupdate) {
-                if ('wanted' === attribute && this.card.dataset.synced === 'true') {
-                    this.wanted.value = value;
-                    this.wanted.dispatchEvent(new Event("input"));
-                }
+        if (!this.card.dataset.preventupdate) {
+            if ('wanted' === attribute && this.card.dataset.synced === 'true') {
+                this.wanted.value = value;
+                this.wanted.dispatchEvent(new Event("input"));
             }
+        }
 
-            if ('synced' === attribute) {
-                this.wanted.disabled = value === 'false'
-            }
+        if ('synced' === attribute) {
+            this.wanted.disabled = value === 'false'
+        }
+
+        if ('time' === attribute) {
+            let d = new Date(value * 1000);
+            this.card.querySelector(selector).innerText = `${d.getDate().toString(10).padStart(2, '0')}.`
+                + `${(d.getMonth() + 1).toString(10).padStart(2, '0')}.`
+                + `${d.getFullYear().toString(10)} `
+                + `${d.getHours().toString(10).padStart(2, '0')}:`
+                + `${d.getMinutes().toString(10).padStart(2, '0')}:`
+                + `${d.getSeconds().toString(10).padStart(2, '0')}`
+            ;
+        }
     }
 
     async tempHandler() {

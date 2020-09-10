@@ -13,6 +13,7 @@
   flex: 1 0 calc(360px - (2 * var(--grid-base)));
   margin-right: var(--grid-base);
   position: relative;
+  overflow: hidden;
 
   #{ $card }--item {
     display: flex;
@@ -29,6 +30,10 @@
 
     &[data-item="wanted"] input {
 
+    }
+
+    &[data-item="time"] .value-display {
+      flex-basis: auto;
     }
   }
 

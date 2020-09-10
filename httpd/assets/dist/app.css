@@ -139,6 +139,7 @@ main {
   flex: 1 0 calc(360px - (2 * var(--grid-base)));
   margin-right: var(--grid-base);
   position: relative;
+  overflow: hidden;
 }
 
 .thermostat-card .thermostat-card--item {
@@ -153,6 +154,10 @@ main {
 .thermostat-card .thermostat-card--item .value-display {
   text-align: right;
   flex-basis: 70px;
+}
+
+.thermostat-card .thermostat-card--item[data-item=time] .value-display {
+  flex-basis: auto;
 }
 
 .thermostat-card[data-synced=false] .value-display span.synced {

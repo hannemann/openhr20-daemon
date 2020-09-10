@@ -42,10 +42,8 @@ class Stats:
                 t += int(item[1:])
 
         timestamp = int(time.time())
-        if timestamp % 3600 < t:
-            timestamp -= 3600
-
-        timestamp = int((timestamp / 3600) * 3600 + t)
+        timestamp -= timestamp % 3600
+        timestamp += t
         stats['time'] = timestamp
         stats['synced'] = not commands.has_command(addr)
 

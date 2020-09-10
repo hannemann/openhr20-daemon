@@ -171,31 +171,33 @@ main {
   display: none;
 }
 
-.thermostat-card[data-mode=auto] .value-display span.mode-manu,
-.thermostat-card[data-mode=auto] .value-display span.mode-- {
-  display: none;
+.thermostat-card[data-mode] {
+  cursor: pointer;
 }
 
-.thermostat-card[data-mode=auto] .value-display span.mode-auto {
-  display: initial;
+.thermostat-card[data-mode=auto] .value-display span.mode-manu,
+.thermostat-card[data-mode=auto] .value-display span.mode--,
+.thermostat-card[data-mode="-"] .value-display span.mode-manu,
+.thermostat-card[data-mode="-"] .value-display span.mode-- {
+  opacity: 0.2;
+}
+
+.thermostat-card[data-mode=auto] .value-display span.mode-auto,
+.thermostat-card[data-mode="-"] .value-display span.mode-auto {
+  opacity: initial;
 }
 
 .thermostat-card[data-mode=manu] .value-display span.mode-auto,
 .thermostat-card[data-mode=manu] .value-display span.mode-- {
-  display: none;
+  opacity: 0.2;
 }
 
 .thermostat-card[data-mode=manu] .value-display span.mode-manu {
-  display: initial;
+  opacity: initial;
 }
 
-.thermostat-card[data-mode="-"] .value-display span.mode--,
-.thermostat-card[data-mode="-"] .value-display span.mode-manu {
+.thermostat-card .value-display span.mode-- {
   display: none;
-}
-
-.thermostat-card[data-mode="-"] .value-display span.mode-auto {
-  display: initial;
 }
 
 .thermostat-card span.loading {

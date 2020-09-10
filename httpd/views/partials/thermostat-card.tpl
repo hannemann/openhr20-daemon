@@ -1,3 +1,4 @@
+%from datetime import datetime
 <div class="thermostat-card"
      data-name="{{ device['name'] }}"
      % for attr in device['stats']:
@@ -54,15 +55,25 @@
     <div class="thermostat-card--item" data-item="synced">
         <span>Synced:</span>
         <span class="value-display">
-            <span class="synced {{ '' if device['stats']['synced'] is True else 'hidden' }}">
+            <span class="synced">
                 <span class="iconify" data-icon="mdi-check-box-outline"></span>
             </span>
-            <span class="not-synced {{ 'hidden' if device['stats']['synced'] is True else '' }}">
+            <span class="not-synced">
                 <span class="iconify" data-icon="mdi-checkbox-blank-outline"></span>
             </span>
         </span>
     </div>
     % end
+    % if 'time' in device['stats']:
+    <div class="thermostat-card--item" data-item="time">
+        <span>Update:</span>
+        <span class="value-display">
+            <span>
+                {{ datetime.fromtimestamp(device['stats']['time']).strftime('%d.%m.%Y %H:%M:%S') }}
+            </span>
+        </span>
+    </div>
+    %end
     <span class="loading">
         <span class="iconify" data-icon="mdi-loading"></span>
     </span>

@@ -26,6 +26,10 @@
       text-align: right;
       flex-basis: 70px;
     }
+
+    &[data-item="wanted"] input {
+
+    }
   }
 
   &[data-synced="false"] {
@@ -46,34 +50,32 @@
     }
   }
 
-  &[data-mode="auto"] {
+  &[data-mode] {
+    cursor: pointer;
+  }
+
+  &[data-mode="auto"],
+  &[data-mode="-"] {
     .value-display span.mode-manu,
     .value-display span.mode-- {
-      display: none;
+      opacity: $opacity-disabled;
     }
     .value-display span.mode-auto {
-      display:initial;
+      opacity: $opacity-enabled;
     }
   }
 
   &[data-mode="manu"] {
     .value-display span.mode-auto,
     .value-display span.mode-- {
-      display: none;
+      opacity: $opacity-disabled;
     }
     .value-display span.mode-manu {
-      display:initial;
+      opacity: $opacity-enabled;
     }
   }
-
-  &[data-mode="-"] {
-    .value-display span.mode--,
-    .value-display span.mode-manu {
-      display: none;
-    }
-    .value-display span.mode-auto {
-      display:initial;
-    }
+  .value-display span.mode-- {
+    display: none;
   }
 
   span.loading {

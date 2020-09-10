@@ -24,10 +24,11 @@ body {
 }
 
 $white: #ffffff;
-
 $gridBase: 8px;
-
 $fontBig: 1.5em;
+
+$opacity-disabled: .2;
+$opacity-enabled: initial;
 
 @import 'scss/animation';
 @import 'scss/header';

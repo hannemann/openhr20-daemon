@@ -22,6 +22,8 @@
   h3 {
     display: flex;
     align-items: center;
+    font-size: 1.1em;
+    font-weight: normal;
 
     & > * {
       margin-right: var(--grid-base);
@@ -29,9 +31,10 @@
 
     [data-item="time"] {
       margin-left: auto;
+      margin-right: 0;
       font-size: .6em;
       font-weight: normal;
-      margin-right: 0;
+      text-align: right;
     }
   }
 

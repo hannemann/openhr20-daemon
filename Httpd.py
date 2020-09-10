@@ -42,8 +42,10 @@ class Httpd(threading.Thread):
     server = None
 
     def run(self):
-        self.server = MyWSGIRefServer(port=8020)
-        bottle.run(host='0.0.0.0', server=self.server, reloader=False)
+        host = config.get('httpd', 'host', fallback='0.0.0.0')
+        port = config.getint('httpd', 'port', fallback=8020)
+        self.server = MyWSGIRefServer(port=port, host=host)
+        bottle.run(server=self.server, reloader=False)
         print('HTTP Server stopped...')
         sys.stdout.flush()
 

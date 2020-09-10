@@ -15,6 +15,10 @@ def write_file():
 
 
 if not os.path.exists(file):
+    config['httpd'] = {
+        'host': '0.0.0.0',
+        'port': 8020
+    }
     config['openhr20'] = {
         'master': '/dev/ttyUSB0',
         'baud': 38400,

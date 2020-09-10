@@ -7,12 +7,20 @@
 >
     <h3>
         <span class="iconify" data-icon="mdi-home-thermometer-outline"></span>
-        {{ device['name'] }}
+        <span>{{ device['name'] }}</span>
+        <span class="update-button">
+            <span class="iconify" data-icon="mdi-update"></span>
+        </span>
+        % if 'time' in device['stats']:
+        <span data-item="time">
+            {{ datetime.fromtimestamp(device['stats']['time']).strftime('%d.%m.%Y %H:%M:%S') }}
+        </span>
+        %end
     </h3>
     % if 'mode' in device['stats']:
     <div class="thermostat-card--item" data-item="mode">
         <span>Mode</span>
-        <span class="value-display">
+        <span class="value-display mode-button">
             <span class="mode-manu">
                 <span class="iconify" data-icon="mdi-hand-left"></span>
             </span>
@@ -64,16 +72,6 @@
         </span>
     </div>
     % end
-    % if 'time' in device['stats']:
-    <div class="thermostat-card--item" data-item="time">
-        <span>Update:</span>
-        <span class="value-display">
-            <span>
-                {{ datetime.fromtimestamp(device['stats']['time']).strftime('%d.%m.%Y %H:%M:%S') }}
-            </span>
-        </span>
-    </div>
-    %end
     <span class="loading">
         <span class="iconify" data-icon="mdi-loading"></span>
     </span>

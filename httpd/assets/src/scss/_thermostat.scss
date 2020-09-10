@@ -15,6 +15,26 @@
   position: relative;
   overflow: hidden;
 
+  & [class*="-button"] {
+    cursor: pointer;
+  }
+
+  h3 {
+    display: flex;
+    align-items: center;
+
+    & > * {
+      margin-right: var(--grid-base);
+    }
+
+    [data-item="time"] {
+      margin-left: auto;
+      font-size: .6em;
+      font-weight: normal;
+      margin-right: 0;
+    }
+  }
+
   #{ $card }--item {
     display: flex;
     justify-content: flex-end;
@@ -37,6 +57,10 @@
     }
   }
 
+  [data-item="synced"] {
+    display: none;
+  }
+
   &[data-synced="false"] {
     .value-display span.synced {
       display:none;
@@ -53,10 +77,6 @@
     .value-display span.not-synced {
       display: none;
     }
-  }
-
-  &[data-mode] {
-    cursor: pointer;
   }
 
   &[data-mode="auto"],

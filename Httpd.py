@@ -4,6 +4,7 @@ import sys
 from Commands.Commands import commands
 from Commands.CommandTemperature import CommandTemperature
 from Commands.CommandMode import CommandMode
+from Commands.CommandStatus import CommandStatus
 import pathlib
 from Config import config
 from Devices import get_devices_dict
@@ -69,6 +70,11 @@ class Httpd(threading.Thread):
             commands.add(addr, CommandMode(mode))
         print('HTTP: %d mode %s' % (addr, mode))
 
+    def update_stats(self):
+        addr = int(request.json.get('addr'))
+        if addr in get_devices_dict():
+            commands.add(addr, CommandStatus())
+
     def get_stats(self):
         response.content_type = 'application/json'
         return json.dumps(get_devices_dict())
@@ -83,3 +89,4 @@ route('/')(httpd.index)
 route('/temp', method='POST')(httpd.set_temp)
 route('/mode', method='POST')(httpd.set_mode)
 route('/stats', method='GET')(httpd.get_stats)
+route('/update', method='POST')(httpd.update_stats)

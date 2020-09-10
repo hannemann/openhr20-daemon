@@ -142,6 +142,26 @@ main {
   overflow: hidden;
 }
 
+.thermostat-card [class*=-button] {
+  cursor: pointer;
+}
+
+.thermostat-card h3 {
+  display: flex;
+  align-items: center;
+}
+
+.thermostat-card h3 > * {
+  margin-right: var(--grid-base);
+}
+
+.thermostat-card h3 [data-item=time] {
+  margin-left: auto;
+  font-size: 0.6em;
+  font-weight: normal;
+  margin-right: 0;
+}
+
 .thermostat-card .thermostat-card--item {
   display: flex;
   justify-content: flex-end;
@@ -160,6 +180,10 @@ main {
   flex-basis: auto;
 }
 
+.thermostat-card [data-item=synced] {
+  display: none;
+}
+
 .thermostat-card[data-synced=false] .value-display span.synced {
   display: none;
 }
@@ -174,10 +198,6 @@ main {
 
 .thermostat-card[data-synced=true] .value-display span.not-synced {
   display: none;
-}
-
-.thermostat-card[data-mode] {
-  cursor: pointer;
 }
 
 .thermostat-card[data-mode=auto] .value-display span.mode-manu,

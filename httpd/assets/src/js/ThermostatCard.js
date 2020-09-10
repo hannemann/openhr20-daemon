@@ -14,12 +14,14 @@ class ThermostatCard {
 
     initElements() {
         this.wanted = this.card.querySelector('[data-item="wanted"] input');
-        this.mode = this.card.querySelector('[data-item="mode"]');
+        this.mode = this.card.querySelector('[data-item="mode"] .mode-button');
+        this.update = this.card.querySelector('h3 .update-button');
 
         return this;
     }
 
     initHandler() {
+        this.handleUpdate = this.updateHandler.bind(this);
         this.handleWanted = this.tempHandler.bind(this);
         this.handleMode = this.modeHandler.bind(this);
         this.handleWantedInout = this.wantedInputHandler.bind(this);
@@ -39,6 +41,9 @@ class ThermostatCard {
         if (this.mode) {
             this.mode.addEventListener('pointerdown', () => this.card.dataset.preventupdate = 'true');
             this.mode.addEventListener('pointerup', this.handleMode);
+        }
+        if (this.update) {
+            this.update.addEventListener('pointerup', this.handleUpdate);
         }
 
         return this;
@@ -67,7 +72,7 @@ class ThermostatCard {
 
         if ('time' === attribute) {
             let d = new Date(value * 1000);
-            this.card.querySelector(selector).innerText = `${d.getDate().toString(10).padStart(2, '0')}.`
+            this.card.querySelector('h3 [data-item="time"]').innerText = `${d.getDate().toString(10).padStart(2, '0')}.`
                 + `${(d.getMonth() + 1).toString(10).padStart(2, '0')}.`
                 + `${d.getFullYear().toString(10)} `
                 + `${d.getHours().toString(10).padStart(2, '0')}:`
@@ -107,6 +112,19 @@ class ThermostatCard {
             console.error(e)
         } finally {
             delete this.card.dataset.preventupdate;
+        }
+    }
+
+    async updateHandler() {
+        try {
+            let data = {
+                addr: this.addr.toString(),
+            }
+            this.card.dataset.synced = 'false';
+            await axios.post(`${location.origin}/update`, data)
+            console.info('Update of \'%s\' requested', this.name);
+        } catch (e) {
+            console.error(e)
         }
     }
 

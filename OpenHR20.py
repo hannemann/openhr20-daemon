@@ -84,7 +84,7 @@ class OpenHR20 (threading.Thread):
             elif line == 'N0?' or line == 'N1?':
                 serialIO.write(self.sync_package(line))
             else:
-                if len(self.data) > 0 and self.addr > 0:
+                if len(self.data) > 0 and self.addr > 0 and self.addr in self.devices:
                     if self.data[0] == '?':
                         commands.send(self.addr)
                     elif line[0] != '*' and (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':

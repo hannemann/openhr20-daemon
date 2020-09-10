@@ -13,7 +13,8 @@ body {
 }
 
 :root {
-  --dark-bg-color: #0e1d26;
+  --dark-color: #0e1d26;
+  --dark-bg-color: var(--dark-color);
   --main-bg-color: #272836;
   --lighter-bg-color: #37394b;
   --card-bg-color: #585b6f;
@@ -28,6 +29,7 @@ $gridBase: 8px;
 
 $fontBig: 1.5em;
 
+@import 'scss/animation';
 @import 'scss/header';
 @import 'scss/nav';
 @import 'scss/main';

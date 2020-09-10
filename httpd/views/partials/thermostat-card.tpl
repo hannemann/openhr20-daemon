@@ -63,4 +63,7 @@
         </span>
     </div>
     % end
+    <span class="loading">
+        <span class="iconify" data-icon="mdi-loading"></span>
+    </span>
 </div>

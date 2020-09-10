@@ -14,12 +14,14 @@ class ThermostatCard {
 
     initElements() {
         this.wanted = this.card.querySelector('[data-item="wanted"] input');
+        this.mode = this.card.querySelector('[data-item="mode"]');
 
         return this;
     }
 
     initHandler() {
-        this.handleWanted = this.wantedHandler.bind(this);
+        this.handleWanted = this.tempHandler.bind(this);
+        this.handleMode = this.modeHandler.bind(this);
         this.handleWantedInout = this.wantedInputHandler.bind(this);
         this.handleAttributeMutation = this.attributeMutationHandler.bind(this);
         return this;
@@ -33,6 +35,10 @@ class ThermostatCard {
             this.wanted.addEventListener('pointerdown', () => this.card.dataset.preventupdate = 'true');
             this.wanted.addEventListener('pointerup', this.handleWanted);
             this.wanted.addEventListener('input', this.handleWantedInout)
+        }
+        if (this.mode) {
+            this.mode.addEventListener('pointerdown', () => this.card.dataset.preventupdate = 'true');
+            this.mode.addEventListener('pointerup', this.handleMode);
         }
 
         return this;
@@ -58,27 +64,37 @@ class ThermostatCard {
             }
     }
 
-    wantedHandler() {
-        if ("undefined" !== typeof this.wantedTimeout) {
-            clearTimeout(this.wantedTimeout)
-        }
-        this.wantedTimeout = setTimeout(async () => {
-            try {
-                delete this.card.dataset.preventupdate;
-                if (this.card.dataset.wanted !== this.wanted.value) {
-                    this.card.dataset.synced = 'false';
-                    await axios.post(`${location.origin}/temp`, {
-                        addr: this.addr.toString(),
-                        temp: this.wanted.value.toString()
-                    })
-                    console.info('Temperature of \'%s\' set to %s °C', this.name, this.wanted.value);
-                }
-            } catch (e) {
-                console.error(e)
-            } finally {
-                delete this.wantedTimeout
+    async tempHandler() {
+        try {
+            if (this.card.dataset.wanted !== this.wanted.value) {
+                this.card.dataset.synced = 'false';
+                await axios.post(`${location.origin}/temp`, {
+                    addr: this.addr.toString(),
+                    temp: this.wanted.value.toString()
+                })
+                console.info('Temperature of \'%s\' set to %s °C', this.name, this.wanted.value);
             }
-        }, 1000)
+        } catch (e) {
+            console.error(e)
+        } finally {
+            delete this.card.dataset.preventupdate;
+        }
+    }
+
+    async modeHandler() {
+        try {
+            let data = {
+                addr: this.addr.toString(),
+                mode: this.card.dataset.mode === 'manu' ? 'auto' : 'manu'
+            }
+            this.card.dataset.synced = 'false';
+            await axios.post(`${location.origin}/mode`, data)
+            console.info('Mode of \'%s\' set to %s', this.name, data.mode);
+        } catch (e) {
+            console.error(e)
+        } finally {
+            delete this.card.dataset.preventupdate;
+        }
     }
 
     wantedInputHandler() {

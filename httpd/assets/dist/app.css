@@ -13,13 +13,45 @@ body {
 }
 
 :root {
-  --dark-bg-color: #0e1d26;
+  --dark-color: #0e1d26;
+  --dark-bg-color: var(--dark-color);
   --main-bg-color: #272836;
   --lighter-bg-color: #37394b;
   --card-bg-color: #585b6f;
   --light-fg-color: #d0d0d0;
   --grid-base: 8px;
   --font-size-big: 1.5rem;
+}
+
+@-webkit-keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  -webkit-animation-name: spin;
+          animation-name: spin;
+  -webkit-animation-duration: 4000ms;
+          animation-duration: 4000ms;
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
 }
 
 header {
@@ -106,6 +138,7 @@ main {
   border-radius: 4px;
   flex: 1 0 calc(360px - (2 * var(--grid-base)));
   margin-right: var(--grid-base);
+  position: relative;
 }
 
 .thermostat-card .thermostat-card--item {
@@ -156,12 +189,44 @@ main {
   display: initial;
 }
 
-.thermostat-card[data-mode="-"] .value-display span.mode-auto,
+.thermostat-card[data-mode="-"] .value-display span.mode--,
 .thermostat-card[data-mode="-"] .value-display span.mode-manu {
   display: none;
 }
 
-.thermostat-card[data-mode="-"] .value-display span.mode-- {
+.thermostat-card[data-mode="-"] .value-display span.mode-auto {
   display: initial;
+}
+
+.thermostat-card span.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 4em;
+}
+
+.thermostat-card[data-synced=false] span.loading {
+  display: flex;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.thermostat-card[data-synced=false] span.loading svg {
+  -webkit-animation-name: spin;
+          animation-name: spin;
+  -webkit-animation-duration: 4000ms;
+          animation-duration: 4000ms;
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+}
+
+.thermostat-card[data-synced=false] span.loading svg path {
+  fill: var(--dark-color);
 }
 

@@ -12,6 +12,7 @@
   border-radius: 4px;
   flex: 1 0 calc(360px - (2 * var(--grid-base)));
   margin-right: var(--grid-base);
+  position: relative;
 
   #{ $card }--item {
     display: flex;
@@ -66,12 +67,39 @@
   }
 
   &[data-mode="-"] {
-    .value-display span.mode-auto,
+    .value-display span.mode--,
     .value-display span.mode-manu {
       display: none;
     }
-    .value-display span.mode-- {
+    .value-display span.mode-auto {
       display:initial;
+    }
+  }
+
+  span.loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 4em;
+  }
+  &[data-synced="false"] {
+    span.loading {
+      display: flex;
+      background: hsla(0, 0%, 100%, .5);
+      svg {
+        path {
+          fill: var(--dark-color);
+        }
+        animation-name: spin;
+        animation-duration: 4000ms;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+      }
     }
   }
 }

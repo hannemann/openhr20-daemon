@@ -1,3 +1,5 @@
+import sys
+
 from SerialIO import serialIO
 from Devices import devices, set_synced
 
@@ -26,13 +28,21 @@ class Commands:
         if addr not in self.buffer:
             self.buffer[addr] = []
 
-        self.buffer[addr].append(command)
+        buffered_command = next((x for x in self.buffer[addr] if x.command == command.command), None)
+        if buffered_command is not None:
+            print('Command %s already buffered' % buffered_command.command)
+            sys.stdout.flush()
+            buffered_command.sent += 1
+        else:
+            self.buffer[addr].append(command)
+
         set_synced(addr, False)
 
     def send(self, addr):
         weight = 0
         bank = 0
-        q = ''
+        q = []
+        i = 0
         if self.has_command(addr):
             for cmnd in self.buffer[addr]:
                 cw = cmnd.weight
@@ -42,10 +52,13 @@ class Commands:
                         break
                     weight = cw
                 r = "(%02x-%x)%s" % (addr, bank, cmnd.command)
-                q += r
-                serialIO.write(q, '')
-                print(' %s' % '(' + devices['names'][str(addr)] + ')' if str(addr) in devices['names'] else '')
+                q.append(r)
                 cmnd.sent += 1
+                i += 1
+                if i > 25:
+                    break
+            serialIO.write('\n'.join(q), '')
+            print(' %s' % '(' + devices['names'][str(addr)] + ')' if str(addr) in devices['names'] else '')
 
     def remove_from_buffer(self, addr):
         if self.has_command(addr):

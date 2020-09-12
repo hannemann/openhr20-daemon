@@ -16,6 +16,14 @@ def read_file():
     devices.read(file)
 
 
+def get_device_settings(addr):
+    return json.loads(devices.get('settings', str(addr), fallback='{}'))
+
+
+def set_device_settings(addr, settings):
+    devices.set('settings', str(addr), json.dumps(settings))
+
+
 def get_devices_dict():
     devs = {}
     for addr in devices['names']:
@@ -23,7 +31,7 @@ def get_devices_dict():
             'name': devices.get('names', addr),
             'stats': json.loads(devices.get('stats', addr, fallback='{}')),
             'timer': json.loads(devices.get('timer', addr, fallback='{}')),
-            'settings': json.loads(devices.get('settings', addr, fallback='{}')),
+            'settings': get_device_settings(addr),
         }
     return devs
 

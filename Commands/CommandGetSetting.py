@@ -1,21 +1,26 @@
+import json
 import sys
-from Eeprom import get_fields_by_layout
+from Eeprom import get_eeprom_layout
+from Devices import devices
 
 
-class CommandSetSetting:
+class CommandGetSetting:
 
-    abbr = 'set_setting'
+    abbr = 'get_setting'
     sent = 0
-    command = 'S'
+    command = 'G'
     weight = 4
 
-    def __init__(self, device, field, value):
-        field = get_fields_by_layout(device.layout)
-        self.command = '%s%2x%2x' % (self.command, field, value)
+    def __init__(self, idx):
+        self.command = '%s%0.2x' % (self.command, idx)
 
     @staticmethod
-    def valid(device, field, value):
-        return True
+    def valid(addr, idx):
+        settings = json.loads(devices.get('settings', str(addr), fallback={}))
+        if '255' not in settings:
+            return False
+        fields = get_eeprom_layout(int('0x' + settings['255'], 16))
+        return next((x for x in fields if x['idx'] == idx), False)
 
     def __del__(self):
         print('Command %s deleted' % self.command)

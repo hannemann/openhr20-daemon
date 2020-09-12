@@ -5,11 +5,14 @@ from Commands.Commands import commands
 from Commands.CommandTemperature import CommandTemperature
 from Commands.CommandMode import CommandMode
 from Commands.CommandStatus import CommandStatus
+from Commands.CommandGetSetting import CommandGetSetting
 import pathlib
 from Config import config
 from Devices import get_devices_dict
+from Devices import devices, get_device_settings
 import threading
 import json
+from Eeprom import get_eeprom_layout
 
 debug = config.getboolean('openhr20', 'debug')
 httpd_path = '/' + str(pathlib.Path(__file__).parent.absolute()).strip('/') + '/httpd/'
@@ -74,6 +77,16 @@ class Httpd(threading.Thread):
         addr = int(request.json.get('addr'))
         if addr in get_devices_dict():
             commands.add(addr, CommandStatus())
+        print('HTTP: %d update_stats' % addr)
+
+    def request_settings(self):
+        addr = int(request.json.get('addr'))
+        settings = get_device_settings(addr)
+        if '255' in settings:
+            layout = get_eeprom_layout(int('0x' + settings['255'], 16))
+            for field in layout:
+                commands.add(addr, CommandGetSetting(field['idx']))
+        print('HTTP: %d request_settings' % addr)
 
     def get_stats(self):
         response.content_type = 'application/json'
@@ -90,3 +103,4 @@ route('/temp', method='POST')(httpd.set_temp)
 route('/mode', method='POST')(httpd.set_mode)
 route('/stats', method='GET')(httpd.get_stats)
 route('/update', method='POST')(httpd.update_stats)
+route('/request_settings', method='POST')(httpd.request_settings)

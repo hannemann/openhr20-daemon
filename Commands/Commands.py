@@ -1,7 +1,7 @@
 import sys
 
 from SerialIO import serialIO
-from Devices import devices, set_synced
+from Devices import devices
 
 
 def weights(cmnd):
@@ -30,13 +30,12 @@ class Commands:
 
         buffered_command = next((x for x in self.buffer[addr] if x.command == command.command), None)
         if buffered_command is not None:
-            print('Command %s already buffered' % buffered_command.command)
+            print('Command %s already buffered. Discarding new command...' % buffered_command.command)
             sys.stdout.flush()
-            buffered_command.sent += 1
         else:
             self.buffer[addr].append(command)
 
-        set_synced(addr, False)
+        devices.set_stat(addr, 'synced', False)
 
     def send(self, addr):
         weight = 0
@@ -58,7 +57,7 @@ class Commands:
                 if i > 25:
                     break
             serialIO.write('\n'.join(q), '')
-            print(' %s' % '(' + devices['names'][str(addr)] + ')' if str(addr) in devices['names'] else '')
+            print(' %s' % '(' + devices.get_name(addr) + ')' if devices.get_name(addr) is not None else '')
 
     def remove_from_buffer(self, addr):
         if self.has_command(addr):
@@ -72,7 +71,7 @@ class Commands:
 
     def has_command(self, addr):
         result = addr in self.buffer and len(self.buffer[addr]) > 0
-        set_synced(addr, not result)
+        devices.set_stat(addr, 'synced', not result)
         return result
 
     def test(self, command):

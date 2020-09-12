@@ -8,8 +8,7 @@ from Commands.CommandStatus import CommandStatus
 from Commands.CommandGetSetting import CommandGetSetting
 import pathlib
 from Config import config
-from Devices import get_devices_dict
-from Devices import devices, get_device_settings
+from Devices import devices
 import threading
 import json
 from Eeprom import get_eeprom_layout
@@ -57,31 +56,31 @@ class Httpd(threading.Thread):
         return static_file(filepath, root=httpd_path + 'assets/dist')
 
     def index(self):
-        return template('index', title='OpenHR20', devices=get_devices_dict())
+        return template('index', title='OpenHR20', devices=devices.get_devices_dict())
 
     def set_temp(self):
         addr = int(request.json.get('addr'))
         temp = float(request.json.get('temp'))
-        if addr in get_devices_dict() and CommandTemperature.valid(temp):
+        if addr in devices.get_devices_dict() and CommandTemperature.valid(temp):
             commands.add(addr, CommandTemperature(temp))
         print('HTTP: %d temp %f' % (addr, temp))
 
     def set_mode(self):
         addr = int(request.json.get('addr'))
         mode = request.json.get('mode')
-        if addr in get_devices_dict() and CommandMode.valid(mode):
+        if addr in devices.get_devices_dict() and CommandMode.valid(mode):
             commands.add(addr, CommandMode(mode))
         print('HTTP: %d mode %s' % (addr, mode))
 
     def update_stats(self):
         addr = int(request.json.get('addr'))
-        if addr in get_devices_dict():
+        if addr in devices.get_devices_dict():
             commands.add(addr, CommandStatus())
         print('HTTP: %d update_stats' % addr)
 
     def request_settings(self):
         addr = int(request.json.get('addr'))
-        settings = get_device_settings(addr)
+        settings = devices.get_device_settings(addr)
         if '255' in settings:
             layout = get_eeprom_layout(int('0x' + settings['255'], 16))
             for field in layout:
@@ -90,7 +89,7 @@ class Httpd(threading.Thread):
 
     def get_stats(self):
         response.content_type = 'application/json'
-        return json.dumps(get_devices_dict())
+        return json.dumps(devices.get_devices_dict())
 
     def shutdown(self):
         self.server.stop()

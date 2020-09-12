@@ -2,56 +2,70 @@ import configparser
 import os
 import json
 
-file = '/var/cache/openhr20/devices.conf'
-devices = configparser.ConfigParser()
+
+class Devices:
+
+    def __init__(self):
+        self.file = '/var/cache/openhr20/devices.conf'
+        self.buffer = configparser.ConfigParser()
+
+        if not os.path.exists(self.file):
+            self.buffer['names'] = {
+                '10': 'Livingroom',
+                '11': 'Bathroom'
+            }
+            self.buffer['stats'] = {}
+            self.buffer['timer'] = {}
+            self.buffer['settings'] = {}
+
+            self.flush()
+        else:
+            self.read()
+
+    def flush(self):
+        fd = open(self.file, 'w')
+        self.buffer.write(fd)
+        fd.close()
+
+    def read(self):
+        self.buffer.read(self.file)
+
+    def get_name(self, addr):
+        return self.buffer.get('names', str(addr), fallback=None)
+
+    def get_device_settings(self, addr):
+        return json.loads(self.buffer.get('settings', str(addr), fallback='{}'))
+
+    def set_device_settings(self, addr, settings):
+        self.buffer.set('settings', str(addr), json.dumps(settings))
+
+    def get_device_stats(self, addr):
+        return json.loads(self.buffer.get('stats', str(addr), fallback='{}'))
+
+    def set_device_stats(self, addr, settings):
+        self.buffer.set('stats', str(addr), json.dumps(settings))
+
+    def get_stat(self, addr, stat):
+        if str(addr) in self.buffer['stats'] and stat in self.buffer['stats'][str(addr)]:
+            return self.get_device_stats(addr)[stat]
+        return None
+
+    def set_stat(self, addr, stat, value):
+        if str(addr) in self.buffer['stats']:
+            stats = self.get_device_stats(addr)
+            stats[stat] = value
+            self.set_device_stats(addr, stats)
+
+    def get_devices_dict(self):
+        devs = {}
+        for addr in self.buffer['names']:
+            devs[int(addr)] = {
+                'name': self.buffer.get('names', addr),
+                'stats': json.loads(self.buffer.get('stats', addr, fallback='{}')),
+                'timer': json.loads(self.buffer.get('timer', addr, fallback='{}')),
+                'settings': self.get_device_settings(addr),
+            }
+        return devs
 
 
-def write_file():
-    fd = open(file, 'w')
-    devices.write(fd)
-    fd.close()
-
-
-def read_file():
-    devices.read(file)
-
-
-def get_device_settings(addr):
-    return json.loads(devices.get('settings', str(addr), fallback='{}'))
-
-
-def set_device_settings(addr, settings):
-    devices.set('settings', str(addr), json.dumps(settings))
-
-
-def get_devices_dict():
-    devs = {}
-    for addr in devices['names']:
-        devs[int(addr)] = {
-            'name': devices.get('names', addr),
-            'stats': json.loads(devices.get('stats', addr, fallback='{}')),
-            'timer': json.loads(devices.get('timer', addr, fallback='{}')),
-            'settings': get_device_settings(addr),
-        }
-    return devs
-
-
-def set_synced(addr, synced):
-    if str(addr) in devices['stats']:
-        stats = json.loads(devices.get('stats', str(addr)))
-        stats['synced'] = synced
-        devices.set('stats', str(addr), json.dumps(stats))
-
-
-if not os.path.exists(file):
-    devices['names'] = {
-        '10': 'Livingroom',
-        '11': 'Bathroom'
-    }
-    devices['stats'] = {}
-    devices['timer'] = {}
-    devices['settings'] = {}
-
-    write_file()
-else:
-    devices.read(file)
+devices = Devices()

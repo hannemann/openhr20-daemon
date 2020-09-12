@@ -5,8 +5,7 @@ from RTC import write as write_rtc
 import threading
 from Commands.Commands import commands
 from Stats import Stats
-from Devices import devices, write_file as write_devices, get_device_settings, set_device_settings
-import json
+from Devices import devices
 
 
 class OpenHR20 (threading.Thread):
@@ -25,15 +24,15 @@ class OpenHR20 (threading.Thread):
         sys.stdout.flush()
 
     def update_device_stats(self, stats):
-        devices.set('stats', '%s' % self.addr, json.dumps(stats))
-        write_devices()
+        devices.set_device_stats(self.addr, stats)
+        devices.flush()
 
     def update_device_setting(self, idx, value):
-        settings = get_device_settings(self.addr)
+        settings = devices.get_device_settings(self.addr)
         idx = int('0x' + idx, 16)
         settings[idx] = value
-        set_device_settings(self.addr, settings)
-        write_devices()
+        devices.set_device_settings(self.addr, settings)
+        devices.flush()
 
     def run(self):
         self.alive = True
@@ -56,7 +55,7 @@ class OpenHR20 (threading.Thread):
                 self.data = line[4:]
                 print(
                     ' %s' %
-                    '(' + devices['names'][str(self.addr)] + ')' if str(self.addr) in devices['names'] else '',
+                    '(' + devices.get_name(self.addr) + ')' if devices.get_name(self.addr) else '',
                     end=''
                 )
             elif line[0] == '*':
@@ -81,9 +80,9 @@ class OpenHR20 (threading.Thread):
             elif line == 'N0?' or line == 'N1?':
                 serialIO.write(self.sync_package(line))
             else:
-                if len(self.data) > 0 and self.addr > 0 and str(self.addr) in devices['names']:
+                if len(self.data) > 0 and self.addr > 0 and devices.get_name(self.addr) is not None:
                     if self.data[0] == '?':
-                        if '255' not in get_device_settings(self.addr):
+                        if '255' not in devices.get_device_settings(self.addr):
                             commands.add(self.addr, CommandGetSetting(255))
                         commands.send(self.addr)
                     elif line[0] != '*' and (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':

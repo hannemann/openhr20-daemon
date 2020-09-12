@@ -1,4 +1,3 @@
-import json
 import sys
 from Eeprom import get_eeprom_layout
 from Devices import devices
@@ -16,7 +15,7 @@ class CommandGetSetting:
 
     @staticmethod
     def valid(addr, idx):
-        settings = json.loads(devices.get('settings', str(addr), fallback={}))
+        settings = devices.get_device_settings(addr)
         if '255' not in settings:
             return False
         fields = get_eeprom_layout(int('0x' + settings['255'], 16))

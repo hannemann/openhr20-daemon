@@ -1,3 +1,4 @@
+import json
 import sys
 import paho.mqtt.client as mqttc
 from Commands.Commands import commands
@@ -9,8 +10,7 @@ from Commands.CommandReboot import CommandReboot
 from Config import config
 
 
-class MQTT (threading.Thread):
-
+class MQTT(threading.Thread):
     daemon = True
     count = 0
     temp = 'temp'
@@ -26,7 +26,7 @@ class MQTT (threading.Thread):
     def on_connect(self, client, userdata, flags, rc):
         print("Connected to MQTT Broker with result code " + str(rc))
         sys.stdout.flush()
-        #self.client.subscribe("$SYS/#")
+        # self.client.subscribe("$SYS/#")
         cmnd_topic = config['mqtt'].get('cmnd_topic').strip('/') + "/#"
         self.client.subscribe(cmnd_topic)
         print('MQTT: Subscribed to topic %s' % cmnd_topic)
@@ -57,6 +57,14 @@ class MQTT (threading.Thread):
                 retain=config['mqtt'].getboolean('retain', False)
                 ):
         self.client.publish(topic, payload, qos, retain)
+
+    def publish_json(self,
+                     topic,
+                     payload,
+                     qos=int(config['mqtt'].get('qos', 0)),
+                     retain=config['mqtt'].getboolean('retain', False)
+                     ):
+        self.publish(topic, json.dumps(payload), qos, retain)
 
     def run(self):
         self.client.connect(config['mqtt'].get('host'), int(config['mqtt'].get('port')), 60)

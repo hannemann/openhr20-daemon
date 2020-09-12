@@ -1,5 +1,7 @@
 import sys
 from Commands.CommandGetSetting import CommandGetSetting
+from Config import config
+from MQTT import mqtt
 from SerialIO import serialIO
 from RTC import write as write_rtc
 import threading
@@ -25,14 +27,12 @@ class OpenHR20 (threading.Thread):
 
     def update_device_stats(self, stats):
         devices.set_device_stats(self.addr, stats)
-        devices.flush()
+        devices.set_availability(self.addr)
+        mqtt.publish_json(config['mqtt'].get('stats_topic').strip('/') + '/%d' % self.addr, stats)
 
     def update_device_setting(self, idx, value):
-        settings = devices.get_device_settings(self.addr)
-        idx = int('0x' + idx, 16)
-        settings[idx] = value
-        devices.set_device_settings(self.addr, settings)
-        devices.flush()
+        devices.set_setting(self.addr, int('0x' + idx, 16), value)
+        devices.set_availability(self.addr)
 
     def run(self):
         self.alive = True
@@ -58,13 +58,17 @@ class OpenHR20 (threading.Thread):
                     '(' + devices.get_name(self.addr) + ')' if devices.get_name(self.addr) else '',
                     end=''
                 )
+                if devices.get_name(self.addr) is not None:
+                    devices.set_availability(self.addr)
+                if devices.get_stat(self.addr, 'available') == devices.AVAILABLE_OFFLINE:
+                    commands.discard_all(self.addr)
             elif line[0] == '*':
                 ''' command success '''
                 print('')
                 commands.remove_from_buffer(self.addr)
                 self.data = line[1:]
                 if not commands.has_command(self.addr) and self.data[0] != ' ':
-                    self.update_device_stats(Stats.create_message(self.addr, self.data))
+                    self.update_device_stats(Stats.create(self.addr, self.data))
             elif line[0] == '-':
                 self.data = line[1:]
             else:
@@ -79,14 +83,16 @@ class OpenHR20 (threading.Thread):
                 '''noop'''
             elif line == 'N0?' or line == 'N1?':
                 serialIO.write(self.sync_package(line))
+                for addr, data in devices.get_devices_dict().items():
+                    mqtt.publish_json(config['mqtt'].get('stats_topic').strip('/') + '/%d' % addr, data['stats'])
             else:
                 if len(self.data) > 0 and self.addr > 0 and devices.get_name(self.addr) is not None:
-                    if self.data[0] == '?':
+                    if self.data[0] == '?' and devices.get_stat(self.addr, 'available') != devices.AVAILABLE_OFFLINE:
                         if '255' not in devices.get_device_settings(self.addr):
                             commands.add(self.addr, CommandGetSetting(255))
                         commands.send(self.addr)
                     elif line[0] != '*' and (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
-                        self.update_device_stats(Stats.create_message(self.addr, self.data))
+                        self.update_device_stats(Stats.create(self.addr, self.data))
                     elif len(self.data) >= 5 and self.data[1] == '[' and self.data[4] == ']' and self.data[5] == '=':
                         if self.data[0] == 'G':
                             self.update_device_setting(self.data[2:4], self.data[6:])

@@ -61,13 +61,17 @@ class ThermostatCard {
 
         if (!this.card.dataset.preventupdate) {
             if ('wanted' === attribute && this.card.dataset.synced === 'true') {
-                this.wanted.value = value;
-                this.wanted.dispatchEvent(new Event("input"));
+                if (this.wanted) {
+                    this.wanted.value = value;
+                    this.wanted.dispatchEvent(new Event("input"));
+                }
             }
         }
 
         if ('synced' === attribute) {
-            this.wanted.disabled = value === 'false'
+            if (this.wanted) {
+                this.wanted.disabled = value === 'false'
+            }
         }
 
         if ('time' === attribute) {

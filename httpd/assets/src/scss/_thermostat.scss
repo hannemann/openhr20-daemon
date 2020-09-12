@@ -19,6 +19,18 @@
     cursor: pointer;
   }
 
+  &[data-available="warn"] {
+    h3 > svg:first-of-type.iconify path {
+      fill: var(--color-warn);
+    }
+  }
+
+  &[data-available="offline"] {
+    h3 > svg:first-of-type.iconify path {
+      fill: var(--color-offline);
+    }
+  }
+
   h3 {
     display: flex;
     align-items: center;

@@ -1,3 +1,4 @@
+from Devices import devices
 from MQTT import mqtt
 import time
 from Commands.Commands import commands
@@ -8,7 +9,7 @@ from Config import config
 class Stats:
 
     @staticmethod
-    def create_message(addr, response):
+    def create(addr, response):
         stats = {
             'addr': addr,
         }
@@ -46,10 +47,5 @@ class Stats:
         timestamp += t
         stats['time'] = timestamp
         stats['synced'] = not commands.has_command(addr)
-
-        mqtt.publish(
-            config['mqtt'].get('stats_topic').strip('/') + '/%d' % addr,
-            json.dumps(stats)
-        )
 
         return stats

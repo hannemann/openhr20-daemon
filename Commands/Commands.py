@@ -69,6 +69,10 @@ class Commands:
             else:
                 del self.buffer[addr]
 
+    def discard_all(self, addr):
+        if self.has_command(addr):
+            del self.buffer[addr]
+
     def has_command(self, addr):
         result = addr in self.buffer and len(self.buffer[addr]) > 0
         devices.set_stat(addr, 'synced', not result)

@@ -1,3 +1,5 @@
+import time
+
 from bottle import ServerAdapter, route, template, static_file, request, response
 import bottle
 import sys
@@ -74,9 +76,19 @@ class Httpd(threading.Thread):
 
     def update_stats(self):
         addr = int(request.json.get('addr'))
+        message = None
         if addr in devices.get_devices_dict():
+            if devices.get_stat(addr, 'available') == devices.AVAILABLE_OFFLINE:
+                devices.set_stat(addr, 'available', devices.AVAILABLE_ONLINE)
+                devices.set_stat(addr, 'time', int(time.time()))
+                message = 'Trying to reach device %s which is currently offline' % devices.get_name(addr)
             commands.add(addr, CommandStatus())
         print('HTTP: %d update_stats' % addr)
+        if message is not None:
+            response.content_type = 'application/json'
+            return json.dumps({
+                'message': message
+            })
 
     def request_settings(self):
         addr = int(request.json.get('addr'))

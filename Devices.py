@@ -10,6 +10,17 @@ class Devices:
     AVAILABLE_ONLINE = 'online'
     AVAILABLE_OFFLINE = 'offline'
 
+    initialTimers = [
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', ''],
+        ['', '', '', '', '', '', '', '']
+    ]
+
     def __init__(self):
         self.file = '/var/cache/openhr20/devices.conf'
         self.buffer = configparser.ConfigParser()
@@ -21,7 +32,7 @@ class Devices:
                 '11': 'Bathroom'
             }
             self.buffer['stats'] = {}
-            self.buffer['timer'] = {}
+            self.buffer['timers'] = {}
             self.buffer['settings'] = {}
         else:
             self.read()
@@ -42,7 +53,7 @@ class Devices:
         for addr in self.buffer['names']:
             self.set_device_stats(addr, self.get_device_stats(addr))
             self.set_device_settings(addr, self.get_device_settings(addr))
-            self.set_device_timer(addr, self.get_device_timer(addr))
+            self.set_device_timers(addr, self.get_device_timers(addr))
 
     def get_name(self, addr):
         return self.buffer.get('names', str(addr), fallback=None)
@@ -60,11 +71,11 @@ class Devices:
         self.buffer.set('stats', str(addr), json.dumps(settings))
         self.last_sync[str(addr)] = time.time()
 
-    def get_device_timer(self, addr):
-        return json.loads(self.buffer.get('timer', str(addr), fallback='{}'))
+    def get_device_timers(self, addr):
+        return json.loads(self.buffer.get('timers', str(addr), fallback=json.dumps(self.initialTimers)))
 
-    def set_device_timer(self, addr, settings):
-        self.buffer.set('timer', str(addr), json.dumps(settings))
+    def set_device_timers(self, addr, settings):
+        self.buffer.set('timers', str(addr), json.dumps(settings))
         self.last_sync[str(addr)] = time.time()
 
     def get_stat(self, addr, stat):
@@ -84,11 +95,16 @@ class Devices:
         return None
 
     def set_setting(self, addr, setting, value):
-        print('%d: Setting %s -> %s' % (addr, setting, value))
         if str(addr) in self.buffer['settings']:
             settings = self.get_device_settings(addr)
             settings[setting] = value
             self.set_device_settings(addr, settings)
+
+    def set_timer(self, addr, day, slot, minute):
+        if str(addr) in self.buffer['timers']:
+            timers = self.get_device_timers(addr)
+            timers[day][slot] = minute
+            self.set_device_timers(addr, timers)
 
     def reset_device_settings(self, addr):
         self.set_device_settings(addr, {'ff': self.get_setting(addr, 'ff')})
@@ -109,7 +125,7 @@ class Devices:
             devs[int(addr)] = {
                 'name': self.get_name(addr),
                 'stats': self.get_device_stats(addr),
-                'timer': self.get_device_timer(addr),
+                'timers': self.get_device_timers(addr),
                 'settings': self.get_device_settings(addr),
             }
         return devs

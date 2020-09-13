@@ -19,7 +19,7 @@
   --border-radius: 4px;
   --buttons-border-radius: 2px;
   --opacity-enabled: 1;
-  --opacity-disabled: initial;
+  --opacity-disabled: .5;
 }
 
 body {
@@ -31,9 +31,11 @@ body {
 }
 
 @import 'scss/buttons';
+@import 'scss/cards';
 @import 'scss/animation';
 @import 'scss/header';
 @import 'scss/nav';
 @import 'scss/main';
 @import 'scss/thermostat';
 @import 'scss/settings';
+@import 'scss/timers';

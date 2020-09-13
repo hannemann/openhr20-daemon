@@ -19,7 +19,7 @@
   --border-radius: 4px;
   --buttons-border-radius: 2px;
   --opacity-enabled: 1;
-  --opacity-disabled: initial;
+  --opacity-disabled: .5;
 }
 
 body {
@@ -37,6 +37,13 @@ button {
   background: var(--card-bg-color);
   color: var(--light-fg-color);
   border-radius: var(--buttons-border-radius);
+}
+
+div[class*="--card"] {
+  background: var(--lighter-bg-color);
+  margin: var(--grid-base);
+  padding: var(--grid-base);
+  border-radius: var(--border-radius);
 }
 
 @-webkit-keyframes spin {
@@ -246,12 +253,12 @@ main {
 .thermostat-card[data-mode=auto] .value-display span.mode--,
 .thermostat-card[data-mode="-"] .value-display span.mode-manu,
 .thermostat-card[data-mode="-"] .value-display span.mode-- {
-  opacity: var(--opacity-enabled);
+  opacity: var(--opacity-disabled);
 }
 
 .thermostat-card[data-mode=auto] .value-display span.mode-auto,
 .thermostat-card[data-mode="-"] .value-display span.mode-auto {
-  opacity: var(--opacity-disabled);
+  opacity: var(--opacity-enabled);
 }
 
 .thermostat-card[data-mode=manu] .value-display span.mode-auto,
@@ -304,50 +311,82 @@ main {
   margin-right: calc(-1 * var(--grid-base));
 }
 
-.thermostat-settings div.setting {
-  background: var(--lighter-bg-color);
-  margin: var(--grid-base);
-  padding: var(--grid-base);
-  border-radius: var(--border-radius);
-}
-
-.thermostat-settings div.setting .field {
+.thermostat-settings div.setting--card .field {
   display: flex;
   justify-content: space-between;
 }
 
-.thermostat-settings div.setting .field div {
+.thermostat-settings div.setting--card .field div {
   flex: 0 1 100%;
   margin-right: var(--grid-base);
 }
 
-.thermostat-settings div.setting .field div input {
+.thermostat-settings div.setting--card .field div input {
   width: 100%;
 }
 
-.thermostat-settings div.setting .field span {
+.thermostat-settings div.setting--card .field span {
   flex: 0 0 9.5ch;
   text-align: right;
   font-family: monospace;
 }
 
-.thermostat-settings div.setting .field span:before {
+.thermostat-settings div.setting--card .field span:before {
   content: attr(data-int);
   margin-right: 0.5ch;
   width: 3ch;
 }
 
-.thermostat-settings div.setting .field span:after {
+.thermostat-settings div.setting--card .field span:after {
   content: attr(data-hex);
   display: inline-block;
   width: 6ch;
 }
 
-.thermostat-settings div.setting .description {
+.thermostat-settings div.setting--card .description {
   font-size: 0.8em;
 }
 
-.thermostat-settings div.setting[data-item=actions] {
+.thermostat-settings div.setting--card[data-item=actions] {
   text-align: right;
+}
+
+.thermostat-timers {
+  width: calc(100vw - (2 * var(--grid-base)));
+  margin-right: calc(-1 * var(--grid-base));
+}
+
+.thermostat-timers .presets--card div,
+.thermostat-timers .timer-mode--card label {
+  display: flex;
+  justify-content: space-between;
+}
+
+.thermostat-timers .timer-slot {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--grid-base) 0;
+  border-bottom: 1px solid var(--light-bg-color);
+}
+
+.thermostat-timers .timer-slot--preset {
+  display: flex;
+  align-items: center;
+}
+
+.thermostat-timers .timer-slot--preset output {
+  margin-left: var(--grid-base);
+  font-family: monospace;
+  text-align: right;
+  width: 5ch;
+}
+
+.thermostat-timers .timer-slot:last-of-type {
+  border: unset;
+}
+
+.thermostat-timers[data-mode="0"] [data-type=week_timers],
+.thermostat-timers[data-mode="1"] [data-type=daily_timers] {
+  display: none;
 }
 

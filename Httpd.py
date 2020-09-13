@@ -10,6 +10,8 @@ from Commands.CommandStatus import CommandStatus
 from Commands.CommandGetSetting import CommandGetSetting
 from Commands.CommandSetSetting import CommandSetSetting
 from Commands.CommandReboot import CommandReboot
+from Commands.CommandGetTimer import CommandGetTimer
+from Commands.CommandSetTimer import CommandSetTimer
 import pathlib
 from Config import config
 from Devices import devices
@@ -92,13 +94,13 @@ class Httpd(threading.Thread):
                 'message': message
             })
 
-    def request_settings(self):
-        addr = int(request.json.get('addr'))
-        layout = devices.get_setting(addr, 'ff')
-        if layout is not None:
-            devices.reset_device_settings(addr)
-            for field in get_eeprom_layout(int('0x' + layout, 16)):
-                commands.add(addr, CommandGetSetting(field['idx']))
+    def request_settings(self, addr):
+        if devices.get_name(addr) is not None:
+            layout = devices.get_setting(addr, 'ff')
+            if layout is not None:
+                devices.reset_device_settings(addr)
+                for field in get_eeprom_layout(int('0x' + layout, 16)):
+                    commands.add(addr, CommandGetSetting(field['idx']))
         print('HTTP: %d request_settings' % addr)
 
     def settings(self, addr):
@@ -118,11 +120,40 @@ class Httpd(threading.Thread):
                     commands.add(addr, CommandSetSetting(idx, new))
         print('HTTP: %d set_settings' % addr)
 
+    def request_timers(self, addr):
+        if devices.get_name(addr) is not None:
+            commands.add(addr, CommandGetSetting('22'))
+            for day in range(8):
+                for slot in range(8):
+                    commands.add(addr, CommandGetTimer(day, slot))
+
+        print('HTTP: %d request_timers' % addr)
+
+    def timers(self, addr):
+        if devices.get_name(addr) is not None:
+            timers = devices.get_device_timers(addr)
+            mode = 1 if int(devices.get_setting(addr, '01'), 16) > 0 else 0
+            presets = [
+                {'id': 0, 'name': 'Frost', 'temp': devices.get_setting(addr, '01')},
+                {'id': 1, 'name': 'Eco', 'temp': devices.get_setting(addr, '02')},
+                {'id': 2, 'name': 'Comfort', 'temp': devices.get_setting(addr, '03')},
+                {'id': 3, 'name': 'Super Comfort', 'temp': devices.get_setting(addr, '04')},
+            ]
+            return template('timers', title='Timers', mode=mode, timers=timers, presets=presets)
+        print('HTTP: %d timers' % addr)
+
+    def set_timers(self, addr):
+        if devices.get_name(addr) is not None:
+            timers = devices.get_device_timers(addr)
+            for day, value in request.json.items():
+                if timers[int(day[0])][int(day[1])] != value and CommandSetTimer.valid(day, value):
+                    commands.add(addr, CommandSetTimer(day, value))
+        print('HTTP: %d set_timers' % addr)
+
     def reboot(self, addr):
         if devices.get_name(addr) is not None:
             commands.add(addr, CommandReboot())
         print('HTTP: %d reboot' % addr)
-
 
     def get_stats(self):
         response.content_type = 'application/json'
@@ -139,7 +170,10 @@ route('/temp', method='POST')(httpd.set_temp)
 route('/mode', method='POST')(httpd.set_mode)
 route('/stats', method='GET')(httpd.get_stats)
 route('/update', method='POST')(httpd.update_stats)
-route('/request_settings', method='POST')(httpd.request_settings)
+route('/request_settings/<addr:int>', method='POST')(httpd.request_settings)
 route('/settings/<addr:int>', method='GET')(httpd.settings)
 route('/settings/<addr:int>', method='POST')(httpd.set_settings)
+route('/request_timers/<addr:int>', method='POST')(httpd.request_timers)
+route('/timers/<addr:int>', method='GET')(httpd.timers)
+route('/set_timers/<addr:int>', method='POST')(httpd.set_timers)
 route('/reboot/<addr:int>', method='POST')(httpd.reboot)

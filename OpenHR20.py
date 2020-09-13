@@ -61,7 +61,7 @@ class OpenHR20 (threading.Thread):
             elif line[0] == '*':
                 ''' command success '''
                 print('')
-                if line[2] != '!':
+                if line[2] != '!' and line[1] != ' ':
                     commands.remove_from_buffer(self.addr)
                 self.data = line[1:]
                 if not commands.has_command(self.addr) and self.data[0] in ['A', 'M']:
@@ -94,7 +94,9 @@ class OpenHR20 (threading.Thread):
                     elif len(self.data) >= 5 and self.data[1] == '[' and self.data[4] == ']' and self.data[5] == '=':
                         if self.data[0] in ['G', 'S']:
                             devices.set_setting(self.addr, self.data[2:4], self.data[6:])
-                            devices.set_availability(self.addr)
+                        if self.data[0] in ['R', 'W']:
+                            devices.set_timer(self.addr, int(self.data[2:3]), int(self.data[3:4]), self.data[6:])
+                        devices.set_availability(self.addr)
 
     def sync_package(self, line):
         req = [0, 0, 0, 0]

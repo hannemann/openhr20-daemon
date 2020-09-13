@@ -1,0 +1,6 @@
+div[class*="--card"] {
+  background: var(--lighter-bg-color);
+  margin: var(--grid-base);
+  padding: var(--grid-base);
+  border-radius: var(--border-radius);
+}

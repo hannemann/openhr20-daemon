@@ -2,7 +2,7 @@
 % rebase('layout/default', title=title)
 <div class="thermostat-settings">
     % for setting in layout:
-    <div class="setting">
+    <div class="setting--card">
         <label>
             <span>({{ '0x%s' % setting['idx'] }})</span>
             {{ setting['name'] }}

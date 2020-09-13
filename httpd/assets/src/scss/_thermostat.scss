@@ -113,10 +113,10 @@
   &[data-mode="-"] {
     .value-display span.mode-manu,
     .value-display span.mode-- {
-      opacity: var(--opacity-enabled);
+      opacity: var(--opacity-disabled);
     }
     .value-display span.mode-auto {
-      opacity: var(--opacity-disabled);
+      opacity: var(--opacity-enabled);
     }
   }
 

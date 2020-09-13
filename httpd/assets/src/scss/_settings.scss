@@ -1,11 +1,7 @@
 .thermostat-settings {
   width: calc(100vw - (2 * var(--grid-base)));
   margin-right: calc(-1 * var(--grid-base));
-  div.setting {
-    background: var(--lighter-bg-color);
-    margin: var(--grid-base);
-    padding: var(--grid-base);
-    border-radius: var(--border-radius);
+  div.setting--card {
 
     .field {
       display: flex;

@@ -91,7 +91,7 @@ class Devices:
             self.set_device_settings(addr, settings)
 
     def reset_device_settings(self, addr):
-        self.set_device_settings(addr, {'255': self.get_setting(addr, '255')})
+        self.set_device_settings(addr, {'ff': self.get_setting(addr, 'ff')})
 
     def set_availability(self, addr):
         time_diff = int(time.time()) - self.get_stat(addr, 'time')

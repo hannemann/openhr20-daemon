@@ -92,7 +92,7 @@ class Httpd(threading.Thread):
 
     def request_settings(self):
         addr = int(request.json.get('addr'))
-        layout = devices.get_setting(addr, '255')
+        layout = devices.get_setting(addr, 'ff')
         if layout is not None:
             devices.reset_device_settings(addr)
             for field in get_eeprom_layout(int('0x' + layout, 16)):
@@ -102,8 +102,8 @@ class Httpd(threading.Thread):
     def settings(self, addr):
         if devices.get_name(addr) is not None:
             settings = devices.get_device_settings(addr)
-            if '255' in settings:
-                layout = get_eeprom_layout(int('0x' + settings['255'], 16))
+            if 'ff' in settings:
+                layout = get_eeprom_layout(int('0x' + settings['ff'], 16))
                 return template('settings', title='Settings', layout=layout, device_settings=settings)
 
     def get_stats(self):

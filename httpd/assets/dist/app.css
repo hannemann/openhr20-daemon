@@ -198,12 +198,18 @@ main {
 }
 
 .thermostat-card .thermostat-card--item[data-item=actions] {
+  display: none;
   justify-content: flex-start;
 }
 
 .thermostat-card .thermostat-card--item[data-item=actions] a {
   margin-right: var(--grid-base);
   color: var(--light-fg-color);
+  text-decoration: none;
+}
+
+.thermostat-card[data-available=online][data-synced=true] [data-item=actions] {
+  display: initial;
 }
 
 .thermostat-card[data-synced=false] .value-display span.synced {
@@ -279,8 +285,51 @@ main {
   fill: var(--dark-color);
 }
 
-.thermostat-settings div.field {
+.thermostat-settings {
+  width: calc(100vw - (2 * var(--grid-base)));
+  margin-right: calc(-1 * var(--grid-base));
+}
+
+.thermostat-settings div.setting {
+  background: var(--lighter-bg-color);
+  margin: var(--grid-base);
+  padding: var(--grid-base);
+  border-radius: 4px;
+}
+
+.thermostat-settings div.setting .field {
   display: flex;
   justify-content: space-between;
+}
+
+.thermostat-settings div.setting .field div {
+  flex: 0 1 100%;
+  margin-right: var(--grid-base);
+}
+
+.thermostat-settings div.setting .field div input {
+  width: 100%;
+}
+
+.thermostat-settings div.setting .field span {
+  flex: 0 0 9.5ch;
+  text-align: right;
+  font-family: monospace;
+}
+
+.thermostat-settings div.setting .field span:before {
+  content: attr(data-int);
+  margin-right: 0.5ch;
+  width: 3ch;
+}
+
+.thermostat-settings div.setting .field span:after {
+  content: attr(data-hex);
+  display: inline-block;
+  width: 6ch;
+}
+
+.thermostat-settings div.setting .description {
+  font-size: 0.8em;
 }
 

@@ -73,7 +73,7 @@
         </span>
     </div>
     % end
-    % if 'addr' in device['stats'] and 'available' in device['stats'] and device['stats']['available'] == devices.AVAILABLE_ONLINE:
+    % if 'addr' in device['stats']:
     <div class="thermostat-card--item" data-item="actions">
         <a href="/settings/{{ device['stats']['addr']}}">
             <span class="iconify" data-icon="mdi-cog-outline"></span>

@@ -11,14 +11,14 @@ class CommandGetSetting:
     weight = 4
 
     def __init__(self, idx):
-        self.command = '%s%0.2x' % (self.command, idx)
+        self.command = '%s%s' % (self.command, idx.lower())
 
     @staticmethod
     def valid(addr, idx):
         settings = devices.get_device_settings(addr)
-        if '255' not in settings:
+        if 'ff' not in settings:
             return False
-        fields = get_eeprom_layout(int('0x' + settings['255'], 16))
+        fields = get_eeprom_layout(int('0x%0.2x' % settings['ff'], 16))
         return next((x for x in fields if x['idx'] == idx), False)
 
     def __del__(self):

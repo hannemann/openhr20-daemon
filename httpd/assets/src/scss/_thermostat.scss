@@ -76,13 +76,19 @@
     }
 
     &[data-item="actions"] {
+      display: none;
       justify-content: flex-start;
 
       a {
         margin-right: var(--grid-base);
-        color: var(--light-fg-color)
+        color: var(--light-fg-color);
+        text-decoration: none;
       }
     }
+  }
+
+  &[data-available="online"][data-synced="true"] [data-item="actions"] {
+    display: initial;
   }
 
   &[data-synced="false"] {

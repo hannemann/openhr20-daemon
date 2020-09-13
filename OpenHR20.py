@@ -86,14 +86,14 @@ class OpenHR20 (threading.Thread):
             else:
                 if len(self.data) > 0 and self.addr > 0 and devices.get_name(self.addr) is not None:
                     if self.data[0] == '?' and devices.get_stat(self.addr, 'available') != devices.AVAILABLE_OFFLINE:
-                        if '255' not in devices.get_device_settings(self.addr):
-                            commands.add(self.addr, CommandGetSetting(255))
+                        if 'ff' not in devices.get_device_settings(self.addr):
+                            commands.add(self.addr, CommandGetSetting('ff'))
                         commands.send(self.addr)
                     elif line[0] != '*' and (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
                         self.update_device_stats(Stats.create(self.addr, self.data))
                     elif len(self.data) >= 5 and self.data[1] == '[' and self.data[4] == ']' and self.data[5] == '=':
                         if self.data[0] == 'G':
-                            devices.set_setting(self.addr, int('0x' + self.data[2:4], 16), self.data[6:])
+                            devices.set_setting(self.addr, self.data[2:4], self.data[6:])
                             devices.set_availability(self.addr)
 
     def sync_package(self, line):

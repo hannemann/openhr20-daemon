@@ -4,6 +4,24 @@
   box-sizing: border-box;
 }
 
+:root {
+  --dark-color: hsl(235deg 46% 10%);
+  --dark-bg-color: var(--dark-color);
+  --main-bg-color: hsl(235deg 16% 18%);
+  --lighter-bg-color: hsl(235deg 15% 25%);
+  --light-bg-color: hsl(235deg 9% 52%);
+  --card-bg-color: hsl(235deg 12% 39%);
+  --light-fg-color: hsl(0deg 0% 82%);
+  --color-warn: yellow;
+  --color-offline: red;
+  --grid-base: 8px;
+  --font-size-big: 1.5rem;
+  --border-radius: 4px;
+  --buttons-border-radius: 2px;
+  --opacity-enabled: 1;
+  --opacity-disabled: initial;
+}
+
 body {
   font-family: "Arial", sans-serif;
   padding-top: calc((var(--grid-base) * 4) + var(--font-size-big) + (var(--font-size-big) / 4));
@@ -12,17 +30,13 @@ body {
   line-height: 1.25;
 }
 
-:root {
-  --dark-color: #0e1d26;
-  --dark-bg-color: var(--dark-color);
-  --main-bg-color: #272836;
-  --lighter-bg-color: #37394b;
-  --card-bg-color: #585b6f;
-  --light-fg-color: #d0d0d0;
-  --color-warn: yellow;
-  --color-offline: red;
-  --grid-base: 8px;
-  --font-size-big: 1.5rem;
+button {
+  padding: var(--grid-base);
+  border: 1px solid;
+  border-color: var(--light-bg-color) var(--main-bg-color) var(--main-bg-color) var(--light-bg-color);
+  background: var(--card-bg-color);
+  color: var(--light-fg-color);
+  border-radius: var(--buttons-border-radius);
 }
 
 @-webkit-keyframes spin {
@@ -137,7 +151,7 @@ main {
   background-color: var(--card-bg-color);
   padding: var(--grid-base);
   margin-bottom: var(--grid-base);
-  border-radius: 4px;
+  border-radius: var(--border-radius);
   flex: 1 0 calc(360px - (2 * var(--grid-base)));
   margin-right: var(--grid-base);
   position: relative;
@@ -232,21 +246,21 @@ main {
 .thermostat-card[data-mode=auto] .value-display span.mode--,
 .thermostat-card[data-mode="-"] .value-display span.mode-manu,
 .thermostat-card[data-mode="-"] .value-display span.mode-- {
-  opacity: 0.2;
+  opacity: var(--opacity-enabled);
 }
 
 .thermostat-card[data-mode=auto] .value-display span.mode-auto,
 .thermostat-card[data-mode="-"] .value-display span.mode-auto {
-  opacity: initial;
+  opacity: var(--opacity-disabled);
 }
 
 .thermostat-card[data-mode=manu] .value-display span.mode-auto,
 .thermostat-card[data-mode=manu] .value-display span.mode-- {
-  opacity: 0.2;
+  opacity: var(--opacity-disabled);
 }
 
 .thermostat-card[data-mode=manu] .value-display span.mode-manu {
-  opacity: initial;
+  opacity: var(--opacity-enabled);
 }
 
 .thermostat-card .value-display span.mode-- {
@@ -294,7 +308,7 @@ main {
   background: var(--lighter-bg-color);
   margin: var(--grid-base);
   padding: var(--grid-base);
-  border-radius: 4px;
+  border-radius: var(--border-radius);
 }
 
 .thermostat-settings div.setting .field {
@@ -331,5 +345,9 @@ main {
 
 .thermostat-settings div.setting .description {
   font-size: 0.8em;
+}
+
+.thermostat-settings div.setting[data-item=actions] {
+  text-align: right;
 }
 

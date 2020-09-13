@@ -8,7 +8,7 @@ class CommandGetSetting:
     abbr = 'get_setting'
     sent = 0
     command = 'G'
-    weight = 2
+    weight = 4
 
     def __init__(self, idx):
         self.command = '%s%s' % (self.command, idx.lower())

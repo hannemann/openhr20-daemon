@@ -1,0 +1,8 @@
+button {
+  padding: var(--grid-base);
+  border: 1px solid;
+  border-color: var(--light-bg-color) var(--main-bg-color) var(--main-bg-color) var(--light-bg-color);
+  background: var(--card-bg-color);
+  color: var(--light-fg-color);
+  border-radius: var(--buttons-border-radius);
+}

@@ -8,6 +8,8 @@ from Commands.CommandTemperature import CommandTemperature
 from Commands.CommandMode import CommandMode
 from Commands.CommandStatus import CommandStatus
 from Commands.CommandGetSetting import CommandGetSetting
+from Commands.CommandSetSetting import CommandSetSetting
+from Commands.CommandReboot import CommandReboot
 import pathlib
 from Config import config
 from Devices import devices
@@ -105,6 +107,22 @@ class Httpd(threading.Thread):
             if 'ff' in settings:
                 layout = get_eeprom_layout(int('0x' + settings['ff'], 16))
                 return template('settings', title='Settings', layout=layout, device_settings=settings)
+        print('HTTP: %d settings' % addr)
+
+    def set_settings(self, addr):
+        if devices.get_name(addr) is not None:
+            settings = devices.get_device_settings(addr)
+            for idx, value in settings.items():
+                new = request.json.get(idx)
+                if new != value and CommandSetSetting.valid(settings['ff'], idx, value):
+                    commands.add(addr, CommandSetSetting(idx, new))
+        print('HTTP: %d set_settings' % addr)
+
+    def reboot(self, addr):
+        if devices.get_name(addr) is not None:
+            commands.add(addr, CommandReboot())
+        print('HTTP: %d reboot' % addr)
+
 
     def get_stats(self):
         response.content_type = 'application/json'
@@ -123,3 +141,5 @@ route('/stats', method='GET')(httpd.get_stats)
 route('/update', method='POST')(httpd.update_stats)
 route('/request_settings', method='POST')(httpd.request_settings)
 route('/settings/<addr:int>', method='GET')(httpd.settings)
+route('/settings/<addr:int>', method='POST')(httpd.set_settings)
+route('/reboot/<addr:int>', method='POST')(httpd.reboot)

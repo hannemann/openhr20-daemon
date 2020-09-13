@@ -64,7 +64,7 @@ class OpenHR20 (threading.Thread):
                 if line[2] != '!':
                     commands.remove_from_buffer(self.addr)
                 self.data = line[1:]
-                if not commands.has_command(self.addr) and self.data[0] != ' ':
+                if not commands.has_command(self.addr) and self.data[0] in ['A', 'M']:
                     self.update_device_stats(Stats.create(self.addr, self.data))
             elif line[0] == '-':
                 self.data = line[1:]
@@ -92,7 +92,7 @@ class OpenHR20 (threading.Thread):
                     elif line[0] != '*' and (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
                         self.update_device_stats(Stats.create(self.addr, self.data))
                     elif len(self.data) >= 5 and self.data[1] == '[' and self.data[4] == ']' and self.data[5] == '=':
-                        if self.data[0] == 'G':
+                        if self.data[0] in ['G', 'S']:
                             devices.set_setting(self.addr, self.data[2:4], self.data[6:])
                             devices.set_availability(self.addr)
 

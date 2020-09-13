@@ -9,7 +9,7 @@
   background-color: var(--card-bg-color);
   padding: var(--grid-base);
   margin-bottom: var(--grid-base);
-  border-radius: 4px;
+  border-radius: var(--border-radius);
   flex: 1 0 calc(360px - (2 * var(--grid-base)));
   margin-right: var(--grid-base);
   position: relative;
@@ -113,20 +113,20 @@
   &[data-mode="-"] {
     .value-display span.mode-manu,
     .value-display span.mode-- {
-      opacity: $opacity-disabled;
+      opacity: var(--opacity-enabled);
     }
     .value-display span.mode-auto {
-      opacity: $opacity-enabled;
+      opacity: var(--opacity-disabled);
     }
   }
 
   &[data-mode="manu"] {
     .value-display span.mode-auto,
     .value-display span.mode-- {
-      opacity: $opacity-disabled;
+      opacity: var(--opacity-disabled);
     }
     .value-display span.mode-manu {
-      opacity: $opacity-enabled;
+      opacity: var(--opacity-enabled);
     }
   }
   .value-display span.mode-- {

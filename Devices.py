@@ -23,18 +23,19 @@ class Devices:
             self.buffer['stats'] = {}
             self.buffer['timer'] = {}
             self.buffer['settings'] = {}
-
-            self.flush()
         else:
             self.read()
             for addr in self.buffer['names']:
                 self.set_stat(addr, 'time', int(time.time()))
                 self.set_availability(addr)
 
+        self.flush()
+
     def flush(self):
         fd = open(self.file, 'w')
         self.buffer.write(fd)
         fd.close()
+        print('Flushed devices to %s' % self.file)
 
     def read(self):
         self.buffer.read(self.file)
@@ -51,7 +52,6 @@ class Devices:
 
     def set_device_settings(self, addr, settings):
         self.buffer.set('settings', str(addr), json.dumps(settings))
-        self.flush()
 
     def get_device_stats(self, addr):
         return json.loads(self.buffer.get('stats', str(addr), fallback='{"addr":%s}' % addr))
@@ -59,7 +59,6 @@ class Devices:
     def set_device_stats(self, addr, settings):
         self.buffer.set('stats', str(addr), json.dumps(settings))
         self.last_sync[str(addr)] = time.time()
-        self.flush()
 
     def get_device_timer(self, addr):
         return json.loads(self.buffer.get('timer', str(addr), fallback='{}'))
@@ -67,7 +66,6 @@ class Devices:
     def set_device_timer(self, addr, settings):
         self.buffer.set('timer', str(addr), json.dumps(settings))
         self.last_sync[str(addr)] = time.time()
-        self.flush()
 
     def get_stat(self, addr, stat):
         if str(addr) in self.buffer['stats'] and stat in self.buffer['stats'][str(addr)]:
@@ -80,11 +78,20 @@ class Devices:
             stats[stat] = value
             self.set_device_stats(addr, stats)
 
+    def get_setting(self, addr, setting):
+        if str(addr) in self.buffer['settings'] and setting in self.buffer['settings'][str(addr)]:
+            return self.get_device_settings(addr)[setting]
+        return None
+
     def set_setting(self, addr, setting, value):
+        print('%d: Setting %s -> %s' % (addr, setting, value))
         if str(addr) in self.buffer['settings']:
             settings = self.get_device_settings(addr)
             settings[setting] = value
             self.set_device_settings(addr, settings)
+
+    def reset_device_settings(self, addr):
+        self.set_device_settings(addr, {'255': self.get_setting(addr, '255')})
 
     def set_availability(self, addr):
         time_diff = int(time.time()) - self.get_stat(addr, 'time')
@@ -95,7 +102,6 @@ class Devices:
             self.set_stat(addr, 'available',  self.AVAILABLE_WARN)
         else:
             self.set_stat(addr, 'available',  self.AVAILABLE_ONLINE)
-        self.flush()
 
     def get_devices_dict(self):
         devs = {}

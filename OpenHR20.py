@@ -30,10 +30,6 @@ class OpenHR20 (threading.Thread):
         devices.set_availability(self.addr)
         mqtt.publish_json(config['mqtt'].get('stats_topic').strip('/') + '/%d' % self.addr, stats)
 
-    def update_device_setting(self, idx, value):
-        devices.set_setting(self.addr, int('0x' + idx, 16), value)
-        devices.set_availability(self.addr)
-
     def run(self):
         self.alive = True
         write_rtc()
@@ -65,7 +61,8 @@ class OpenHR20 (threading.Thread):
             elif line[0] == '*':
                 ''' command success '''
                 print('')
-                commands.remove_from_buffer(self.addr)
+                if line[2] != '!':
+                    commands.remove_from_buffer(self.addr)
                 self.data = line[1:]
                 if not commands.has_command(self.addr) and self.data[0] != ' ':
                     self.update_device_stats(Stats.create(self.addr, self.data))
@@ -82,6 +79,7 @@ class OpenHR20 (threading.Thread):
             elif line == 'OK' or (line[0] == 'd' and len(line) > 2 and line[2] == ' '):
                 '''noop'''
             elif line == 'N0?' or line == 'N1?':
+                devices.flush()
                 serialIO.write(self.sync_package(line))
                 for addr, data in devices.get_devices_dict().items():
                     mqtt.publish_json(config['mqtt'].get('stats_topic').strip('/') + '/%d' % addr, data['stats'])
@@ -95,7 +93,8 @@ class OpenHR20 (threading.Thread):
                         self.update_device_stats(Stats.create(self.addr, self.data))
                     elif len(self.data) >= 5 and self.data[1] == '[' and self.data[4] == ']' and self.data[5] == '=':
                         if self.data[0] == 'G':
-                            self.update_device_setting(self.data[2:4], self.data[6:])
+                            devices.set_setting(self.addr, int('0x' + self.data[2:4], 16), self.data[6:])
+                            devices.set_availability(self.addr)
 
     def sync_package(self, line):
         req = [0, 0, 0, 0]

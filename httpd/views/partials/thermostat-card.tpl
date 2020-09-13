@@ -1,4 +1,5 @@
 %from datetime import datetime
+%from Devices import devices
 <div class="thermostat-card"
      data-name="{{ device['name'] }}"
      % for attr in device['stats']:
@@ -70,6 +71,16 @@
                 <span class="iconify" data-icon="mdi-checkbox-blank-outline"></span>
             </span>
         </span>
+    </div>
+    % end
+    % if 'addr' in device['stats'] and 'available' in device['stats'] and device['stats']['available'] == devices.AVAILABLE_ONLINE:
+    <div class="thermostat-card--item" data-item="actions">
+        <a href="/settings/{{ device['stats']['addr']}}">
+            <span class="iconify" data-icon="mdi-cog-outline"></span>
+        </a>
+        <a href="/timers/{{ device['stats']['addr']}}">
+            <span class="iconify" data-icon="mdi-calendar"></span>
+        </a>
     </div>
     % end
     <span class="loading">

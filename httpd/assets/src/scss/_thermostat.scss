@@ -70,10 +70,19 @@
     &[data-item="time"] .value-display {
       flex-basis: auto;
     }
-  }
 
-  [data-item="synced"] {
-    display: none;
+    &[data-item="synced"] {
+      display: none;
+    }
+
+    &[data-item="actions"] {
+      justify-content: flex-start;
+
+      a {
+        margin-right: var(--grid-base);
+        color: var(--light-fg-color)
+      }
+    }
   }
 
   &[data-synced="false"] {

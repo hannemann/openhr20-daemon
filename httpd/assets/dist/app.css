@@ -193,8 +193,17 @@ main {
   flex-basis: auto;
 }
 
-.thermostat-card [data-item=synced] {
+.thermostat-card .thermostat-card--item[data-item=synced] {
   display: none;
+}
+
+.thermostat-card .thermostat-card--item[data-item=actions] {
+  justify-content: flex-start;
+}
+
+.thermostat-card .thermostat-card--item[data-item=actions] a {
+  margin-right: var(--grid-base);
+  color: var(--light-fg-color);
 }
 
 .thermostat-card[data-synced=false] .value-display span.synced {
@@ -268,5 +277,10 @@ main {
 
 .thermostat-card[data-synced=false] span.loading svg path {
   fill: var(--dark-color);
+}
+
+.thermostat-settings div.field {
+  display: flex;
+  justify-content: space-between;
 }
 

@@ -38,7 +38,8 @@ def get_eeprom_layout(layout_id, hr25=False):
         {
             'idx': 5,
             'name': 'P3_Factor',
-            'description': 'Proportional kvadratic tuning constant, multiplied with 256'
+            'description': 'Proportional kvadratic tuning constant, multiplied with 256',
+            'range': [0, 255]
         },
         {
             'idx': 6,
@@ -238,16 +239,17 @@ def get_eeprom_layout(layout_id, hr25=False):
         },
         {
             'idx': 34,
-            'name': 'timer_mode',
+            'name': 'timer_mode FIX!!',
             'description': '0: only one program, 1: programs for weekdays',
             'type': 'int',
             'range': [0, 1]
         }
     ]
 
-    idx = 35
+    idx = 34
 
     if hr25 is True:
+        idx += 1
         layout.append({
             'idx': idx,
             'name': 'bat_half_thld',
@@ -427,7 +429,8 @@ def get_eeprom_layout(layout_id, hr25=False):
     layout.append({
         'idx': 255,
         'name': 'LAYOUT_VERSION',
-        'description': ''
+        'description': '',
+        'range': [14, 15]
     })
 
     return layout

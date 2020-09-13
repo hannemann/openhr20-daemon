@@ -8,7 +8,9 @@ class ThermostatsUpdater {
         this.interval = 30000;
         this.interval = 5000;
 
-        this.initHandler().startInterval()
+        if (Object.keys(this.cards).length > 0) {
+            this.initHandler().startInterval()
+        }
     }
 
     initHandler() {

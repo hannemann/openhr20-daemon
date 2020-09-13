@@ -61,12 +61,13 @@ class Commands:
 
     def remove_from_buffer(self, addr):
         if self.has_command(addr):
-            buffer = self.buffer[addr]
-            buffer = sorted(buffer, key=lambda k: k.sent)
-            buffer.pop(0)
-            if len(buffer) > 0:
-                self.buffer[addr] = buffer
-            else:
+            self.buffer[addr] = sorted(self.buffer[addr], key=lambda k: k.sent)
+            for cmnd in self.buffer[addr]:
+                if cmnd.sent > 0:
+                    self.buffer[addr].remove(cmnd)
+                    break
+
+            if len(self.buffer) < 1:
                 del self.buffer[addr]
 
     def discard_all(self, addr):

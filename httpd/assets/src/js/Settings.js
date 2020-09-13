@@ -8,7 +8,7 @@ class Settings {
 
     run() {
 
-        this.settings = Array.from(document.querySelectorAll('.thermostat-settings .setting input'));
+        this.settings = Array.from(document.querySelectorAll('.thermostat-settings .setting--card input'));
         this.settings.forEach(s => {
             s.addEventListener('input', function() {
                 let parent = this.closest('.field');

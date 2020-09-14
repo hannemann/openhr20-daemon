@@ -132,12 +132,17 @@ class Httpd(threading.Thread):
     def timers(self, addr):
         if devices.get_name(addr) is not None:
             timers = devices.get_device_timers(addr)
-            mode = 1 if int(devices.get_setting(addr, '01'), 16) > 0 else 0
+            mode = devices.get_setting(addr, '01')
+            mode = 1 if mode is not None and int(mode, 16) > 0 else 0
+            preset0 = devices.get_setting(addr, '01')
+            preset1 = devices.get_setting(addr, '02')
+            preset2 = devices.get_setting(addr, '03')
+            preset3 = devices.get_setting(addr, '04')
             presets = [
-                {'id': 0, 'name': 'Frost', 'temp': devices.get_setting(addr, '01')},
-                {'id': 1, 'name': 'Eco', 'temp': devices.get_setting(addr, '02')},
-                {'id': 2, 'name': 'Comfort', 'temp': devices.get_setting(addr, '03')},
-                {'id': 3, 'name': 'Super Comfort', 'temp': devices.get_setting(addr, '04')},
+                {'id': 0, 'name': 'Frost', 'temp': preset0 if preset0 is not None else '00'},
+                {'id': 1, 'name': 'Eco', 'temp': preset1 if preset1 is not None else '00'},
+                {'id': 2, 'name': 'Comfort', 'temp': preset2 if preset2 is not None else '00'},
+                {'id': 3, 'name': 'Super Comfort', 'temp': preset3 if preset3 is not None else '00'},
             ]
             return template('timers', title='Timers', mode=mode, timers=timers, presets=presets)
         print('HTTP: %d timers' % addr)

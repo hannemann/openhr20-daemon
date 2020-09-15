@@ -34,6 +34,7 @@ class Devices:
             self.buffer['stats'] = {}
             self.buffer['timers'] = {}
             self.buffer['settings'] = {}
+            self.buffer['groups'] = {}
         else:
             self.read()
             for addr in self.buffer['names']:
@@ -55,6 +56,15 @@ class Devices:
             self.set_device_settings(addr, self.get_device_settings(addr))
             self.set_device_timers(addr, self.get_device_timers(addr))
 
+        for name in self.buffer['groups']:
+            self.set_group(name, self.get_group(name))
+
+    def get_group(self, name):
+        return json.loads(self.buffer.get('groups', name, fallback=[]))
+
+    def set_group(self, name, group):
+        return self.buffer.set('groups', name, json.dumps(group))
+
     def get_name(self, addr):
         return self.buffer.get('names', str(addr), fallback=None)
 
@@ -73,6 +83,13 @@ class Devices:
 
     def get_device_timers(self, addr):
         return json.loads(self.buffer.get('timers', str(addr), fallback=json.dumps(self.initialTimers)))
+
+    def get_device_group(self, addr):
+        for name in self.buffer['groups']:
+            group = self.get_group(name)
+            if addr in group:
+                return group
+        return None
 
     def set_device_timers(self, addr, settings):
         self.buffer.set('timers', str(addr), json.dumps(settings))

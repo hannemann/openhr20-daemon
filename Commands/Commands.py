@@ -1,23 +1,16 @@
 import sys
-
 from SerialIO import serialIO
 from Devices import devices
-
-
-def weights(cmnd):
-    table = {
-        'D': 10,
-        'S': 4,
-        'W': 4,
-        'G': 2,
-        'R': 2,
-        'T': 2
-    }
-
-    if cmnd in table:
-        return table[cmnd]
-    else:
-        return 10
+import time
+from Commands.CommandTemperature import CommandTemperature
+from Commands.CommandMode import CommandMode
+from Commands.CommandStatus import CommandStatus
+from Commands.CommandGetSetting import CommandGetSetting
+from Commands.CommandSetSetting import CommandSetSetting
+from Commands.CommandReboot import CommandReboot
+from Commands.CommandGetTimer import CommandGetTimer
+from Commands.CommandSetTimer import CommandSetTimer
+from Eeprom import get_eeprom_layout
 
 
 class Commands:
@@ -81,6 +74,73 @@ class Commands:
 
     def test(self, command):
         self.buffer[0] = command
+
+    def set_temperature(self, addr, temperature):
+        if devices.get_name(addr) is not None and CommandTemperature.valid(temperature):
+            group = devices.get_device_group(addr)
+            if group is None:
+                group = [addr]
+            for addr in group:
+                self.add(addr, CommandTemperature(temperature))
+            return True
+        return False
+
+    def set_mode(self, addr, mode):
+        if devices.get_name(addr) is not None and CommandMode.valid(mode):
+            group = devices.get_device_group(addr)
+            if group is None:
+                group = [addr]
+            for addr in group:
+                self.add(addr, CommandMode(mode))
+            return True
+        return False
+
+    def update_stats(self, addr):
+        if devices.get_name(addr) is not None:
+            if devices.get_stat(addr, 'available') == devices.AVAILABLE_OFFLINE:
+                devices.set_stat(addr, 'available', devices.AVAILABLE_ONLINE)
+                devices.set_stat(addr, 'time', int(time.time()))
+            self.add(addr, CommandStatus())
+            return True
+        return False
+
+    def reboot_device(self, addr):
+        if devices.get_name(addr) is not None:
+            self.add(addr, CommandReboot())
+            return True
+        return False
+
+    def request_settings(self, addr):
+        if devices.get_name(addr) is not None:
+            layout = devices.get_setting(addr, 'ff')
+            if layout is not None:
+                devices.reset_device_settings(addr)
+                for field in get_eeprom_layout(int('0x' + layout, 16)):
+                    self.add(addr, CommandGetSetting(field['idx']))
+                return True
+        return False
+
+    def set_setting(self, addr, idx, value):
+        settings = devices.get_device_settings(addr)
+        if devices.get_name(addr) is not None and CommandSetSetting.valid(settings['ff'], idx, value):
+            self.add(addr, CommandSetSetting(idx, value))
+            return True
+        return False
+
+    def request_timers(self, addr):
+        if devices.get_name(addr) is not None:
+            self.add(addr, CommandGetSetting('22'))
+            for day in range(8):
+                for slot in range(8):
+                    self.add(addr, CommandGetTimer(day, slot))
+            return True
+        return False
+
+    def set_timer(self, addr, day, value):
+        if devices.get_name(addr) is not None and CommandSetTimer.valid(day, value):
+            self.add(addr, CommandSetTimer(day, value))
+            return True
+        return False
 
 
 commands = Commands()

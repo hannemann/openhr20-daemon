@@ -13,11 +13,11 @@ class CommandMode:
     }
 
     def __init__(self, mode):
-        self.command = self.modes[mode]
+        self.command = self.modes[mode.lower()]
 
     @staticmethod
     def valid(mode):
-        return mode in CommandMode.modes
+        return mode.lower() in CommandMode.modes
 
     def __del__(self):
         print('Command %s deleted' % self.command)

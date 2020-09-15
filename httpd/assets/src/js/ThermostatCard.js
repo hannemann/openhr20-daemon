@@ -90,8 +90,7 @@ class ThermostatCard {
         try {
             if (this.card.dataset.wanted !== this.wanted.value) {
                 this.card.dataset.synced = 'false';
-                await axios.post(`${location.origin}/temp`, {
-                    addr: this.addr.toString(),
+                await axios.post(`${location.origin}/temp/${this.addr}`, {
                     temp: this.wanted.value.toString()
                 })
                 console.info('Temperature of \'%s\' set to %s °C', this.name, this.wanted.value);
@@ -106,11 +105,10 @@ class ThermostatCard {
     async modeHandler() {
         try {
             let data = {
-                addr: this.addr.toString(),
                 mode: this.card.dataset.mode === 'manu' ? 'auto' : 'manu'
             }
             this.card.dataset.synced = 'false';
-            await axios.post(`${location.origin}/mode`, data)
+            await axios.post(`${location.origin}/mode/${this.addr}`, data)
             console.info('Mode of \'%s\' set to %s', this.name, data.mode);
         } catch (e) {
             console.error(e)
@@ -121,11 +119,8 @@ class ThermostatCard {
 
     async updateHandler() {
         try {
-            let data = {
-                addr: this.addr.toString(),
-            }
             this.card.dataset.synced = 'false';
-            await axios.post(`${location.origin}/update`, data)
+            await axios.post(`${location.origin}/update/${this.addr}`)
             console.info('Update of \'%s\' requested', this.name);
         } catch (e) {
             console.error(e)

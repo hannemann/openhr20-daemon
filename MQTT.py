@@ -8,6 +8,7 @@ from Commands.CommandMode import CommandMode
 from Commands.CommandStatus import CommandStatus
 from Commands.CommandReboot import CommandReboot
 from Config import config
+from Devices import devices
 
 
 class MQTT(threading.Thread):
@@ -39,7 +40,7 @@ class MQTT(threading.Thread):
         print("MQTT: %d %s %s" % (addr, cmnd, msg.payload.decode('utf_8').strip()))
         sys.stdout.flush()
 
-        if 0 < addr < 30:
+        try:
             payload = msg.payload.decode('utf_8').strip()
             if cmnd == CommandMode.abbr:
                 commands.set_mode(addr, payload)
@@ -49,6 +50,10 @@ class MQTT(threading.Thread):
                 commands.update_stats(addr)
             elif cmnd == CommandReboot.abbr:
                 commands.reboot_device(addr)
+        except KeyError:
+            pass
+        except ValueError:
+            pass
 
     def publish(self,
                 topic,

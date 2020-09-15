@@ -2,6 +2,7 @@ import configparser
 import os
 import json
 import time
+from Device import Device
 
 
 class Devices:
@@ -25,6 +26,7 @@ class Devices:
         self.file = '/var/cache/openhr20/devices.conf'
         self.buffer = configparser.ConfigParser()
         self.last_sync = {}
+        self.devices = {}
 
         if not os.path.exists(self.file):
             self.buffer['names'] = {
@@ -40,6 +42,13 @@ class Devices:
             for addr in self.buffer['names']:
                 self.set_stat(addr, 'time', int(time.time()))
                 self.set_availability(addr)
+                dev = Device(addr)
+                dev.set_stats(self.get_device_stats(addr))
+                dev.timers = self.get_device_timers(addr)
+                dev.settings = self.get_device_settings(addr)
+                dev.group = self.get_device_group(addr)
+                dev.name = self.buffer.get('names', addr)
+                self.devices[addr] = dev
 
         self.flush()
 
@@ -77,9 +86,13 @@ class Devices:
     def get_device_stats(self, addr):
         return json.loads(self.buffer.get('stats', str(addr), fallback='{"addr":%s}' % addr))
 
-    def set_device_stats(self, addr, settings):
-        self.buffer.set('stats', str(addr), json.dumps(settings))
+    def set_device_stats(self, addr, stats):
+        self.buffer.set('stats', str(addr), json.dumps(stats))
         self.last_sync[str(addr)] = time.time()
+        try:
+            self.get_device(addr).set_stats(stats)
+        except KeyError:
+            pass
 
     def get_device_timers(self, addr):
         return json.loads(self.buffer.get('timers', str(addr), fallback=json.dumps(self.initialTimers)))
@@ -87,7 +100,7 @@ class Devices:
     def get_device_group(self, addr):
         for name in self.buffer['groups']:
             group = self.get_group(name)
-            if addr in group:
+            if int(addr) in group:
                 return group
         return None
 
@@ -139,13 +152,24 @@ class Devices:
     def get_devices_dict(self):
         devs = {}
         for addr in self.buffer['names']:
+            device = self.get_device(addr)
             devs[int(addr)] = {
-                'name': self.get_name(addr),
-                'stats': self.get_device_stats(addr),
-                'timers': self.get_device_timers(addr),
-                'settings': self.get_device_settings(addr),
+                'name': device.name,
+                'stats': device.get_stats(),
+                'timers': device.timers,
+                'settings': device.settings,
+                'group': device.group,
             }
         return devs
+
+    def has_device(self, addr):
+        return self.devices[str(addr)] is not None
+
+    def get_device(self, addr):
+        if self.has_device(addr):
+            return self.devices[str(addr)]
+        else:
+            raise KeyError
 
 
 devices = Devices()

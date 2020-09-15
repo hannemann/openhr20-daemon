@@ -48,31 +48,63 @@ class Httpd(threading.Thread):
         print('HTTP Server stopped...')
         sys.stdout.flush()
 
-    def server_static(self, filepath):
+    @staticmethod
+    def server_static(filepath):
         return static_file(filepath, root=httpd_path + 'assets/dist')
 
-    def index(self):
+    @staticmethod
+    def index():
         return template('index', title='OpenHR20', devices=devices.get_devices_dict())
 
-    def set_temp(self, addr):
+    @staticmethod
+    def set_temp(addr):
         temp = float(request.json.get('temp'))
-        commands.set_temperature(addr, temp)
+        try:
+            commands.set_temperature(addr, temp)
+        except KeyError:
+            pass
+        except ValueError:
+            pass
         print('HTTP: %d temp %f' % (addr, temp))
 
-    def set_mode(self, addr):
+    @staticmethod
+    def set_mode(addr):
         mode = request.json.get('mode')
-        commands.set_mode(addr, mode)
+        try:
+            commands.set_mode(addr, mode)
+        except KeyError:
+            pass
+        except ValueError:
+            pass
         print('HTTP: %d mode %s' % (addr, mode))
 
-    def update_stats(self, addr):
-        commands.update_stats(addr)
+    @staticmethod
+    def update_stats(addr):
+        try:
+            commands.update_stats(addr)
+        except KeyError:
+            pass
+        except ValueError:
+            pass
         print('HTTP: %d update_stats' % addr)
 
-    def request_settings(self, addr):
+    @staticmethod
+    def reboot(addr):
+        try:
+            commands.reboot_device(addr)
+        except KeyError:
+            pass
+        except ValueError:
+            pass
+        print('HTTP: %d reboot' % addr)
+
+    @staticmethod
+    def request_settings(addr):
         commands.request_settings(addr)
         print('HTTP: %d request_settings' % addr)
 
-    def settings(self, addr):
+    @staticmethod
+    def settings(addr):
         if devices.get_name(addr) is not None:
             settings = devices.get_device_settings(addr)
             if 'ff' in settings:
@@ -80,7 +112,8 @@ class Httpd(threading.Thread):
                 return template('settings', title='Settings', layout=layout, device_settings=settings)
         print('HTTP: %d settings' % addr)
 
-    def set_settings(self, addr):
+    @staticmethod
+    def set_settings(addr):
         if devices.get_name(addr) is not None:
             settings = devices.get_device_settings(addr)
             for idx, value in settings.items():
@@ -89,11 +122,13 @@ class Httpd(threading.Thread):
                     commands.set_setting(addr, idx, new)
         print('HTTP: %d set_settings' % addr)
 
-    def request_timers(self, addr):
+    @staticmethod
+    def request_timers(addr):
         commands.request_timers(addr)
         print('HTTP: %d request_timers' % addr)
 
-    def timers(self, addr):
+    @staticmethod
+    def timers(addr):
         if devices.get_name(addr) is not None:
             timers = devices.get_device_timers(addr)
             mode = devices.get_setting(addr, '01')
@@ -111,7 +146,8 @@ class Httpd(threading.Thread):
             return template('timers', title='Timers', mode=mode, timers=timers, presets=presets)
         print('HTTP: %d timers' % addr)
 
-    def set_timers(self, addr):
+    @staticmethod
+    def set_timers(addr):
         if devices.get_name(addr) is not None:
             timers = devices.get_device_timers(addr)
             for day, value in request.json.items():
@@ -119,11 +155,8 @@ class Httpd(threading.Thread):
                     commands.set_timer(addr, day, value)
         print('HTTP: %d set_timers' % addr)
 
-    def reboot(self, addr):
-        commands.reboot_device(addr)
-        print('HTTP: %d reboot' % addr)
-
-    def get_stats(self):
+    @staticmethod
+    def get_stats():
         response.content_type = 'application/json'
         return json.dumps(devices.get_devices_dict())
 

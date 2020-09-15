@@ -16,8 +16,9 @@ class CommandMode:
         self.command = self.modes[mode.lower()]
 
     @staticmethod
-    def valid(mode):
-        return mode.lower() in CommandMode.modes
+    def validate(mode):
+        if not mode.lower() in CommandMode.modes:
+            raise ValueError
 
     def __del__(self):
         print('Command %s deleted' % self.command)

@@ -60,7 +60,7 @@ class Commands:
                     self.buffer[addr].remove(cmnd)
                     break
 
-            if len(self.buffer) < 1:
+            if len(self.buffer[addr]) < 1:
                 del self.buffer[addr]
 
     def discard_all(self, addr):
@@ -76,39 +76,33 @@ class Commands:
         self.buffer[0] = command
 
     def set_temperature(self, addr, temperature):
-        if devices.get_name(addr) is not None and CommandTemperature.valid(temperature):
-            group = devices.get_device_group(addr)
-            if group is None:
-                group = [addr]
-            for addr in group:
-                self.add(addr, CommandTemperature(temperature))
-            return True
-        return False
+        CommandTemperature.validate(temperature)
+        device = devices.get_device(addr)
+        group = device.group
+        if group is None:
+            group = [device.addr]
+        for addr in group:
+            self.add(devices.get_device(addr).addr, CommandTemperature(temperature))
 
     def set_mode(self, addr, mode):
-        if devices.get_name(addr) is not None and CommandMode.valid(mode):
-            group = devices.get_device_group(addr)
-            if group is None:
-                group = [addr]
-            for addr in group:
-                self.add(addr, CommandMode(mode))
-            return True
-        return False
+        CommandMode.validate(mode)
+        device = devices.get_device(addr)
+        group = device.group
+        if group is None:
+            group = [addr]
+        for addr in group:
+            self.add(addr, CommandMode(mode))
 
     def update_stats(self, addr):
-        if devices.get_name(addr) is not None:
-            if devices.get_stat(addr, 'available') == devices.AVAILABLE_OFFLINE:
-                devices.set_stat(addr, 'available', devices.AVAILABLE_ONLINE)
-                devices.set_stat(addr, 'time', int(time.time()))
-            self.add(addr, CommandStatus())
-            return True
-        return False
+        device = devices.get_device(addr)
+        if device.available == device.AVAILABLE_OFFLINE:
+            devices.available = device.AVAILABLE_ONLINE
+            devices.time = int(time.time())
+        self.add(device.addr, CommandStatus())
 
     def reboot_device(self, addr):
-        if devices.get_name(addr) is not None:
-            self.add(addr, CommandReboot())
-            return True
-        return False
+        device = devices.get_device(addr)
+        self.add(device.addr, CommandReboot())
 
     def request_settings(self, addr):
         if devices.get_name(addr) is not None:

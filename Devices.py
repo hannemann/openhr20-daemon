@@ -74,9 +74,6 @@ class Devices:
     def set_group(self, name, group):
         return self.buffer.set('groups', name, json.dumps(group))
 
-    def get_name(self, addr):
-        return self.buffer.get('names', str(addr), fallback=None)
-
     def get_device_settings(self, addr):
         return json.loads(self.buffer.get('settings', str(addr), fallback='{}'))
 
@@ -163,13 +160,10 @@ class Devices:
         return devs
 
     def has_device(self, addr):
-        return self.devices[str(addr)] is not None
+        return True if str(addr) in self.devices else False
 
     def get_device(self, addr):
-        if self.has_device(addr):
-            return self.devices[str(addr)]
-        else:
-            raise KeyError
+        return self.devices[str(addr)]
 
 
 devices = Devices()

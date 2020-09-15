@@ -51,10 +51,10 @@ class OpenHR20 (threading.Thread):
                 self.data = line[4:]
                 print(
                     ' %s' %
-                    '(' + devices.get_name(self.addr) + ')' if devices.get_name(self.addr) else '',
+                    '(' + devices.get_device(self.addr).name + ')' if devices.has_device(self.addr) else '',
                     end=''
                 )
-                if devices.get_name(self.addr) is not None:
+                if devices.has_device(self.addr):
                     devices.set_availability(self.addr)
                 if devices.get_stat(self.addr, 'available') == devices.AVAILABLE_OFFLINE:
                     commands.discard_all(self.addr)
@@ -84,7 +84,7 @@ class OpenHR20 (threading.Thread):
                 for addr, data in devices.get_devices_dict().items():
                     mqtt.publish_json(config['mqtt'].get('stats_topic').strip('/') + '/%d' % addr, data['stats'])
             else:
-                if len(self.data) > 0 and self.addr > 0 and devices.get_name(self.addr) is not None:
+                if len(self.data) > 0 and self.addr > 0 and devices.has_device(self.addr):
                     if self.data[0] == '?' and devices.get_stat(self.addr, 'available') != devices.AVAILABLE_OFFLINE:
                         if 'ff' not in devices.get_device_settings(self.addr):
                             commands.add(self.addr, CommandGetSetting('ff'))

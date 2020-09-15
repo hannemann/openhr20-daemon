@@ -50,7 +50,7 @@ class Commands:
                 if i > 25:
                     break
             serialIO.write('\n'.join(q), '')
-            print(' %s' % '(' + devices.get_name(addr) + ')' if devices.get_name(addr) is not None else '')
+            print(' %s' % '(' + devices.get_device(addr).name + ')' if devices.has_device(addr) else '')
 
     def remove_from_buffer(self, addr):
         if self.has_command(addr):
@@ -105,7 +105,7 @@ class Commands:
         self.add(device.addr, CommandReboot())
 
     def request_settings(self, addr):
-        if devices.get_name(addr) is not None:
+        if devices.has_device(addr):
             layout = devices.get_setting(addr, 'ff')
             if layout is not None:
                 devices.reset_device_settings(addr)
@@ -116,13 +116,13 @@ class Commands:
 
     def set_setting(self, addr, idx, value):
         settings = devices.get_device_settings(addr)
-        if devices.get_name(addr) is not None and CommandSetSetting.valid(settings['ff'], idx, value):
+        if devices.has_device(addr) and CommandSetSetting.valid(settings['ff'], idx, value):
             self.add(addr, CommandSetSetting(idx, value))
             return True
         return False
 
     def request_timers(self, addr):
-        if devices.get_name(addr) is not None:
+        if devices.has_device(addr):
             self.add(addr, CommandGetSetting('22'))
             for day in range(8):
                 for slot in range(8):
@@ -131,7 +131,7 @@ class Commands:
         return False
 
     def set_timer(self, addr, day, value):
-        if devices.get_name(addr) is not None and CommandSetTimer.valid(day, value):
+        if devices.has_device(addr) and CommandSetTimer.valid(day, value):
             self.add(addr, CommandSetTimer(day, value))
             return True
         return False

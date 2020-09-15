@@ -105,7 +105,7 @@ class Httpd(threading.Thread):
 
     @staticmethod
     def settings(addr):
-        if devices.get_name(addr) is not None:
+        if devices.has_device(addr):
             settings = devices.get_device_settings(addr)
             if 'ff' in settings:
                 layout = get_eeprom_layout(int('0x' + settings['ff'], 16))
@@ -114,7 +114,7 @@ class Httpd(threading.Thread):
 
     @staticmethod
     def set_settings(addr):
-        if devices.get_name(addr) is not None:
+        if devices.has_device(addr):
             settings = devices.get_device_settings(addr)
             for idx, value in settings.items():
                 new = request.json.get(idx)
@@ -129,7 +129,7 @@ class Httpd(threading.Thread):
 
     @staticmethod
     def timers(addr):
-        if devices.get_name(addr) is not None:
+        if devices.has_device(addr):
             timers = devices.get_device_timers(addr)
             mode = devices.get_setting(addr, '01')
             mode = 1 if mode is not None and int(mode, 16) > 0 else 0
@@ -148,7 +148,7 @@ class Httpd(threading.Thread):
 
     @staticmethod
     def set_timers(addr):
-        if devices.get_name(addr) is not None:
+        if devices.has_device(addr):
             timers = devices.get_device_timers(addr)
             for day, value in request.json.items():
                 if timers[int(day[0])][int(day[1])] != value:

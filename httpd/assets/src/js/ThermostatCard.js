@@ -5,6 +5,7 @@ class ThermostatCard {
         this.card = card;
         this.addr = this.card.dataset.addr;
         this.name = this.card.dataset.name;
+        this.cancelTimeout = null;
         if (this.addr !== '') {
             this.initElements()
                 .initHandler()
@@ -90,15 +91,16 @@ class ThermostatCard {
         try {
             if (this.card.dataset.wanted !== this.wanted.value) {
                 this.card.dataset.synced = 'false';
-                await axios.post(`${location.origin}/temp/${this.addr}`, {
+                await this.post(`${location.origin}/temp/${this.addr}`, {
                     temp: this.wanted.value.toString()
                 })
                 console.info('Temperature of \'%s\' set to %s °C', this.name, this.wanted.value);
             }
         } catch (e) {
-            console.error(e)
+            console.error(axios.isCancel(e) ? e.message : e)
         } finally {
             delete this.card.dataset.preventupdate;
+            clearTimeout(this.cancelTimeout)
         }
     }
 
@@ -108,23 +110,34 @@ class ThermostatCard {
                 mode: this.card.dataset.mode === 'manu' ? 'auto' : 'manu'
             }
             this.card.dataset.synced = 'false';
-            await axios.post(`${location.origin}/mode/${this.addr}`, data)
+            await this.post(`${location.origin}/mode/${this.addr}`, data)
             console.info('Mode of \'%s\' set to %s', this.name, data.mode);
         } catch (e) {
-            console.error(e)
+            console.error(axios.isCancel(e) ? e.message : e)
         } finally {
             delete this.card.dataset.preventupdate;
+            clearTimeout(this.cancelTimeout)
         }
     }
 
     async updateHandler() {
         try {
             this.card.dataset.synced = 'false';
-            await axios.post(`${location.origin}/update/${this.addr}`)
+            await this.post(`${location.origin}/update/${this.addr}`)
             console.info('Update of \'%s\' requested', this.name);
         } catch (e) {
-            console.error(e)
+            console.error(axios.isCancel(e) ? e.message : e)
+        } finally {
+            clearTimeout(this.cancelTimeout)
         }
+    }
+
+    post(url, data) {
+        let source = axios.CancelToken.source();
+        this.cancelTimeout = setTimeout(() => {
+            source.cancel(`Request to ${url} cancelled after 2s`)
+        }, 2000)
+        return axios.post(url, data, {cancelToken: source.token})
     }
 
     wantedInputHandler() {

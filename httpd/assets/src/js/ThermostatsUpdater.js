@@ -36,12 +36,21 @@ class ThermostatsUpdater {
     }
 
     startInterval() {
+
         setInterval(async () => {
+            let cancelTimeout = null, source = axios.CancelToken.source();
+            cancelTimeout = setTimeout(() => source.cancel('Stats request cancelled after 2s'), 2000)
             try {
-                let response = await axios.get(`${location.origin}/stats`);
+                let response = await axios.get(`${location.origin}/stats`, {cancelToken: source.token});
                 this.handleUpdate(response);
             } catch(e) {
-                console.error(e)
+                if (axios.isCancel(e)) {
+                    console.error(e.message)
+                } else {
+                    console.error(e)
+                }
+            } finally {
+                clearTimeout(cancelTimeout)
             }
         }, this.interval)
     }

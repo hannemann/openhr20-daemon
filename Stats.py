@@ -1,9 +1,5 @@
-from Devices import devices
-from MQTT import mqtt
 import time
 from Commands.Commands import commands
-import json
-from Config import config
 
 
 class Stats:

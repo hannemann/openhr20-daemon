@@ -105,21 +105,24 @@ class Httpd(threading.Thread):
 
     @staticmethod
     def settings(addr):
-        if devices.has_device(addr):
-            settings = devices.get_device_settings(addr)
+        try:
+            settings = devices.get_device(addr).settings
             if 'ff' in settings:
                 layout = get_eeprom_layout(int('0x' + settings['ff'], 16))
                 return template('settings', title='Settings', layout=layout, device_settings=settings)
+        except KeyError:
+            pass
         print('HTTP: %d settings' % addr)
 
     @staticmethod
     def set_settings(addr):
-        if devices.has_device(addr):
-            settings = devices.get_device_settings(addr)
-            for idx, value in settings.items():
+        try:
+            for idx, value in devices.get_device(addr).settings.items():
                 new = request.json.get(idx)
                 if new != value:
                     commands.set_setting(addr, idx, new)
+        except KeyError:
+            pass
         print('HTTP: %d set_settings' % addr)
 
     @staticmethod
@@ -129,30 +132,34 @@ class Httpd(threading.Thread):
 
     @staticmethod
     def timers(addr):
-        if devices.has_device(addr):
-            timers = devices.get_device_timers(addr)
-            mode = devices.get_setting(addr, '01')
+        try:
+            device = devices.get_device(addr)
+            mode = device.settings['01']
             mode = 1 if mode is not None and int(mode, 16) > 0 else 0
-            preset0 = devices.get_setting(addr, '01')
-            preset1 = devices.get_setting(addr, '02')
-            preset2 = devices.get_setting(addr, '03')
-            preset3 = devices.get_setting(addr, '04')
+            preset0 = device.settings['01']
+            preset1 = device.settings['02']
+            preset2 = device.settings['03']
+            preset3 = device.settings['04']
             presets = [
                 {'id': 0, 'name': 'Frost', 'temp': preset0 if preset0 is not None else '00'},
                 {'id': 1, 'name': 'Eco', 'temp': preset1 if preset1 is not None else '00'},
                 {'id': 2, 'name': 'Comfort', 'temp': preset2 if preset2 is not None else '00'},
                 {'id': 3, 'name': 'Super Comfort', 'temp': preset3 if preset3 is not None else '00'},
             ]
-            return template('timers', title='Timers', mode=mode, timers=timers, presets=presets)
+            return template('timers', title='Timers', mode=mode, timers=device.timers, presets=presets)
+        except KeyError:
+            pass
         print('HTTP: %d timers' % addr)
 
     @staticmethod
     def set_timers(addr):
-        if devices.has_device(addr):
-            timers = devices.get_device_timers(addr)
+        try:
+            timers = devices.get_device(addr).timers
             for day, value in request.json.items():
                 if timers[int(day[0])][int(day[1])] != value:
                     commands.set_timer(addr, day, value)
+        except KeyError:
+            pass
         print('HTTP: %d set_timers' % addr)
 
     @staticmethod

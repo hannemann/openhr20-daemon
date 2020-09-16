@@ -25,8 +25,7 @@ class OpenHR20 (threading.Thread):
         sys.stdout.flush()
 
     def update_device_stats(self, stats):
-        devices.set_device_stats(self.device.addr, stats)
-        devices.set_availability(self.device.addr)
+        self.device.set_stats(stats)
         mqtt.publish_json(config['mqtt'].get('stats_topic').strip('/') + '/%d' % self.device.addr, stats)
 
     def run(self):
@@ -54,8 +53,8 @@ class OpenHR20 (threading.Thread):
                         '(' + self.device.name + ')' if self.device is not None else '',
                         end=''
                     )
-                    devices.set_availability(self.device.addr)
-                    if self.device.available == self.device.AVAILABLE_OFFLINE:
+                    self.device.set_availability()
+                    if not self.device.is_available():
                         commands.discard_all(self.device.addr)
                 except KeyError:
                     pass
@@ -86,7 +85,7 @@ class OpenHR20 (threading.Thread):
                     mqtt.publish_json(config['mqtt'].get('stats_topic').strip('/') + '/%d' % addr, data['stats'])
             else:
                 if len(self.data) > 0 and self.device is not None:
-                    if self.data[0] == '?' and self.device.available != self.device.AVAILABLE_OFFLINE:
+                    if self.data[0] == '?' and self.device.is_available():
                         if 'ff' not in self.device.settings:
                             commands.add(self.device.addr, CommandGetSetting('ff'))
                         commands.send(self.device.addr)
@@ -94,12 +93,12 @@ class OpenHR20 (threading.Thread):
                         self.update_device_stats(Stats.create(self.device.addr, self.data))
                     elif len(self.data) >= 5 and self.data[1] == '[' and self.data[4] == ']' and self.data[5] == '=':
                         if self.data[0] in ['G', 'S']:
-                            devices.set_setting(self.device.addr, self.data[2:4], self.data[6:])
+                            self.device.set_setting(self.data[2:4], self.data[6:])
                         if self.data[0] in ['R', 'W']:
-                            devices.set_timer(self.device.addr, int(self.data[2:3]), int(self.data[3:4]), self.data[6:])
-                        devices.set_availability(self.device.addr)
+                            self.device.set_timer(int(self.data[2:3]), int(self.data[3:4]), self.data[6:])
 
-    def sync_package(self, line):
+    @staticmethod
+    def sync_package(line):
         req = [0, 0, 0, 0]
         v = 'O0000'
         pr = 0

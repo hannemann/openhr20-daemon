@@ -39,119 +39,47 @@ class Devices:
             self.buffer['groups'] = {}
         else:
             self.read()
-            for addr in self.buffer['names']:
-                self.set_stat(addr, 'time', int(time.time()))
-                self.set_availability(addr)
-                dev = Device(addr)
-                dev.set_stats(self.get_device_stats(addr))
-                dev.timers = self.get_device_timers(addr)
-                dev.settings = self.get_device_settings(addr)
-                dev.group = self.get_device_group(addr)
-                dev.name = self.buffer.get('names', addr)
-                self.devices[addr] = dev
-
         self.flush()
+
+    def read(self):
+        self.buffer.read(self.file)
+
+        for addr in self.buffer['names']:
+            device = Device(addr)
+            device.time = int(time.time())
+            device.set_availability()
+            device.set_stats(json.loads(self.buffer.get('stats', str(addr), fallback='{"addr":%s}' % addr)))
+            device.timers = json.loads(self.buffer.get('timers', str(addr), fallback=json.dumps(self.initialTimers)))
+            device.settings = json.loads(self.buffer.get('settings', str(addr), fallback='{}'))
+            device.group = self.get_group(addr)
+            device.group_name = self.get_group_name(addr)
+            device.name = self.buffer.get('names', addr)
+            self.devices[addr] = device
 
     def flush(self):
         fd = open(self.file, 'w')
+        for addr in self.buffer['names']:
+            device = self.get_device(addr)
+            self.buffer.set('stats', addr, str(device))
+            self.buffer.set('settings', addr, json.dumps(device.settings))
+            self.buffer.set('timers', addr, json.dumps(device.timers))
         self.buffer.write(fd)
         fd.close()
         print('Flushed devices to %s' % self.file)
 
-    def read(self):
-        self.buffer.read(self.file)
-        for addr in self.buffer['names']:
-            self.set_device_stats(addr, self.get_device_stats(addr))
-            self.set_device_settings(addr, self.get_device_settings(addr))
-            self.set_device_timers(addr, self.get_device_timers(addr))
-
-        for name in self.buffer['groups']:
-            self.set_group(name, self.get_group(name))
-
-    def get_group(self, name):
-        return json.loads(self.buffer.get('groups', name, fallback=[]))
-
-    def set_group(self, name, group):
-        return self.buffer.set('groups', name, json.dumps(group))
-
-    def get_device_settings(self, addr):
-        return json.loads(self.buffer.get('settings', str(addr), fallback='{}'))
-
-    def set_device_settings(self, addr, settings):
-        self.buffer.set('settings', str(addr), json.dumps(settings))
-        try:
-            self.get_device(addr).settings = settings
-        except KeyError:
-            pass
-
-    def get_device_stats(self, addr):
-        return json.loads(self.buffer.get('stats', str(addr), fallback='{"addr":%s}' % addr))
-
-    def set_device_stats(self, addr, stats):
-        self.buffer.set('stats', str(addr), json.dumps(stats))
-        self.last_sync[str(addr)] = time.time()
-        try:
-            self.get_device(addr).set_stats(stats)
-        except KeyError:
-            pass
-
-    def get_device_timers(self, addr):
-        return json.loads(self.buffer.get('timers', str(addr), fallback=json.dumps(self.initialTimers)))
-
-    def get_device_group(self, addr):
-        for name in self.buffer['groups']:
-            group = self.get_group(name)
+    def get_group(self, addr):
+        for name, group in dict(self.buffer['groups']).items():
+            group = json.loads(group)
             if int(addr) in group:
                 return group
         return None
 
-    def set_device_timers(self, addr, timers):
-        self.buffer.set('timers', str(addr), json.dumps(timers))
-        try:
-            self.get_device(addr).timers = timers
-        except KeyError:
-            pass
-
-    def get_stat(self, addr, stat):
-        if str(addr) in self.buffer['stats'] and stat in self.buffer['stats'][str(addr)]:
-            return self.get_device_stats(addr)[stat]
+    def get_group_name(self, addr):
+        for name, group in dict(self.buffer['groups']).items():
+            group = json.loads(group)
+            if int(addr) in group:
+                return name
         return None
-
-    def set_stat(self, addr, stat, value):
-        if str(addr) in self.buffer['stats']:
-            stats = self.get_device_stats(addr)
-            stats[stat] = value
-            self.set_device_stats(addr, stats)
-
-    def get_setting(self, addr, setting):
-        if str(addr) in self.buffer['settings'] and setting in self.buffer['settings'][str(addr)]:
-            return self.get_device_settings(addr)[setting]
-        return None
-
-    def set_setting(self, addr, setting, value):
-        if str(addr) in self.buffer['settings']:
-            settings = self.get_device_settings(addr)
-            settings[setting] = value
-            self.set_device_settings(addr, settings)
-
-    def set_timer(self, addr, day, slot, minute):
-        if str(addr) in self.buffer['timers']:
-            timers = self.get_device_timers(addr)
-            timers[day][slot] = minute
-            self.set_device_timers(addr, timers)
-
-    def reset_device_settings(self, addr):
-        self.set_device_settings(addr, {'ff': self.get_setting(addr, 'ff')})
-
-    def set_availability(self, addr):
-        time_diff = int(time.time()) - self.get_stat(addr, 'time')
-        if time_diff >= 60 * 10:
-            self.set_stat(addr, 'available',  self.AVAILABLE_OFFLINE)
-            self.set_stat(addr, 'synced',  True)
-        elif time_diff >= 60 * 5:
-            self.set_stat(addr, 'available',  self.AVAILABLE_WARN)
-        else:
-            self.set_stat(addr, 'available',  self.AVAILABLE_ONLINE)
 
     def get_devices_dict(self):
         devs = {}
@@ -163,6 +91,7 @@ class Devices:
                 'timers': device.timers,
                 'settings': device.settings,
                 'group': device.group,
+                'group_name': device.group_name,
             }
         return devs
 

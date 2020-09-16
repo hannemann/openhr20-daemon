@@ -1,4 +1,5 @@
 import json
+import time
 
 
 class Device:
@@ -24,7 +25,8 @@ class Device:
         self.available = Device.AVAILABLE_ONLINE
         self.timers = {}
         self.settings = {}
-        self.group = ''
+        self.group = []
+        self.group_name = ''
 
     def __str__(self):
         return json.dumps(self.get_stats())
@@ -35,6 +37,7 @@ class Device:
     def set_stats(self, stats):
         for key, value in stats.items():
             setattr(self, key, value)
+        self.set_availability()
         return self
 
     def get_stats(self):
@@ -50,3 +53,27 @@ class Device:
             "synced": self.synced,
             "available": self.available
         }
+
+    def set_availability(self):
+        time_diff = int(time.time()) - self.time
+        if time_diff >= 60 * 10:
+            self.available = self.AVAILABLE_OFFLINE
+            self.synced = True
+        elif time_diff >= 60 * 5:
+            self.available = self.AVAILABLE_WARN
+        else:
+            self.available = self.AVAILABLE_ONLINE
+
+    def is_available(self):
+        return self.available != Device.AVAILABLE_OFFLINE
+
+    def set_setting(self, key, value):
+        self.settings[key] = value
+        self.set_availability()
+
+    def set_timer(self, day, slot, minute):
+        self.timers[day][slot] = minute
+        self.set_availability()
+
+    def reset_settings(self):
+        self.settings = {'ff': self.settings['ff']}

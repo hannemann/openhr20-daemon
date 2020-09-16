@@ -15,7 +15,7 @@ class CommandGetSetting:
 
     @staticmethod
     def valid(addr, idx):
-        settings = devices.get_device_settings(addr)
+        settings = devices.get_device(addr).settings
         if 'ff' not in settings:
             return False
         fields = get_eeprom_layout(int('0x%0.2x' % settings['ff'], 16))

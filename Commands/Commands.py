@@ -28,7 +28,7 @@ class Commands:
         else:
             self.buffer[addr].append(command)
 
-        devices.set_stat(addr, 'synced', False)
+        devices.get_device(addr).synced = False
 
     def send(self, addr):
         weight = 0
@@ -69,7 +69,7 @@ class Commands:
 
     def has_command(self, addr):
         result = addr in self.buffer and len(self.buffer[addr]) > 0
-        devices.set_stat(addr, 'synced', not result)
+        devices.get_device(addr).synced = not result
         return result
 
     def test(self, command):
@@ -105,17 +105,18 @@ class Commands:
         self.add(device.addr, CommandReboot())
 
     def request_settings(self, addr):
-        if devices.has_device(addr):
-            layout = devices.get_setting(addr, 'ff')
+        try:
+            device = devices.get_device(addr)
+            layout = device.settings['ff']
             if layout is not None:
-                devices.reset_device_settings(addr)
+                device.reset_settings()
                 for field in get_eeprom_layout(int('0x' + layout, 16)):
                     self.add(addr, CommandGetSetting(field['idx']))
-                return True
-        return False
+        except KeyError:
+            pass
 
     def set_setting(self, addr, idx, value):
-        settings = devices.get_device_settings(addr)
+        settings = devices.get_device(addr).settings
         if devices.has_device(addr) and CommandSetSetting.valid(settings['ff'], idx, value):
             self.add(addr, CommandSetSetting(idx, value))
             return True

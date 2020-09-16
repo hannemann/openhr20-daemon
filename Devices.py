@@ -79,6 +79,10 @@ class Devices:
 
     def set_device_settings(self, addr, settings):
         self.buffer.set('settings', str(addr), json.dumps(settings))
+        try:
+            self.get_device(addr).settings = settings
+        except KeyError:
+            pass
 
     def get_device_stats(self, addr):
         return json.loads(self.buffer.get('stats', str(addr), fallback='{"addr":%s}' % addr))
@@ -101,9 +105,12 @@ class Devices:
                 return group
         return None
 
-    def set_device_timers(self, addr, settings):
-        self.buffer.set('timers', str(addr), json.dumps(settings))
-        self.last_sync[str(addr)] = time.time()
+    def set_device_timers(self, addr, timers):
+        self.buffer.set('timers', str(addr), json.dumps(timers))
+        try:
+            self.get_device(addr).timers = timers
+        except KeyError:
+            pass
 
     def get_stat(self, addr, stat):
         if str(addr) in self.buffer['stats'] and stat in self.buffer['stats'][str(addr)]:

@@ -17,18 +17,17 @@ class OpenHR20 (threading.Thread):
     addr = -1
     data = ''
     stopped = threading.Event()
-    devices = {}
+    device = None
 
     def __init__(self):
         threading.Thread.__init__(self)
-        self.devices = {}
         print('OpenHR20 Thread Initialized')
         sys.stdout.flush()
 
     def update_device_stats(self, stats):
-        devices.set_device_stats(self.addr, stats)
-        devices.set_availability(self.addr)
-        mqtt.publish_json(config['mqtt'].get('stats_topic').strip('/') + '/%d' % self.addr, stats)
+        devices.set_device_stats(self.device.addr, stats)
+        devices.set_availability(self.device.addr)
+        mqtt.publish_json(config['mqtt'].get('stats_topic').strip('/') + '/%d' % self.device.addr, stats)
 
     def run(self):
         self.alive = True
@@ -47,30 +46,32 @@ class OpenHR20 (threading.Thread):
         if line is not None and len(line) > 0:
             if len(line) >= 4 and line[0] == '(' and line[3] == ')':
                 ''' decode addr '''
-                self.addr = int(line[1:3], 16)
-                self.data = line[4:]
-                print(
-                    ' %s' %
-                    '(' + devices.get_device(self.addr).name + ')' if devices.has_device(self.addr) else '',
-                    end=''
-                )
-                if devices.has_device(self.addr):
-                    devices.set_availability(self.addr)
-                if devices.get_stat(self.addr, 'available') == devices.AVAILABLE_OFFLINE:
-                    commands.discard_all(self.addr)
+                try:
+                    self.device = devices.get_device(int(line[1:3], 16))
+                    self.data = line[4:]
+                    print(
+                        ' %s' %
+                        '(' + self.device.name + ')' if self.device is not None else '',
+                        end=''
+                    )
+                    devices.set_availability(self.device.addr)
+                    if self.device.available == self.device.AVAILABLE_OFFLINE:
+                        commands.discard_all(self.device.addr)
+                except KeyError:
+                    pass
             elif line[0] == '*':
                 ''' command success '''
                 print('')
                 if line[2] != '!' and line[1] != ' ':
-                    commands.remove_from_buffer(self.addr)
+                    commands.remove_from_buffer(self.device.addr)
                 self.data = line[1:]
-                if not commands.has_command(self.addr) and self.data[0] in ['A', 'M']:
-                    self.update_device_stats(Stats.create(self.addr, self.data))
+                if not commands.has_command(self.device.addr) and self.data[0] in ['A', 'M']:
+                    self.update_device_stats(Stats.create(self.device.addr, self.data))
             elif line[0] == '-':
                 self.data = line[1:]
             else:
                 self.data = ''
-                self.addr = 0
+                self.device = None
 
             print('')
 
@@ -84,33 +85,33 @@ class OpenHR20 (threading.Thread):
                 for addr, data in devices.get_devices_dict().items():
                     mqtt.publish_json(config['mqtt'].get('stats_topic').strip('/') + '/%d' % addr, data['stats'])
             else:
-                if len(self.data) > 0 and self.addr > 0 and devices.has_device(self.addr):
-                    if self.data[0] == '?' and devices.get_stat(self.addr, 'available') != devices.AVAILABLE_OFFLINE:
-                        if 'ff' not in devices.get_device_settings(self.addr):
-                            commands.add(self.addr, CommandGetSetting('ff'))
-                        commands.send(self.addr)
+                if len(self.data) > 0 and self.device is not None:
+                    if self.data[0] == '?' and self.device.available != self.device.AVAILABLE_OFFLINE:
+                        if 'ff' not in self.device.settings:
+                            commands.add(self.device.addr, CommandGetSetting('ff'))
+                        commands.send(self.device.addr)
                     elif line[0] != '*' and (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
-                        self.update_device_stats(Stats.create(self.addr, self.data))
+                        self.update_device_stats(Stats.create(self.device.addr, self.data))
                     elif len(self.data) >= 5 and self.data[1] == '[' and self.data[4] == ']' and self.data[5] == '=':
                         if self.data[0] in ['G', 'S']:
-                            devices.set_setting(self.addr, self.data[2:4], self.data[6:])
+                            devices.set_setting(self.device.addr, self.data[2:4], self.data[6:])
                         if self.data[0] in ['R', 'W']:
-                            devices.set_timer(self.addr, int(self.data[2:3]), int(self.data[3:4]), self.data[6:])
-                        devices.set_availability(self.addr)
+                            devices.set_timer(self.device.addr, int(self.data[2:3]), int(self.data[3:4]), self.data[6:])
+                        devices.set_availability(self.device.addr)
 
     def sync_package(self, line):
         req = [0, 0, 0, 0]
         v = 'O0000'
         pr = 0
         if len(commands.buffer) > 0:
-            for self.addr in sorted(commands.buffer, key=lambda k: len(commands.buffer[k]), reverse=True):
+            for addr in sorted(commands.buffer, key=lambda k: len(commands.buffer[k]), reverse=True):
                 v = None
-                cmnds = commands.buffer[self.addr]
+                cmnds = commands.buffer[addr]
                 if line == 'N1?' and len(cmnds) > 10:
-                    v = "O%02x%02x" % (self.addr, pr)
-                    pr = self.addr
+                    v = "O%02x%02x" % (addr, pr)
+                    pr = addr
                 else:
-                    req[int(self.addr/8)] |= int(pow(2, self.addr % 8))
+                    req[int(addr/8)] |= int(pow(2, addr % 8))
 
         if v is None:
             v = "P%02x%02x%02x%02x" % (req[0], req[1], req[2], req[3])

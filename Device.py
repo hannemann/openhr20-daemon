@@ -8,25 +8,23 @@ class Device:
     AVAILABLE_ONLINE = 'online'
     AVAILABLE_OFFLINE = 'offline'
 
-    def __init__(self, addr):
+    mode = '-'
+    valve = 0
+    real = 0
+    time = 0
+    synced = False
+    available = AVAILABLE_ONLINE
+    wanted = 0
+    battery = 0
+    error = 0
+
+    def __init__(self, addr, name, stats, timers, settings, group):
         self.addr = addr
-        self.name = ''
-        self.timer = None
-        self.settings = None
-        self.group = ''
-        self.mode = '-'
-        self.valve = 0
-        self.real = 0
-        self.wanted = 0
-        self.battery = 0
-        self.error = 0
-        self.time = 0
-        self.synced = True
-        self.available = Device.AVAILABLE_ONLINE
-        self.timers = {}
-        self.settings = {}
-        self.group = []
-        self.group_name = ''
+        self.name = name
+        self.set_stats(stats)
+        self.timers = timers
+        self.settings = settings
+        self.group = group
 
     def __str__(self):
         return json.dumps(self.get_stats())
@@ -34,11 +32,14 @@ class Device:
     def __index__(self):
         return self.addr
 
-    def set_stats(self, stats):
-        for key, value in stats.items():
-            setattr(self, key, value)
-        self.set_availability()
-        return self
+    def get_data(self):
+        return {
+            "name": self.name,
+            "stats": self.get_stats(),
+            "timers": self.timers,
+            "settings": self.settings,
+            "group": self.group
+        }
 
     def get_stats(self):
         return {
@@ -53,6 +54,12 @@ class Device:
             "synced": self.synced,
             "available": self.available
         }
+
+    def set_stats(self, stats):
+        for key, value in stats.items():
+            setattr(self, key, value)
+        self.set_availability()
+        return self
 
     def set_availability(self):
         time_diff = int(time.time()) - self.time

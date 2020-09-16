@@ -80,8 +80,8 @@ class Commands:
         device = devices.get_device(addr)
         group = device.group
         if group is None:
-            group = [device.addr]
-        for addr in group:
+            group = {"devices": [device.addr]}
+        for addr in group['devices']:
             self.add(devices.get_device(addr).addr, CommandTemperature(temperature))
 
     def set_mode(self, addr, mode):
@@ -89,8 +89,8 @@ class Commands:
         device = devices.get_device(addr)
         group = device.group
         if group is None:
-            group = [addr]
-        for addr in group:
+            group = {"devices": [device.addr]}
+        for addr in group['devices']:
             self.add(addr, CommandMode(mode))
 
     def update_stats(self, addr):

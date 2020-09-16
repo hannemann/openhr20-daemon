@@ -54,7 +54,7 @@ class Httpd(threading.Thread):
 
     @staticmethod
     def index():
-        return template('index', title='OpenHR20', devices=devices.get_devices_dict())
+        return template('index', title='OpenHR20', devices=devices.get_devices())
 
     @staticmethod
     def set_temp(addr):
@@ -165,7 +165,7 @@ class Httpd(threading.Thread):
     @staticmethod
     def get_stats():
         response.content_type = 'application/json'
-        return json.dumps(devices.get_devices_dict())
+        return json.dumps(devices.get_devices())
 
     def shutdown(self):
         self.server.stop()

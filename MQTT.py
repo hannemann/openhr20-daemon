@@ -41,7 +41,7 @@ class MQTT(threading.Thread):
 
         try:
             payload = msg.payload.decode('utf_8').strip()
-            device = devices.get_devices(addr)
+            device = devices.get_device(addr)
             if cmnd == CommandMode.abbr:
                 device.set_mode(payload)
             elif cmnd == CommandTemperature.abbr:

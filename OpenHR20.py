@@ -55,17 +55,17 @@ class OpenHR20 (threading.Thread):
                     )
                     self.device.set_availability()
                     if not self.device.is_available():
-                        commands.discard_all(self.device.addr)
+                        commands.discard_all(self.device)
                 except KeyError:
                     pass
             elif line[0] == '*':
                 ''' command success '''
                 print('')
                 if line[2] != '!' and line[1] != ' ':
-                    commands.remove_from_buffer(self.device.addr)
+                    commands.remove_from_buffer(self.device)
                 self.data = line[1:]
-                if not commands.has_command(self.device.addr) and self.data[0] in ['A', 'M']:
-                    self.update_device_stats(Stats.create(self.device.addr, self.data))
+                if not commands.has_command(self.device) and self.data[0] in ['A', 'M']:
+                    self.update_device_stats(Stats.create(self.device, self.data))
             elif line[0] == '-':
                 self.data = line[1:]
             else:
@@ -88,9 +88,9 @@ class OpenHR20 (threading.Thread):
                     if self.data[0] == '?' and self.device.is_available():
                         if 'ff' not in self.device.settings:
                             commands.add(self.device.addr, CommandGetSetting('ff'))
-                        commands.send(self.device.addr)
+                        commands.send(self.device)
                     elif line[0] != '*' and (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
-                        self.update_device_stats(Stats.create(self.device.addr, self.data))
+                        self.update_device_stats(Stats.create(self.device, self.data))
                     elif len(self.data) >= 5 and self.data[1] == '[' and self.data[4] == ']' and self.data[5] == '=':
                         if self.data[0] in ['G', 'S']:
                             self.device.set_setting(self.data[2:4], self.data[6:])

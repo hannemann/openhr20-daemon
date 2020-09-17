@@ -60,7 +60,7 @@ class Httpd(threading.Thread):
     def set_temp(addr):
         temp = float(request.json.get('temp'))
         try:
-            commands.set_temperature(addr, temp)
+            commands.set_temperature(devices.get_device(addr), temp)
         except KeyError:
             pass
         except ValueError:
@@ -71,7 +71,7 @@ class Httpd(threading.Thread):
     def set_mode(addr):
         mode = request.json.get('mode')
         try:
-            commands.set_mode(addr, mode)
+            commands.set_mode(devices.get_device(addr), mode)
         except KeyError:
             pass
         except ValueError:
@@ -81,7 +81,7 @@ class Httpd(threading.Thread):
     @staticmethod
     def update_stats(addr):
         try:
-            commands.update_stats(addr)
+            commands.update_stats(devices.get_device(addr))
         except KeyError:
             pass
         except ValueError:
@@ -91,7 +91,7 @@ class Httpd(threading.Thread):
     @staticmethod
     def reboot(addr):
         try:
-            commands.reboot_device(addr)
+            commands.reboot_device(devices.get_device(addr))
         except KeyError:
             pass
         except ValueError:
@@ -100,7 +100,10 @@ class Httpd(threading.Thread):
 
     @staticmethod
     def request_settings(addr):
-        commands.request_settings(addr)
+        try:
+            commands.request_settings(devices.get_device(addr))
+        except KeyError:
+            pass
         print('HTTP: %d request_settings' % addr)
 
     @staticmethod
@@ -117,17 +120,18 @@ class Httpd(threading.Thread):
     @staticmethod
     def set_settings(addr):
         try:
-            for idx, value in devices.get_device(addr).settings.items():
+            device = devices.get_device(addr)
+            for idx, value in device.settings.items():
                 new = request.json.get(idx)
                 if new != value:
-                    commands.set_setting(addr, idx, new)
+                    commands.set_setting(device, idx, new)
         except KeyError:
             pass
         print('HTTP: %d set_settings' % addr)
 
     @staticmethod
     def request_timers(addr):
-        commands.request_timers(addr)
+        commands.request_timers(devices.get_device(addr))
         print('HTTP: %d request_timers' % addr)
 
     @staticmethod
@@ -154,10 +158,11 @@ class Httpd(threading.Thread):
     @staticmethod
     def set_timers(addr):
         try:
-            timers = devices.get_device(addr).timers
+            device = devices.get_device(addr)
+            timers = device.timers
             for day, value in request.json.items():
                 if timers[int(day[0])][int(day[1])] != value:
-                    commands.set_timer(addr, day, value)
+                    commands.set_timer(device, day, value)
         except KeyError:
             pass
         print('HTTP: %d set_timers' % addr)

@@ -42,14 +42,15 @@ class MQTT(threading.Thread):
 
         try:
             payload = msg.payload.decode('utf_8').strip()
+            device = devices.get_devices(addr)
             if cmnd == CommandMode.abbr:
-                commands.set_mode(addr, payload)
+                commands.set_mode(device, payload)
             elif cmnd == CommandTemperature.abbr:
-                commands.set_temperature(addr, payload)
+                commands.set_temperature(device, payload)
             elif cmnd == CommandStatus.abbr:
-                commands.update_stats(addr)
+                commands.update_stats(device)
             elif cmnd == CommandReboot.abbr:
-                commands.reboot_device(addr)
+                commands.reboot_device(device)
         except KeyError:
             pass
         except ValueError:

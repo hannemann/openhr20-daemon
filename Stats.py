@@ -5,9 +5,9 @@ from Commands.Commands import commands
 class Stats:
 
     @staticmethod
-    def create(addr, response):
+    def create(device, response):
         stats = {
-            'addr': addr,
+            'addr': device.addr,
         }
 
         t = 0
@@ -42,6 +42,6 @@ class Stats:
         timestamp -= timestamp % 3600
         timestamp += t
         stats['time'] = timestamp
-        stats['synced'] = not commands.has_command(addr)
+        stats['synced'] = not commands.has_command(device)
 
         return stats

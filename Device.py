@@ -33,12 +33,21 @@ class Device:
         return self.addr
 
     def get_data(self):
+
+        group = None
+        if self.group is not None:
+            group_addrs = [device.addr for device in self.group['devices']]
+            group = {
+                'name': self.group['name'],
+                'devices': group_addrs
+            }
+
         return {
             "name": self.name,
             "stats": self.get_stats(),
             "timers": self.timers,
             "settings": self.settings,
-            "group": self.group
+            "group": group
         }
 
     def get_stats(self):

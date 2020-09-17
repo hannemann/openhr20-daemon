@@ -1,6 +1,5 @@
 import sys
 from SerialIO import serialIO
-from Devices import devices
 import time
 from Commands.CommandTemperature import CommandTemperature
 from Commands.CommandMode import CommandMode
@@ -17,7 +16,8 @@ class Commands:
 
     buffer = {}
 
-    def add(self, addr, command):
+    def add(self, device, command):
+        addr = device.addr
         if addr not in self.buffer:
             self.buffer[addr] = []
 
@@ -28,114 +28,100 @@ class Commands:
         else:
             self.buffer[addr].append(command)
 
-        devices.get_device(addr).synced = False
+        device.synced = False
 
-    def send(self, addr):
+    def send(self, device):
         weight = 0
         bank = 0
         q = []
         i = 0
-        if self.has_command(addr):
-            for cmnd in self.buffer[addr]:
+        if self.has_command(device):
+            for cmnd in self.buffer[device.addr]:
                 cw = cmnd.weight
                 weight += cw
                 if weight > 10:
                     if ++bank > 7:
                         break
                     weight = cw
-                r = "(%02x-%x)%s" % (addr, bank, cmnd.command)
+                r = "(%02x-%x)%s" % (device.addr, bank, cmnd.command)
                 q.append(r)
                 cmnd.sent += 1
                 i += 1
                 if i > 25:
                     break
             serialIO.write('\n'.join(q), '')
-            print(' %s' % '(' + devices.get_device(addr).name + ')' if devices.has_device(addr) else '')
+            print(' %s' % '(' + device.name + ')')
 
-    def remove_from_buffer(self, addr):
-        if self.has_command(addr):
-            self.buffer[addr] = sorted(self.buffer[addr], key=lambda k: k.sent)
-            for cmnd in self.buffer[addr]:
+    def remove_from_buffer(self, device):
+        if self.has_command(device):
+            self.buffer[device.addr] = sorted(self.buffer[device.addr], key=lambda k: k.sent)
+            for cmnd in self.buffer[device.addr]:
                 if cmnd.sent > 0:
-                    self.buffer[addr].remove(cmnd)
+                    self.buffer[device.addr].remove(cmnd)
                     break
 
-            if len(self.buffer[addr]) < 1:
-                del self.buffer[addr]
+            if len(self.buffer[device.addr]) < 1:
+                del self.buffer[device.addr]
 
-    def discard_all(self, addr):
-        if self.has_command(addr):
-            del self.buffer[addr]
+    def discard_all(self, device):
+        if self.has_command(device):
+            del self.buffer[device.addr]
 
-    def has_command(self, addr):
-        result = addr in self.buffer and len(self.buffer[addr]) > 0
-        devices.get_device(addr).synced = not result
+    def has_command(self, device):
+        result = device.addr in self.buffer and len(self.buffer[device.addr]) > 0
+        device.synced = not result
         return result
 
-    def test(self, command):
-        self.buffer[0] = command
-
-    def set_temperature(self, addr, temperature):
+    def set_temperature(self, device, temperature):
         CommandTemperature.validate(temperature)
-        device = devices.get_device(addr)
         group = device.group
         if group is None:
-            group = {"devices": [device.addr]}
-        for addr in group['devices']:
-            self.add(devices.get_device(addr).addr, CommandTemperature(temperature))
+            group = {"devices": [device]}
+        for device in group['devices']:
+            self.add(device, CommandTemperature(temperature))
 
-    def set_mode(self, addr, mode):
+    def set_mode(self, device, mode):
         CommandMode.validate(mode)
-        device = devices.get_device(addr)
         group = device.group
         if group is None:
-            group = {"devices": [device.addr]}
-        for addr in group['devices']:
-            self.add(addr, CommandMode(mode))
+            group = {"devices": [device]}
+        for device in group['devices']:
+            self.add(device, CommandMode(mode))
 
-    def update_stats(self, addr):
-        device = devices.get_device(addr)
+    def update_stats(self, device):
         if device.available == device.AVAILABLE_OFFLINE:
-            devices.available = device.AVAILABLE_ONLINE
-            devices.time = int(time.time())
-        self.add(device.addr, CommandStatus())
+            device.available = device.AVAILABLE_ONLINE
+            device.time = int(time.time())
+        self.add(device, CommandStatus())
 
-    def reboot_device(self, addr):
-        device = devices.get_device(addr)
+    def reboot_device(self, device):
         self.add(device.addr, CommandReboot())
 
-    def request_settings(self, addr):
+    def request_settings(self, device):
         try:
-            device = devices.get_device(addr)
             layout = device.settings['ff']
             if layout is not None:
                 device.reset_settings()
                 for field in get_eeprom_layout(int('0x' + layout, 16)):
-                    self.add(addr, CommandGetSetting(field['idx']))
+                    self.add(device, CommandGetSetting(field['idx']))
         except KeyError:
+            ''' no setting ff in device.settings '''
             pass
 
-    def set_setting(self, addr, idx, value):
-        settings = devices.get_device(addr).settings
-        if devices.has_device(addr) and CommandSetSetting.valid(settings['ff'], idx, value):
-            self.add(addr, CommandSetSetting(idx, value))
-            return True
-        return False
+    def set_setting(self, device, idx, value):
+        settings = device.settings
+        if CommandSetSetting.valid(settings['ff'], idx, value):
+            self.add(device, CommandSetSetting(idx, value))
 
-    def request_timers(self, addr):
-        if devices.has_device(addr):
-            self.add(addr, CommandGetSetting('22'))
-            for day in range(8):
-                for slot in range(8):
-                    self.add(addr, CommandGetTimer(day, slot))
-            return True
-        return False
+    def request_timers(self, device):
+        self.add(device.addr, CommandGetSetting('22'))
+        for day in range(8):
+            for slot in range(8):
+                self.add(device, CommandGetTimer(day, slot))
 
-    def set_timer(self, addr, day, value):
-        if devices.has_device(addr) and CommandSetTimer.valid(day, value):
-            self.add(addr, CommandSetTimer(day, value))
-            return True
-        return False
+    def set_timer(self, device, day, value):
+        if CommandSetTimer.valid(day, value):
+            self.add(device, CommandSetTimer(day, value))
 
 
 commands = Commands()

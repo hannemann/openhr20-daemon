@@ -22,14 +22,11 @@ class Devices:
             self.buffer['timers'] = {}
             self.buffer['settings'] = {}
             self.buffer['groups'] = {}
+            self.flush()
         else:
-            self.read()
-        self.flush()
-
-    def read(self):
-        self.buffer.read(self.file)
-        self.init_devices()
-        self.init_groups()
+            self.buffer.read(self.file)
+            self.init_devices()
+            self.init_groups()
 
     def init_devices(self):
         for addr in self.buffer['names']:
@@ -72,15 +69,6 @@ class Devices:
         self.buffer.write(fd)
         fd.close()
         print('Flushed devices to %s' % self.file)
-
-    def get_devices(self):
-        devs = {}
-        for addr, device in self.devices.items():
-            devs[addr] = device.get_data()
-        return devs
-
-    def has_device(self, addr):
-        return True if str(addr) in self.devices else False
 
     def get_device(self, addr):
         return self.devices[str(addr)]

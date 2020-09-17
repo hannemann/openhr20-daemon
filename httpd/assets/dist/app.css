@@ -39,11 +39,22 @@ button {
   border-radius: var(--buttons-border-radius);
 }
 
-div[class*="--card"] {
-  background: var(--lighter-bg-color);
-  margin: var(--grid-base);
+div[class$="--card"] {
+  background-color: var(--card-bg-color);
   padding: var(--grid-base);
+  margin-bottom: var(--grid-base);
+  margin-right: var(--grid-base);
   border-radius: var(--border-radius);
+  flex: 1 0 calc(360px - (2 * var(--grid-base)));
+  position: relative;
+  overflow: hidden;
+}
+
+div.header--card {
+  margin-top: calc(var(--grid-base) * 2);
+  margin-right: 0;
+  background: var(--lighter-bg-color);
+  font-weight: bold;
 }
 
 @-webkit-keyframes spin {
@@ -98,6 +109,8 @@ nav {
 
 nav label {
   position: relative;
+  display: block;
+  width: 100%;
 }
 
 nav label [data-icon] {
@@ -114,7 +127,7 @@ nav label [data-icon=mdi-close] {
 }
 
 nav .nav-list {
-  padding: var(--grid-base);
+  padding: var(--grid-base) 0;
   display: block;
   position: fixed;
   left: -100vw;
@@ -128,6 +141,17 @@ nav .nav-list {
 
 nav .nav-list > span {
   display: block;
+}
+
+nav .nav-list > span a {
+  display: inherit;
+  color: var(--light-fg-color);
+  text-decoration: none;
+  padding: calc(var(--grid-base) / 2) calc(var(--grid-base) * 2);
+}
+
+nav .nav-list > span a:hover {
+  background: var(--light-bg-color);
 }
 
 nav label input[type=checkbox]:checked ~ [data-icon=mdi-menu] {
@@ -148,47 +172,40 @@ main {
   padding: var(--grid-base);
 }
 
-.thermostats {
+main > div:first-of-type {
+  margin-top: 0;
+}
+
+.flex-wrap {
   display: flex;
   margin-right: calc(-1 * var(--grid-base));
   flex-wrap: wrap;
 }
 
-.thermostat-card {
-  background-color: var(--card-bg-color);
-  padding: var(--grid-base);
-  margin-bottom: var(--grid-base);
-  border-radius: var(--border-radius);
-  flex: 1 0 calc(360px - (2 * var(--grid-base)));
-  margin-right: var(--grid-base);
-  position: relative;
-  overflow: hidden;
-}
-
-.thermostat-card [class*=-button] {
+.thermostat--card [class*=-button] {
   cursor: pointer;
 }
 
-.thermostat-card[data-available=warn] h3 > svg:first-of-type.iconify path {
+.thermostat--card[data-available=warn] h3 > svg:first-of-type.iconify path {
   fill: var(--color-warn);
 }
 
-.thermostat-card[data-available=offline] h3 > svg:first-of-type.iconify path {
+.thermostat--card[data-available=offline] h3 > svg:first-of-type.iconify path {
   fill: var(--color-offline);
 }
 
-.thermostat-card h3 {
+.thermostat--card h3 {
   display: flex;
   align-items: center;
   font-size: 1.1em;
   font-weight: normal;
 }
 
-.thermostat-card h3 > * {
+.thermostat--card h3 > * {
   margin-right: var(--grid-base);
 }
 
-.thermostat-card h3 [data-item=time] {
+.thermostat--card h3 [data-item=time] {
   margin-left: auto;
   margin-right: 0;
   font-size: 0.6em;
@@ -196,85 +213,85 @@ main {
   text-align: right;
 }
 
-.thermostat-card .thermostat-card--item {
+.thermostat--card--item {
   display: flex;
   justify-content: flex-end;
 }
 
-.thermostat-card .thermostat-card--item > *:first-child {
+.thermostat--card--item > *:first-child {
   margin-right: auto;
 }
 
-.thermostat-card .thermostat-card--item .value-display {
+.thermostat--card--item .value-display {
   text-align: right;
   flex-basis: 70px;
 }
 
-.thermostat-card .thermostat-card--item[data-item=time] .value-display {
+.thermostat--card--item[data-item=time] .value-display {
   flex-basis: auto;
 }
 
-.thermostat-card .thermostat-card--item[data-item=synced] {
+.thermostat--card--item[data-item=synced] {
   display: none;
 }
 
-.thermostat-card .thermostat-card--item[data-item=actions] {
+.thermostat--card--item[data-item=actions] {
   display: none;
   justify-content: flex-start;
 }
 
-.thermostat-card .thermostat-card--item[data-item=actions] a {
+.thermostat--card--item[data-item=actions] a {
   margin-right: var(--grid-base);
   color: var(--light-fg-color);
   text-decoration: none;
 }
 
-.thermostat-card[data-available=online][data-synced=true] [data-item=actions] {
+.thermostat--card[data-available=online][data-synced=true] [data-item=actions] {
   display: initial;
 }
 
-.thermostat-card[data-synced=false] .value-display span.synced {
+.thermostat--card[data-synced=false] .value-display span.synced {
   display: none;
 }
 
-.thermostat-card[data-synced=false] .value-display span.not-synced {
+.thermostat--card[data-synced=false] .value-display span.not-synced {
   display: initial;
 }
 
-.thermostat-card[data-synced=true] .value-display span.synced {
+.thermostat--card[data-synced=true] .value-display span.synced {
   display: initial;
 }
 
-.thermostat-card[data-synced=true] .value-display span.not-synced {
+.thermostat--card[data-synced=true] .value-display span.not-synced {
   display: none;
 }
 
-.thermostat-card[data-mode=auto] .value-display span.mode-manu,
-.thermostat-card[data-mode=auto] .value-display span.mode--,
-.thermostat-card[data-mode="-"] .value-display span.mode-manu,
-.thermostat-card[data-mode="-"] .value-display span.mode-- {
+.thermostat--card[data-mode=auto] .value-display span.mode-manu,
+.thermostat--card[data-mode=auto] .value-display span.mode--,
+.thermostat--card[data-mode="-"] .value-display span.mode-manu,
+.thermostat--card[data-mode="-"] .value-display span.mode-- {
   opacity: var(--opacity-disabled);
 }
 
-.thermostat-card[data-mode=auto] .value-display span.mode-auto,
-.thermostat-card[data-mode="-"] .value-display span.mode-auto {
+.thermostat--card[data-mode=auto] .value-display span.mode-auto,
+.thermostat--card[data-mode="-"] .value-display span.mode-auto {
   opacity: var(--opacity-enabled);
 }
 
-.thermostat-card[data-mode=manu] .value-display span.mode-auto,
-.thermostat-card[data-mode=manu] .value-display span.mode-- {
+.thermostat--card[data-mode=manu] .value-display span.mode-auto,
+.thermostat--card[data-mode=manu] .value-display span.mode-- {
   opacity: var(--opacity-disabled);
 }
 
-.thermostat-card[data-mode=manu] .value-display span.mode-manu {
+.thermostat--card[data-mode=manu] .value-display span.mode-manu {
   opacity: var(--opacity-enabled);
 }
 
-.thermostat-card .value-display span.mode-- {
+.thermostat--card .value-display span.mode-- {
   display: none;
 }
 
-.thermostat-card span.loading {
+.thermostat--card span.loading {
   position: absolute;
   top: 0;
   left: 0;
@@ -286,12 +303,12 @@ main {
   font-size: 4em;
 }
 
-.thermostat-card[data-synced=false] span.loading {
+.thermostat--card[data-synced=false] span.loading {
   display: flex;
   background: rgba(255, 255, 255, 0.5);
 }
 
-.thermostat-card[data-synced=false] span.loading svg {
+.thermostat--card[data-synced=false] span.loading svg {
   -webkit-animation-name: spin;
           animation-name: spin;
   -webkit-animation-duration: 4000ms;
@@ -302,7 +319,7 @@ main {
           animation-timing-function: linear;
 }
 
-.thermostat-card[data-synced=false] span.loading svg path {
+.thermostat--card[data-synced=false] span.loading svg path {
   fill: var(--dark-color);
 }
 

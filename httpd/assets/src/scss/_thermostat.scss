@@ -1,19 +1,4 @@
-.thermostats {
-  display: flex;
-  margin-right: calc(-1 * var(--grid-base));
-  flex-wrap: wrap;
-}
-
-.thermostat-card {
-  $card: &;
-  background-color: var(--card-bg-color);
-  padding: var(--grid-base);
-  margin-bottom: var(--grid-base);
-  border-radius: var(--border-radius);
-  flex: 1 0 calc(360px - (2 * var(--grid-base)));
-  margin-right: var(--grid-base);
-  position: relative;
-  overflow: hidden;
+.thermostat--card {
 
   & [class*="-button"] {
     cursor: pointer;
@@ -50,7 +35,7 @@
     }
   }
 
-  #{ $card }--item {
+  &--item {
     display: flex;
     justify-content: flex-end;
 

@@ -12,5 +12,5 @@ document.addEventListener('DOMContentLoaded', () => {
     new ThermostatsUpdater();
     new Settings();
     new Timers();
-    document.querySelectorAll('.thermostat-card').forEach(c => new ThermostatCard(c));
+    document.querySelectorAll('.thermostats .thermostat--card').forEach(c => new ThermostatCard(c));
 });

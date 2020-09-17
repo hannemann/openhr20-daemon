@@ -143,7 +143,7 @@ class ThermostatCard {
     wantedInputHandler() {
 
         let precision = this.wanted.value >= 10 ? 3 : 2
-        this.wanted.closest('.thermostat-card--item')
+        this.wanted.closest('.thermostat--card--item')
             .querySelector('.value-display span').innerText = parseFloat(this.wanted.value)
             .toPrecision(precision).padStart(5, ' ')
     }

@@ -1,9 +1,9 @@
     % import json
     % rebase('layout/default', title=title)
-    <div class="thermostats">
+    <div class="flex-wrap thermostats">
     <%
-        for addr, device in devices.items():
-            include('./partials/thermostat-card', addr=addr, device=device)
+        for device in devices:
+            include('./partials/thermostat-card', device=device)
     %>
     %end
     </div>

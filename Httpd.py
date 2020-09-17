@@ -53,7 +53,12 @@ class Httpd(threading.Thread):
 
     @staticmethod
     def index():
-        return template('index', title='OpenHR20', devices=devices.devices)
+        return template('index', title='OpenHR20', devices=devices.devices.values())
+
+    @staticmethod
+    def groups():
+        ungrouped = [d for d in devices.devices.values() if d.group is None]
+        return template('groups', title='Groups', ungrouped_devices=ungrouped, groups=devices.groups.values())
 
     @staticmethod
     def set_temp(addr):
@@ -181,6 +186,7 @@ class Httpd(threading.Thread):
 httpd = Httpd()
 route('/static/<filepath:path>')(httpd.server_static)
 route('/')(httpd.index)
+route('/groups')(httpd.groups)
 route('/stats', method='GET')(httpd.get_stats)
 route('/temp/<addr:int>', method='POST')(httpd.set_temp)
 route('/mode/<addr:int>', method='POST')(httpd.set_mode)

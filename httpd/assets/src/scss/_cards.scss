@@ -1,6 +1,17 @@
-div[class*="--card"] {
-  background: var(--lighter-bg-color);
-  margin: var(--grid-base);
+div[class$="--card"] {
+  background-color: var(--card-bg-color);
   padding: var(--grid-base);
+  margin-bottom: var(--grid-base);
+  margin-right: var(--grid-base);
   border-radius: var(--border-radius);
+  flex: 1 0 calc(360px - (2 * var(--grid-base)));
+  position: relative;
+  overflow: hidden;
+}
+
+div.header--card {
+  margin-top: calc(var(--grid-base) * 2);
+  margin-right: 0;
+  background: var(--lighter-bg-color);
+  font-weight: bold;
 }

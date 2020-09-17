@@ -1,5 +1,5 @@
 %from datetime import datetime
-<div class="thermostat-card"
+<div class="thermostat--card"
      data-name="{{ device.name }}"
      % for attr, value in device.get_stats().items():
          data-{{attr}}="{{ str(value).lower() }}"
@@ -15,7 +15,7 @@
             {{ datetime.fromtimestamp(device.time).strftime('%d.%m.%Y %H:%M:%S') }}
         </span>
     </h3>
-    <div class="thermostat-card--item" data-item="mode">
+    <div class="thermostat--card--item" data-item="mode">
         <span>Mode</span>
         <span class="value-display mode-button">
             <span class="mode-manu">
@@ -29,26 +29,26 @@
             </span>
         </span>
     </div>
-    <div class="thermostat-card--item" data-item="wanted">
+    <div class="thermostat--card--item" data-item="wanted">
         <label for="{{ device.addr }}-wanted">
             Wanted:
         </label>
         <input id="{{ device.addr }}-wanted" type="range" step="0.5" min="5" max="30" value="{{ device.wanted }}">
         <span class="value-display"><span>{{ device.wanted }}</span> °C</span>
     </div>
-    <div class="thermostat-card--item" data-item="real">
+    <div class="thermostat--card--item" data-item="real">
         <span>Real:</span>
         <span class="value-display"><span>{{ device.real }}</span> °C</span>
     </div>
-    <div class="thermostat-card--item" data-item="valve">
+    <div class="thermostat--card--item" data-item="valve">
         <span>Valve:</span>
         <span class="value-display"><span>{{ device.valve }}</span> %</span>
     </div>
-    <div class="thermostat-card--item" data-item="battery">
+    <div class="thermostat--card--item" data-item="battery">
         <span>Battery:</span>
         <span class="value-display"><span>{{ device.battery }}</span> V
     </div>
-    <div class="thermostat-card--item" data-item="synced">
+    <div class="thermostat--card--item" data-item="synced">
         <span>Synced:</span>
         <span class="value-display">
             <span class="synced">
@@ -59,7 +59,7 @@
             </span>
         </span>
     </div>
-    <div class="thermostat-card--item" data-item="actions">
+    <div class="thermostat--card--item" data-item="actions">
         <a href="/settings/{{ device.addr}}">
             <span class="iconify" data-icon="mdi-cog-outline"></span>
         </a>

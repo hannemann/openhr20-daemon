@@ -2,7 +2,7 @@ class ThermostatsUpdater {
 
     constructor() {
         this.cards = {};
-        document.querySelectorAll('.thermostat-card').forEach(c => {
+        document.querySelectorAll('.thermostats .thermostat--card').forEach(c => {
             this.cards[c.dataset.addr] = c
         });
         this.interval = 30000;

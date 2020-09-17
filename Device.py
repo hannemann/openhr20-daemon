@@ -10,6 +10,7 @@ from Commands.CommandGetTimer import CommandGetTimer
 from Commands.CommandSetTimer import CommandSetTimer
 from Eeprom import get_eeprom_layout
 from Commands.Commands import commands
+from Group import Group
 
 
 class Device:
@@ -27,6 +28,7 @@ class Device:
     wanted = 0
     battery = 0
     error = 0
+    group = None
 
     def __init__(self, addr, name, stats, timers, settings, group):
         self.addr = addr
@@ -46,9 +48,9 @@ class Device:
 
         group = None
         if self.group is not None:
-            group_addrs = [device.addr for device in self.group['devices']]
+            group_addrs = [device.addr for device in self.group.devices]
             group = {
-                'name': self.group['name'],
+                'name': self.group.name,
                 'devices': group_addrs
             }
 
@@ -108,16 +110,16 @@ class Device:
         CommandTemperature.validate(temperature)
         group = self.group
         if group is None:
-            group = {"devices": [self]}
-        for device in group['devices']:
+            group = Group('fake', [self])
+        for device in group.devices:
             commands.add(device, CommandTemperature(temperature))
 
     def set_mode(self, mode):
         CommandMode.validate(mode)
         group = self.group
         if group is None:
-            group = {"devices": [self]}
-        for device in group['devices']:
+            group = Group('fake', [self])
+        for device in group.devices:
             commands.add(device, CommandMode(mode))
 
     def update_stats(self):

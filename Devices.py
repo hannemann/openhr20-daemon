@@ -2,6 +2,7 @@ import configparser
 import os
 import json
 from Device import Device
+from Group import Group
 
 
 class Devices:
@@ -10,6 +11,7 @@ class Devices:
         self.file = '/var/cache/openhr20/devices.conf'
         self.buffer = configparser.ConfigParser()
         self.devices = {}
+        self.groups = {}
 
         if not os.path.exists(self.file):
             self.buffer['names'] = {
@@ -26,7 +28,10 @@ class Devices:
 
     def read(self):
         self.buffer.read(self.file)
+        self.init_devices()
+        self.init_groups()
 
+    def init_devices(self):
         for addr in self.buffer['names']:
             try:
                 groups = dict(self.buffer['groups'])
@@ -42,9 +47,20 @@ class Devices:
                 group
             )
             self.devices[addr] = device
+
+    def init_groups(self):
         for addr, device in self.devices.items():
             if device.group is not None:
-                device.group['devices'] = [d for d in self.devices.values() if d.addr in [d for d in device.group['devices']]]
+                if device.group['name'] not in self.groups:
+                    group = device.group
+                    group = Group(
+                        group['name'],
+                        [d for d in self.devices.values() if d.addr in [d for d in group['devices']]]
+                    )
+                    device.group = group
+                    self.groups[group.name] = group
+                else:
+                    device.group = self.groups[device.group['name']]
 
     def flush(self):
         fd = open(self.file, 'w')

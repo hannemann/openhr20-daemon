@@ -42,6 +42,9 @@ class Devices:
                 group
             )
             self.devices[addr] = device
+        for addr, device in self.devices.items():
+            if device.group is not None:
+                device.group['devices'] = [d for d in self.devices.values() if d.addr in [d for d in device.group['devices']]]
 
     def flush(self):
         fd = open(self.file, 'w')

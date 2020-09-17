@@ -1,6 +1,5 @@
 import sys
 from Eeprom import get_eeprom_layout
-from Devices import devices
 
 
 class CommandGetSetting:
@@ -14,8 +13,8 @@ class CommandGetSetting:
         self.command = '%s%s' % (self.command, idx.lower())
 
     @staticmethod
-    def valid(addr, idx):
-        settings = devices.get_device(addr).settings
+    def valid(device, idx):
+        settings = device.settings
         if 'ff' not in settings:
             return False
         fields = get_eeprom_layout(int('0x%0.2x' % settings['ff'], 16))

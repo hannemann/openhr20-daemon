@@ -1,5 +1,15 @@
 import json
 import time
+from Commands.CommandTemperature import CommandTemperature
+from Commands.CommandMode import CommandMode
+from Commands.CommandStatus import CommandStatus
+from Commands.CommandGetSetting import CommandGetSetting
+from Commands.CommandSetSetting import CommandSetSetting
+from Commands.CommandReboot import CommandReboot
+from Commands.CommandGetTimer import CommandGetTimer
+from Commands.CommandSetTimer import CommandSetTimer
+from Eeprom import get_eeprom_layout
+from Commands.Commands import commands
 
 
 class Device:
@@ -93,3 +103,54 @@ class Device:
 
     def reset_settings(self):
         self.settings = {'ff': self.settings['ff']}
+
+    def set_temperature(self, temperature):
+        CommandTemperature.validate(temperature)
+        group = self.group
+        if group is None:
+            group = {"devices": [self]}
+        for device in group['devices']:
+            commands.add(device, CommandTemperature(temperature))
+
+    def set_mode(self, mode):
+        CommandMode.validate(mode)
+        group = self.group
+        if group is None:
+            group = {"devices": [self]}
+        for device in group['devices']:
+            commands.add(device, CommandMode(mode))
+
+    def update_stats(self):
+        if self.available == self.AVAILABLE_OFFLINE:
+            self.available = self.AVAILABLE_ONLINE
+            self.time = int(time.time())
+        commands.add(self, CommandStatus())
+
+    def reboot_device(self):
+        commands.add(self, CommandReboot())
+
+    def request_settings(self):
+        try:
+            layout = self.settings['ff']
+            if layout is not None:
+                self.reset_settings()
+                for field in get_eeprom_layout(int('0x' + layout, 16)):
+                    commands.add(self, CommandGetSetting(field['idx']))
+        except KeyError:
+            ''' no setting ff in device.settings '''
+            pass
+
+    def send_setting(self, idx, value):
+        settings = self.settings
+        if CommandSetSetting.valid(settings['ff'], idx, value):
+            commands.add(self, CommandSetSetting(idx, value))
+
+    def request_timers(self):
+        commands.add(self, CommandGetSetting('22'))
+        for day in range(8):
+            for slot in range(8):
+                commands.add(self, CommandGetTimer(day, slot))
+
+    def send_timer(self, day, value):
+        if CommandSetTimer.valid(day, value):
+            commands.add(self, CommandSetTimer(day, value))

@@ -1,15 +1,5 @@
 import sys
 from SerialIO import serialIO
-import time
-from Commands.CommandTemperature import CommandTemperature
-from Commands.CommandMode import CommandMode
-from Commands.CommandStatus import CommandStatus
-from Commands.CommandGetSetting import CommandGetSetting
-from Commands.CommandSetSetting import CommandSetSetting
-from Commands.CommandReboot import CommandReboot
-from Commands.CommandGetTimer import CommandGetTimer
-from Commands.CommandSetTimer import CommandSetTimer
-from Eeprom import get_eeprom_layout
 
 
 class Commands:
@@ -71,57 +61,6 @@ class Commands:
         result = device.addr in self.buffer and len(self.buffer[device.addr]) > 0
         device.synced = not result
         return result
-
-    def set_temperature(self, device, temperature):
-        CommandTemperature.validate(temperature)
-        group = device.group
-        if group is None:
-            group = {"devices": [device]}
-        for device in group['devices']:
-            self.add(device, CommandTemperature(temperature))
-
-    def set_mode(self, device, mode):
-        CommandMode.validate(mode)
-        group = device.group
-        if group is None:
-            group = {"devices": [device]}
-        for device in group['devices']:
-            self.add(device, CommandMode(mode))
-
-    def update_stats(self, device):
-        if device.available == device.AVAILABLE_OFFLINE:
-            device.available = device.AVAILABLE_ONLINE
-            device.time = int(time.time())
-        self.add(device, CommandStatus())
-
-    def reboot_device(self, device):
-        self.add(device.addr, CommandReboot())
-
-    def request_settings(self, device):
-        try:
-            layout = device.settings['ff']
-            if layout is not None:
-                device.reset_settings()
-                for field in get_eeprom_layout(int('0x' + layout, 16)):
-                    self.add(device, CommandGetSetting(field['idx']))
-        except KeyError:
-            ''' no setting ff in device.settings '''
-            pass
-
-    def set_setting(self, device, idx, value):
-        settings = device.settings
-        if CommandSetSetting.valid(settings['ff'], idx, value):
-            self.add(device, CommandSetSetting(idx, value))
-
-    def request_timers(self, device):
-        self.add(device.addr, CommandGetSetting('22'))
-        for day in range(8):
-            for slot in range(8):
-                self.add(device, CommandGetTimer(day, slot))
-
-    def set_timer(self, device, day, value):
-        if CommandSetTimer.valid(day, value):
-            self.add(device, CommandSetTimer(day, value))
 
 
 commands = Commands()

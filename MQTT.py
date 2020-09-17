@@ -1,7 +1,6 @@
 import json
 import sys
 import paho.mqtt.client as mqttc
-from Commands.Commands import commands
 import threading
 from Commands.CommandTemperature import CommandTemperature
 from Commands.CommandMode import CommandMode
@@ -44,13 +43,13 @@ class MQTT(threading.Thread):
             payload = msg.payload.decode('utf_8').strip()
             device = devices.get_devices(addr)
             if cmnd == CommandMode.abbr:
-                commands.set_mode(device, payload)
+                device.set_mode(payload)
             elif cmnd == CommandTemperature.abbr:
-                commands.set_temperature(device, payload)
+                device.set_temperature(payload)
             elif cmnd == CommandStatus.abbr:
-                commands.update_stats(device)
+                device.update_stats()
             elif cmnd == CommandReboot.abbr:
-                commands.reboot_device(device)
+                device.reboot_device()
         except KeyError:
             pass
         except ValueError:

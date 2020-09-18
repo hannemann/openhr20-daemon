@@ -11,10 +11,10 @@ div[class$="--card"] {
 
 div.header--card {
   margin-top: calc(var(--grid-base) * 2);
-  margin-right: 0;
   background: var(--lighter-bg-color);
   font-weight: bold;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-basis: calc(100% - 2 * var(--grid-base));
 }

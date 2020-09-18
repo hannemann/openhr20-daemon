@@ -237,6 +237,13 @@ main > div:first-of-type,
 
 .thermostat--card--item[data-item=wanted] span.wanted-control {
   position: relative;
+  flex: 1 0 auto;
+  margin-left: calc(2 * var(--grid-base));
+  max-width: 350px;
+}
+
+.thermostat--card--item[data-item=wanted] span.wanted-control input {
+  width: 100%;
 }
 
 .thermostat--card--item[data-item=wanted] span.wanted-control > span {

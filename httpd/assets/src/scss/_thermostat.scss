@@ -51,6 +51,14 @@
     &[data-item="wanted"] {
       span.wanted-control {
         position: relative;
+        flex: 1 0 auto;
+        margin-left: calc(2 * var(--grid-base));
+        max-width: 350px;
+
+        input {
+          width: 100%;
+        }
+
         & > span {
           display: none;
           position: absolute;

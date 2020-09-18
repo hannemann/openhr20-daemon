@@ -59,6 +59,26 @@
             </span>
         </span>
     </div>
+    <div class="thermostat--card--item" data-item="error">
+        <span>Error</span>
+        <span class="value-display">
+            <span class="error-icon" data-error="4" data-descr="Montage">
+                <span class="iconify" data-icon="mdi-cog-refresh-outline"></span>
+            </span>
+            <span class="error-icon" data-error="8" data-descr="Motor">
+                <span class="iconify" data-icon="mdi-cog-off-outline"></span>
+            </span>
+            <span class="error-icon" data-error="16" data-descr="RFM">
+                <span class="iconify" data-icon="mdi-access-point-off"></span>
+            </span>
+            <span class="error-icon" data-error="64" data-descr="Battery warn">
+                <span class="iconify" data-icon="mdi-battery-alert-variant-outline"></span>
+            </span>
+            <span class="error-icon" data-error="128" data-descr="Battery error">
+                <span class="iconify" data-icon="mdi-battery-off-outline"></span>
+            </span>
+        </span>
+    </div>
     <div class="thermostat--card--item" data-item="actions">
         <a href="/settings/{{ device.addr}}">
             <span class="iconify" data-icon="mdi-cog-outline"></span>

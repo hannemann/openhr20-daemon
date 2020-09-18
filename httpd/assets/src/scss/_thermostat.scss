@@ -12,7 +12,7 @@
 
   &[data-available="offline"] {
     h3 > svg:first-of-type.iconify path {
-      fill: var(--color-offline);
+      fill: var(--color-alert);
     }
   }
 
@@ -141,6 +141,59 @@
         animation-duration: 4000ms;
         animation-iteration-count: infinite;
         animation-timing-function: linear;
+      }
+    }
+  }
+  &[data-error="0"] {
+    [data-item="error"] {
+      display: none;
+    }
+  }
+  [data-item="error"] {
+    justify-content: space-between;
+    & > span {
+      margin-right: 0;
+      flex-basis: auto;
+    }
+    .error-icon {
+      color: var(--color-alert);
+      &:before {
+        content: attr(data-descr);
+      }
+    }
+  }
+  &[data-error="4"] {
+    [data-item="error"] {
+      [data-error="8"], [data-error="16"], [data-error="64"], [data-error="128"] {
+        display: none
+      }
+    }
+  }
+  &[data-error="8"] {
+    [data-item="error"] {
+      [data-error="4"], [data-error="16"], [data-error="64"], [data-error="128"] {
+        display: none
+      }
+    }
+  }
+  &[data-error="16"] {
+    [data-item="error"] {
+      [data-error="4"], [data-error="8"], [data-error="64"], [data-error="128"] {
+        display: none
+      }
+    }
+  }
+  &[data-error="64"] {
+    [data-item="error"] {
+      [data-error="4"], [data-error="8"], [data-error="16"], [data-error="128"] {
+        display: none
+      }
+    }
+  }
+  &[data-error="128"] {
+    [data-item="error"] {
+      [data-error="4"], [data-error="8"], [data-error="16"], [data-error="64"] {
+        display: none
       }
     }
   }

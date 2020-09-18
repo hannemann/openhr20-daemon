@@ -1,3 +1,12 @@
+const errorIconMap = {
+    4: "mdi-cog-refresh-outline",
+    8: "mdi-cog-off-outline",
+    16: "mdi-access-point-off",
+    64: "mdi-battery-alert-variant-outline",
+    128: "mdi-battery-off-outline"
+
+};
+
 class ThermostatCard {
 
     constructor(card) {

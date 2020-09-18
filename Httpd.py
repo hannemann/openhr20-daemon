@@ -2,13 +2,13 @@ from bottle import ServerAdapter, route, template, static_file, request, respons
 import bottle
 import sys
 import pathlib
-from Config import config
+from Config import config, defaults
 from Devices import devices
 import threading
 import json
 from Eeprom import get_eeprom_layout
 
-debug = config.getboolean('openhr20', 'debug')
+debug = config.getboolean('openhr20', 'debug', fallback='no')
 httpd_path = '/' + str(pathlib.Path(__file__).parent.absolute()).strip('/') + '/httpd/'
 bottle.TEMPLATE_PATH.insert(0, httpd_path + 'views')
 bottle.debug(debug)
@@ -27,7 +27,7 @@ class MyWSGIRefServer(ServerAdapter):
             class QuietHandler(WSGIRequestHandler):
                 def log_request(*args, **kw): pass
             self.options['handler_class'] = QuietHandler
-        self.server = make_server('0.0.0.0', self.port, handler, **self.options)
+        self.server = make_server(self.host, self.port, handler, **self.options)
         self.server.serve_forever()
 
     def stop(self):
@@ -40,8 +40,8 @@ class Httpd(threading.Thread):
     server = None
 
     def run(self):
-        host = config.get('httpd', 'host', fallback='0.0.0.0')
-        port = config.getint('httpd', 'port', fallback=8020)
+        host = config.get('httpd', 'host', fallback=defaults['httpd']['host'])
+        port = config.getint('httpd', 'port', fallback=defaults['httpd']['port'])
         self.server = MyWSGIRefServer(port=port, host=host)
         bottle.run(server=self.server, reloader=False)
         print('HTTP Server stopped...')

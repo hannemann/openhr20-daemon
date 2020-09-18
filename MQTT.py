@@ -6,7 +6,7 @@ from Commands.CommandTemperature import CommandTemperature
 from Commands.CommandMode import CommandMode
 from Commands.CommandStatus import CommandStatus
 from Commands.CommandReboot import CommandReboot
-from Config import config
+from Config import config, defaults
 from Devices import devices
 
 
@@ -14,6 +14,12 @@ class MQTT(threading.Thread):
     daemon = True
     count = 0
     temp = 'temp'
+    cmnd_topic = config.get('mqtt', 'cmnd_topic', fallback=defaults['mqtt']['cmnd_topic'])
+    stats_topic = config.get('mqtt', 'stats_topic', fallback=defaults['mqtt']['stats_topic'])
+    host = config.get('mqtt', 'host', fallback=defaults['mqtt']['host'])
+    port = config.getint('mqtt', 'port', fallback=defaults['mqtt']['port'])
+    qos = config.getint('mqtt', 'qos', fallback=defaults['mqtt']['qos'])
+    retain = config.getboolean('mqtt', 'retain', fallback=defaults['mqtt']['retain'])
 
     def __init__(self):
         threading.Thread.__init__(self)
@@ -27,13 +33,13 @@ class MQTT(threading.Thread):
         print("Connected to MQTT Broker with result code " + str(rc))
         sys.stdout.flush()
         # self.client.subscribe("$SYS/#")
-        cmnd_topic = config['mqtt'].get('cmnd_topic').strip('/') + "/#"
+        cmnd_topic = self.cmnd_topic.strip('/') + "/#"
         self.client.subscribe(cmnd_topic)
         print('MQTT: Subscribed to topic %s' % cmnd_topic)
         sys.stdout.flush()
 
     def on_message(self, client, userdata, msg):
-        topic = msg.topic.replace(config['mqtt'].get('cmnd_topic').strip('/') + '/', '').split('/')
+        topic = msg.topic.replace(self.cmnd_topic.strip('/') + '/', '').split('/')
         cmnd = topic[0]
         addr = int(topic[1], 10)
         print("MQTT: %d %s %s" % (addr, cmnd, msg.payload.decode('utf_8').strip()))
@@ -58,21 +64,24 @@ class MQTT(threading.Thread):
     def publish(self,
                 topic,
                 payload,
-                qos=int(config['mqtt'].get('qos', 0)),
-                retain=config['mqtt'].getboolean('retain', False)
+                qos=config.getint('mqtt', 'qos', fallback=defaults['mqtt']['qos']),
+                retain=config.getboolean('mqtt', 'retain', fallback=defaults['mqtt']['retain'])
                 ):
         self.client.publish(topic, payload, qos, retain)
 
     def publish_json(self,
                      topic,
                      payload,
-                     qos=int(config['mqtt'].get('qos', 0)),
-                     retain=config['mqtt'].getboolean('retain', False)
+                     qos=config.getint('mqtt', 'qos', fallback=defaults['mqtt']['qos']),
+                     retain=config.getboolean('mqtt', 'retain', fallback=defaults['mqtt']['retain'])
                      ):
         self.publish(topic, json.dumps(payload), qos, retain)
 
+    def publish_stats(self, device):
+        self.publish(self.stats_topic.strip('/') + '/%d' % device.addr, str(device))
+
     def run(self):
-        self.client.connect(config['mqtt'].get('host'), int(config['mqtt'].get('port')), 60)
+        self.client.connect(self.host, self.port, 60)
         self.client.loop_forever()
 
     def shutdown(self):

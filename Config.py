@@ -5,6 +5,26 @@ import sys
 
 file = '/etc/openhr20/daemon.conf'
 config = configparser.ConfigParser()
+defaults = {
+    'mqtt': {
+        'host': 'mqtt.example.com',
+        'port': 1883,
+        'qos': 0,
+        'retain': False,
+        'stats_topic': 'stat/openhr20-python/RESULT/',
+        'cmnd_topic': 'cmnd/openhr20-python/'
+    },
+    'openhr20': {
+        'master': '/dev/ttyUSB0',
+        'baud': 38400,
+        'timeout': 1,
+        'device-db': '/var/cache/openhr20/devices.db'
+    },
+    'httpd': {
+        'host': '0.0.0.0',
+        'port': 8020
+    }
+}
 
 
 def write_file():
@@ -15,25 +35,9 @@ def write_file():
 
 
 if not os.path.exists(file):
-    config['httpd'] = {
-        'host': '0.0.0.0',
-        'port': 8020
-    }
-    config['openhr20'] = {
-        'master': '/dev/ttyUSB0',
-        'baud': 38400,
-        'timeout': 1,
-        'debug': False
-    }
-    config['mqtt'] = {
-        'host': 'heimomat',
-        'port': 1883,
-        'qos': 0,
-        'retain': 'no',
-        'stats_topic': 'stat/openhr20-python/RESULT/',
-        'cmnd_topic': 'cmnd/openhr20-python/'
-    }
-
+    config['httpd'] = defaults['httpd']
+    config['openhr20'] = defaults['openhr20']
+    config['mqtt'] = defaults['mqtt']
     write_file()
 else:
     config.read(file)

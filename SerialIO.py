@@ -1,7 +1,7 @@
 import sys
 import serial
 from serial.serialutil import SerialException
-from Config import config
+from Config import config, defaults
 from threading import Event
 
 
@@ -13,15 +13,15 @@ class SerialIO:
     def __init__(self):
         try:
             self.ser = serial.Serial(
-                config['openhr20'].get('master', '/dev/ttyUSB0'),
-                config['openhr20'].get('baud', 38400),
-                timeout=int(config['openhr20'].get('timeout', 1)))
+                config.get('openhr20', 'master', fallback=defaults['openhr20']['master']),
+                config.getint('openhr20', 'baud', fallback=defaults['openhr20']['baud']),
+                timeout=config.getint('openhr20', 'timeout', fallback=defaults['openhr20']['timeout']))
             self.connected.set()
             print('Serial connection initialized')
             sys.stdout.flush()
         except SerialException:
             print('\n!**********\nSerialError: COULD NOT ESTABLISH SERIAL CONNECTION TO %s\n!**********\n' %
-                  config['openhr20'].get('master', '/dev/ttyUSB0'))
+                  config.get('openhr20', 'master', fallback='/dev/ttyUSB0'))
             sys.stdout.flush()
 
     def write(self, payload, end='\n'):

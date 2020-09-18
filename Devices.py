@@ -3,12 +3,13 @@ import os
 import json
 from Device import Device
 from Group import Group
+from Config import config, defaults
 
 
 class Devices:
 
     def __init__(self):
-        self.file = '/var/cache/openhr20/devices.conf'
+        self.file = config.get('openhr20', 'device-db', fallback=defaults['openhr20']['device-db'])
         self.buffer = configparser.ConfigParser()
         self.devices = {}
         self.groups = {}
@@ -27,6 +28,7 @@ class Devices:
             self.buffer.read(self.file)
             self.init_devices()
             self.init_groups()
+            print('Read devices from %s' % self.file)
 
     def init_devices(self):
         for addr in self.buffer['names']:

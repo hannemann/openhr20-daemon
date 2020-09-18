@@ -79,7 +79,7 @@ class OpenHR20 (threading.Thread):
                 '''noop'''
             elif line == 'N0?' or line == 'N1?':
                 devices.flush()
-                serialIO.write(self.sync_package(line))
+                commands.send_sync_package(line)
                 for device in devices.devices.values():
                     mqtt.publish_stats(device)
             else:
@@ -95,26 +95,6 @@ class OpenHR20 (threading.Thread):
                             self.device.set_setting(self.data[2:4], self.data[6:])
                         if self.data[0] in ['R', 'W']:
                             self.device.set_timer(int(self.data[2:3]), int(self.data[3:4]), self.data[6:])
-
-    @staticmethod
-    def sync_package(line):
-        req = [0, 0, 0, 0]
-        v = 'O0000'
-        pr = 0
-        if len(commands.buffer) > 0:
-            for addr in sorted(commands.buffer, key=lambda k: len(commands.buffer[k]), reverse=True):
-                v = None
-                cmnds = commands.buffer[addr]
-                if line == 'N1?' and len(cmnds) > 10:
-                    v = "O%02x%02x" % (addr, pr)
-                    pr = addr
-                else:
-                    req[int(addr/8)] |= int(pow(2, addr % 8))
-
-        if v is None:
-            v = "P%02x%02x%02x%02x" % (req[0], req[1], req[2], req[3])
-
-        return v
 
     def shutdown(self):
         self.alive = False

@@ -62,5 +62,24 @@ class Commands:
         device.synced = not result
         return result
 
+    def send_sync_package(self, line):
+        req = [0, 0, 0, 0]
+        v = 'O0000'
+        pr = 0
+        if len(self.buffer) > 0:
+            for addr in sorted(self.buffer, key=lambda k: len(self.buffer[k]), reverse=True):
+                v = None
+                cmnds = self.buffer[addr]
+                if line == 'N1?' and len(cmnds) > 10:
+                    v = "O%02x%02x" % (addr, pr)
+                    pr = addr
+                else:
+                    req[int(addr/8)] |= int(pow(2, addr % 8))
+
+        if v is None:
+            v = "P%02x%02x%02x%02x" % (req[0], req[1], req[2], req[3])
+
+        serialIO.write(v)
+
 
 commands = Commands()

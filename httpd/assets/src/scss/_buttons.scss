@@ -6,3 +6,8 @@ button {
   color: var(--light-fg-color);
   border-radius: var(--buttons-border-radius);
 }
+
+.action-icon {
+  font-size: var(--font-size-big);
+  line-height: var(--font-size-big);
+}

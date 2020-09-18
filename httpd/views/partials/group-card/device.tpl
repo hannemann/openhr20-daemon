@@ -1,0 +1,1 @@
+<li class="group-device">{{ device.name }}</li>

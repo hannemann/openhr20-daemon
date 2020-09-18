@@ -39,6 +39,11 @@ button {
   border-radius: var(--buttons-border-radius);
 }
 
+.action-icon {
+  font-size: var(--font-size-big);
+  line-height: var(--font-size-big);
+}
+
 div[class$="--card"] {
   background-color: var(--card-bg-color);
   padding: var(--grid-base);
@@ -55,6 +60,9 @@ div.header--card {
   margin-right: 0;
   background: var(--lighter-bg-color);
   font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 @-webkit-keyframes spin {
@@ -405,5 +413,50 @@ main > div:first-of-type {
 .thermostat-timers[data-mode="0"] [data-type=week_timers],
 .thermostat-timers[data-mode="1"] [data-type=daily_timers] {
   display: none;
+}
+
+.header--group .action-icon label {
+  position: relative;
+}
+
+.header--group .action-icon label [type=checkbox] {
+  display: none;
+}
+
+.header--group .action-icon label .add-input {
+  display: none;
+  position: absolute;
+  right: calc(-1 * var(--grid-base));
+  background: cyan;
+  top: calc(-1 * (var(--grid-base) / 2));
+  bottom: calc(-1 * (var(--grid-base) / 2));
+  padding: 0 var(--grid-base);
+  border-radius: var(--border-radius);
+  background: var(--light-bg-color);
+}
+
+.header--group .action-icon label [type=checkbox]:checked ~ .add-input {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.header--group .action-icon label [type=checkbox]:checked ~ .add-input input {
+  margin-right: var(--grid-base);
+  background: var(--light-bg-color);
+  border: 1px solid var(--dark-bg-color);
+  border-radius: var(--buttons-border-radius);
+  padding: calc(var(--grid-base) / 2);
+}
+
+.group--devices {
+  padding-top: var(--grid-base);
+  padding-left: var(--grid-base);
+  list-style-type: none;
+}
+
+.group--devices .group--devices-header {
+  margin-left: calc(-1 * var(--grid-base));
+  margin-bottom: calc(var(--grid-base) / 2);
 }
 

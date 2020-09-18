@@ -1,3 +1,9 @@
 <div class="group--card">
-    {{ group.name }}
+    <span class="group--name">{{ group.name }}</span>
+    <ul class="group--devices">
+        <li class="group--devices-header">Devices</li>
+        % for device in group.devices:
+        % include('./partials/group-card/device')
+        % end
+    </ul>
 </div>

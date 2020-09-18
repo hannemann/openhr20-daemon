@@ -6,7 +6,6 @@ div[class$="--card"] {
   border-radius: var(--border-radius);
   flex: 1 0 calc(360px - (2 * var(--grid-base)));
   position: relative;
-  overflow: hidden;
 }
 
 div.header--card {

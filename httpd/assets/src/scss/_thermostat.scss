@@ -48,8 +48,28 @@
       flex-basis: 70px;
     }
 
-    &[data-item="wanted"] input {
-
+    &[data-item="wanted"] {
+      span.wanted-control {
+        position: relative;
+        & > span {
+          display: none;
+          position: absolute;
+          top: -288%;
+          background: hsla(0deg 0% 70%);
+          padding: calc(2 * var(--grid-base));
+          font-family: monospace;
+          width: calc(7ch + 4 * var(--grid-base));
+          left: calc(50% - (7ch + 4 * var(--grid-base)) / 2);
+          color: black;
+          border-radius: var(--border-radius);
+        }
+        &[data-active="true"] > span {
+          display: block;
+        }
+        &[data-is-current] {
+          font-weight: bold;
+        }
+      }
     }
 
     &[data-item="time"] .value-display {

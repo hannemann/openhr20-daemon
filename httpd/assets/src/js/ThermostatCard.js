@@ -33,6 +33,7 @@ class ThermostatCard {
     initHandler() {
         this.handleUpdate = this.updateHandler.bind(this);
         this.handleWanted = this.tempHandler.bind(this);
+        this.handleWantedDown = this.wantedDownHandler.bind(this);
         this.handleMode = this.modeHandler.bind(this);
         this.handleWantedInout = this.wantedInputHandler.bind(this);
         this.handleAttributeMutation = this.attributeMutationHandler.bind(this);
@@ -44,9 +45,9 @@ class ThermostatCard {
         this.observer.observe(this.card, { attributes: true });
 
         if (this.wanted) {
-            this.wanted.addEventListener('pointerdown', () => this.card.dataset.preventupdate = 'true');
+            this.wanted.addEventListener('pointerdown', this.handleWantedDown);
             this.wanted.addEventListener('pointerup', this.handleWanted);
-            this.wanted.addEventListener('input', this.handleWantedInout)
+            this.wanted.addEventListener('input', this.handleWantedInout);
         }
         if (this.mode) {
             this.mode.addEventListener('pointerdown', () => this.card.dataset.preventupdate = 'true');
@@ -98,6 +99,7 @@ class ThermostatCard {
 
     async tempHandler() {
         try {
+            delete this.wanted.parentNode.dataset.active;
             if (this.card.dataset.wanted !== this.wanted.value) {
                 this.card.dataset.synced = 'false';
                 await this.post(`${location.origin}/temp/${this.addr}`, {
@@ -149,12 +151,26 @@ class ThermostatCard {
         return axios.post(url, data, {cancelToken: source.token})
     }
 
+    wantedDownHandler() {
+        this.card.dataset.preventupdate = 'true';
+        this.wanted.parentNode.dataset.active = 'true';
+        this.wanted.parentNode.dataset.isCurrent = 'true';
+    }
+
     wantedInputHandler() {
 
-        let precision = this.wanted.value >= 10 ? 3 : 2
+        let precision = this.wanted.value >= 10 ? 3 : 2,
+            value = parseFloat(this.wanted.value).toPrecision(precision).padStart(5, ' ')
         this.wanted.closest('.thermostat--card--item')
-            .querySelector('.value-display span').innerText = parseFloat(this.wanted.value)
-            .toPrecision(precision).padStart(5, ' ')
+            .querySelector('.value-display span').innerText = value
+        this.wanted.nextElementSibling.firstElementChild.innerText = value;
+
+        if (parseFloat(value) === parseFloat(this.card.dataset.wanted)) {
+            this.wanted.parentNode.dataset.isCurrent = 'true';
+        } else {
+            delete this.wanted.parentNode.dataset.isCurrent
+        }
+
     }
 }
 

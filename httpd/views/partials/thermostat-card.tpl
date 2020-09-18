@@ -33,7 +33,10 @@
         <label for="{{ device.addr }}-wanted">
             Wanted:
         </label>
-        <input id="{{ device.addr }}-wanted" type="range" step="0.5" min="5" max="30" value="{{ device.wanted }}">
+        <span class="wanted-control">
+            <input id="{{ device.addr }}-wanted" type="range" step="0.5" min="5" max="30" value="{{ device.wanted }}">
+            <span><span>{{ device.wanted }}</span> °C</span>
+        </span>
         <span class="value-display"><span>{{ device.wanted }}</span> °C</span>
     </div>
     <div class="thermostat--card--item" data-item="real">

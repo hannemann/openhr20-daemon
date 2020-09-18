@@ -52,7 +52,6 @@ div[class$="--card"] {
   border-radius: var(--border-radius);
   flex: 1 0 calc(360px - (2 * var(--grid-base)));
   position: relative;
-  overflow: hidden;
 }
 
 div.header--card {
@@ -234,6 +233,31 @@ main > div:first-of-type,
 .thermostat--card--item .value-display {
   text-align: right;
   flex-basis: 70px;
+}
+
+.thermostat--card--item[data-item=wanted] span.wanted-control {
+  position: relative;
+}
+
+.thermostat--card--item[data-item=wanted] span.wanted-control > span {
+  display: none;
+  position: absolute;
+  top: -288%;
+  background: #b3b3b3;
+  padding: calc(2 * var(--grid-base));
+  font-family: monospace;
+  width: calc(7ch + 4 * var(--grid-base));
+  left: calc(50% - (7ch + 4 * var(--grid-base)) / 2);
+  color: black;
+  border-radius: var(--border-radius);
+}
+
+.thermostat--card--item[data-item=wanted] span.wanted-control[data-active=true] > span {
+  display: block;
+}
+
+.thermostat--card--item[data-item=wanted] span.wanted-control[data-is-current] {
+  font-weight: bold;
 }
 
 .thermostat--card--item[data-item=time] .value-display {

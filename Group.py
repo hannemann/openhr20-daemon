@@ -5,4 +5,4 @@ class Group:
 
     def __init__(self, name, devices):
         self.name = name
-        self.devices = devices
+        self.devices = sorted(devices, key=lambda d: d.name)

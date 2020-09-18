@@ -2,14 +2,16 @@ main {
   background: var(--main-bg-color);
   min-height: calc(100vh - (var(--grid-base) * 4) - var(--font-size-big) - (var(--font-size-big) / 4));
   padding: var(--grid-base);
-
-  & > div:first-of-type {
-    margin-top: 0;
-  }
 }
 
 .flex-wrap {
   display: flex;
   margin-right: calc(-1 * var(--grid-base));
   flex-wrap: wrap;
+}
+
+main, .flex-wrap {
+  & > div:first-of-type {
+    margin-top: 0;
+  }
 }

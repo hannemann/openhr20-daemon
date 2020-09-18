@@ -180,14 +180,15 @@ main {
   padding: var(--grid-base);
 }
 
-main > div:first-of-type {
-  margin-top: 0;
-}
-
 .flex-wrap {
   display: flex;
   margin-right: calc(-1 * var(--grid-base));
   flex-wrap: wrap;
+}
+
+main > div:first-of-type,
+.flex-wrap > div:first-of-type {
+  margin-top: 0;
 }
 
 .thermostat--card [class*=-button] {

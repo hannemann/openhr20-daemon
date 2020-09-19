@@ -31,6 +31,13 @@ class Device:
         '04': 'supercomfort'
     }
 
+    ERROR_MONTAGE = 4
+    ERROR_MOTOR = 8
+    ERROR_RFM_SYNC = 16
+    ERROR_BATT_WARN = 64
+    ERROR_BATT_ERROR = 128
+    ERROR_TIMEOUT = 256
+
     mode = '-'
     valve = 0
     real = 0
@@ -110,6 +117,7 @@ class Device:
         if time_diff >= 60 * 10:
             self.available = self.AVAILABLE_OFFLINE
             self.synced = True
+            self.error = Device.ERROR_TIMEOUT
         elif time_diff >= 60 * 5:
             self.available = self.AVAILABLE_WARN
         else:

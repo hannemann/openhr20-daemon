@@ -49,13 +49,20 @@ class MQTT(threading.Thread):
             payload = msg.payload.decode('utf_8').strip()
             device = devices.get_device(addr)
             if cmnd == CommandMode.abbr:
+                mapped_mode = config.get('mqtt-modes-receive', payload, fallback=False)
+                if mapped_mode is not False:
+                    payload = mapped_mode
                 device.set_mode(payload)
+
             elif cmnd == CommandTemperature.abbr:
                 device.set_temperature(payload)
+
             elif cmnd == CommandStatus.abbr:
                 device.update_stats()
+
             elif cmnd == CommandReboot.abbr:
                 device.reboot_device()
+
         except KeyError:
             pass
         except ValueError:
@@ -78,7 +85,11 @@ class MQTT(threading.Thread):
         self.publish(topic, json.dumps(payload), qos, retain)
 
     def publish_stats(self, device):
-        self.publish(self.stats_topic.strip('/') + '/%d' % device.addr, str(device))
+        stats = device.get_stats()
+        mapped_mode = config.get('mqtt-modes-publish', stats['mode'], fallback=False)
+        if mapped_mode is not False:
+            stats['mode'] = mapped_mode
+        self.publish(self.stats_topic.strip('/') + '/%d' % device.addr, json.dumps(stats))
 
     def run(self):
         self.client.connect(self.host, self.port, 60)

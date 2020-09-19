@@ -23,6 +23,27 @@ defaults = {
     'httpd': {
         'host': '0.0.0.0',
         'port': 8020
+    },
+    'mqtt-modes-receive': {
+        'auto': 'auto',
+        'manu': 'manu'
+    },
+    'mqtt-modes-publish': {
+        'auto': 'auto',
+        '-': 'auto',
+        'manu': 'manu'
+    },
+    'mqtt-preset-receive': {
+        'antifreeze': 'antifreeze',
+        'eco': 'eco',
+        'comfort': 'comfort',
+        'supercomfort': 'supercomfort',
+    },
+    'mqtt-preset-publish': {
+        'antifreeze': 'antifreeze',
+        'eco': 'eco',
+        'comfort': 'comfort',
+        'supercomfort': 'supercomfort',
     }
 }
 
@@ -38,6 +59,10 @@ if not os.path.exists(file):
     config['httpd'] = defaults['httpd']
     config['openhr20'] = defaults['openhr20']
     config['mqtt'] = defaults['mqtt']
+    config['mqtt-modes-receive'] = defaults['mqtt-modes-receive']
+    config['mqtt-modes-send'] = defaults['mqtt-modes-publish']
+    config['mqtt-preset-receive'] = defaults['mqtt-preset-receive']
+    config['mqtt-preset-send'] = defaults['mqtt-preset-publish']
     write_file()
 else:
     config.read(file)

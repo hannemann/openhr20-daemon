@@ -73,7 +73,8 @@ class Device:
             "error": self.error,
             "time": self.time,
             "synced": self.synced,
-            "available": self.available
+            "available": self.available,
+            "pending-commands": len(commands.buffer[self.addr]) if self.addr in commands.buffer else 0,
         }
 
     def set_stats(self, stats):
@@ -156,3 +157,20 @@ class Device:
     def send_timer(self, day, value):
         if CommandSetTimer.valid(day, value):
             commands.add(self, CommandSetTimer(day, value))
+
+    def request_missing_timers(self):
+        for d, day in enumerate(self.timers):
+            for s, slot in enumerate(day):
+                if slot == '':
+                    commands.add(self, CommandGetTimer(d, s))
+
+    def request_missing_settings(self):
+        try:
+            layout = self.settings['ff']
+            if layout is not None:
+                for field in get_eeprom_layout(int('0x' + layout, 16)):
+                    if not field['idx'] in self.settings or self.settings[field['idx']] == '':
+                        commands.add(self, CommandGetSetting(field['idx']))
+        except KeyError:
+            commands.add(self, CommandGetSetting('ff'))
+

@@ -26,6 +26,7 @@ class ThermostatCard {
         this.wanted = this.card.querySelector('[data-item="wanted"] input');
         this.mode = this.card.querySelector('[data-item="mode"] .mode-button');
         this.update = this.card.querySelector('h3 .update-button');
+        this.loading = this.card.querySelector('span.loading');
 
         return this;
     }
@@ -94,6 +95,10 @@ class ThermostatCard {
                 + `${d.getMinutes().toString(10).padStart(2, '0')}:`
                 + `${d.getSeconds().toString(10).padStart(2, '0')}`
             ;
+        }
+
+        if ('pending-commands' === attribute) {
+            this.loading.dataset.pendingCommands = this.card.dataset.pendingCommands;
         }
     }
 

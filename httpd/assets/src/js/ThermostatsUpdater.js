@@ -30,7 +30,12 @@ class ThermostatsUpdater {
         Object.keys(response.data).forEach(addr => {
             let data = response.data[addr];
             Object.keys(data.stats).forEach(k => {
-                this.cards[addr].dataset[k] = data.stats[k];
+                let keys = k.split('-')
+
+                let key = keys.shift();
+                key += keys.map(k => k.charAt(0).toUpperCase() + k.slice(1)).join('');
+
+                this.cards[addr].dataset[key] = data.stats[k];
             })
         })
     }

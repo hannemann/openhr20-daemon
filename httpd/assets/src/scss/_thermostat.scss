@@ -156,11 +156,26 @@
     justify-content: center;
     align-items: center;
     font-size: 4em;
+
+    &:after {
+      content: attr(data-pending-commands);
+      color: var(--dark-color);
+      font-size: .25em;
+      margin: var(--grid-base);
+      padding: var(--grid-base);
+      border-radius: var(--border-radius);
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      background: hsla(0, 0%, 100%, .5);
+      line-height: 1;
+    }
   }
   &[data-synced="false"] {
     span.loading {
       display: flex;
       background: hsla(0, 0%, 100%, .5);
+
       svg {
         path {
           fill: var(--dark-color);

@@ -343,6 +343,20 @@ main > div:first-of-type,
   font-size: 4em;
 }
 
+.thermostat--card span.loading:after {
+  content: attr(data-pending-commands);
+  color: var(--dark-color);
+  font-size: 0.25em;
+  margin: var(--grid-base);
+  padding: var(--grid-base);
+  border-radius: var(--border-radius);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.5);
+  line-height: 1;
+}
+
 .thermostat--card[data-synced=false] span.loading {
   display: flex;
   background: rgba(255, 255, 255, 0.5);

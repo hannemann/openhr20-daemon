@@ -93,8 +93,8 @@ class OpenHR20 (threading.Thread):
 
     def handle_data(self, line):
         if self.data[0] == '?' and self.device.is_available():
-            if 'ff' not in self.device.settings:
-                commands.add(self.device.addr, CommandGetSetting('ff'))
+            self.device.request_missing_timers()
+            self.device.request_missing_settings()
             commands.send(self.device)
         elif line[0] != '*' and (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
             self.update_device_stats(Stats.create(self.device, self.data))

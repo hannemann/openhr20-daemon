@@ -19,6 +19,11 @@ class Device:
     AVAILABLE_ONLINE = 'online'
     AVAILABLE_OFFLINE = 'offline'
 
+    PRESET_ANTIFFREEZE_SETTING = '01'
+    PRESET_ECO_SETTING = '02'
+    PRESET_COMFORT_SETTING = '03'
+    PRESET_SUPERCOMFORT_SETTING = '04'
+
     mode = '-'
     valve = 0
     real = 0
@@ -122,6 +127,14 @@ class Device:
             group = Group('fake', [self])
         for device in group.devices:
             commands.add(device, CommandMode(mode))
+
+    def set_preset(self, preset):
+        try:
+            setting = getattr(self, 'PRESET_%s_SETTING' % preset.upper())
+            temperature = int(self.settings[setting], 16) / 2
+            self.set_temperature(temperature)
+        except AttributeError:
+            pass
 
     def update_stats(self):
         if self.available == self.AVAILABLE_OFFLINE:

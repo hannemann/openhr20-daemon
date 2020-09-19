@@ -63,6 +63,12 @@ class MQTT(threading.Thread):
             elif cmnd == CommandReboot.abbr:
                 device.reboot_device()
 
+            elif cmnd == 'preset':
+                mapped_preset = config.get('mqtt-preset-receive', payload, fallback=False)
+                if mapped_preset is not False:
+                    payload = mapped_preset
+                device.set_preset(payload)
+
         except KeyError:
             pass
         except ValueError:

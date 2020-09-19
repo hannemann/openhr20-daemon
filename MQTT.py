@@ -100,6 +100,12 @@ class MQTT(threading.Thread):
             stats['preset'] = mapped_preset
         self.publish(self.stats_topic.strip('/') + '/%d' % device.addr, json.dumps(stats))
 
+    @staticmethod
+    def publish_availability(device):
+        topic = config.get(
+            'mqtt', 'availability_topic', fallback='stat/openhr20/AVAILABLE/').strip('/') + '/%d' % device.addr
+        mqtt.publish(topic, 'offline' if device.available == device.AVAILABLE_OFFLINE else 'online')
+
     def run(self):
         self.client.connect(self.host, self.port, 60)
         self.client.loop_forever()

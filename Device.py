@@ -203,4 +203,3 @@ class Device:
                         commands.add(self, CommandGetSetting(field['idx']))
         except KeyError:
             commands.add(self, CommandGetSetting('ff'))
-

@@ -11,8 +11,9 @@ defaults = {
         'port': 1883,
         'qos': 0,
         'retain': False,
-        'stats_topic': 'stat/openhr20-python/RESULT/',
-        'cmnd_topic': 'cmnd/openhr20-python/'
+        'stats_topic': 'stat/openhr20/RESULT/',
+        'cmnd_topic': 'cmnd/openhr20/',
+        'availability_topic': 'stat/openhr20/AVAILABLE/'
     },
     'openhr20': {
         'master': '/dev/ttyUSB0',

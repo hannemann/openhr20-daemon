@@ -1,5 +1,4 @@
 import sys
-from Commands.CommandGetSetting import CommandGetSetting
 from MQTT import mqtt
 from SerialIO import serialIO
 from RTC import write as write_rtc
@@ -90,6 +89,7 @@ class OpenHR20 (threading.Thread):
         commands.send_sync_package(line)
         for device in devices.devices.values():
             mqtt.publish_stats(device)
+            mqtt.publish_availability(device)
 
     def handle_data(self, line):
         if self.data[0] == '?' and self.device.is_available():
@@ -107,6 +107,7 @@ class OpenHR20 (threading.Thread):
     def update_device_stats(self, stats):
         self.device.set_stats(stats)
         mqtt.publish_stats(self.device)
+        mqtt.publish_availability(self.device)
 
     def shutdown(self):
         self.alive = False

@@ -19,10 +19,17 @@ class Device:
     AVAILABLE_ONLINE = 'online'
     AVAILABLE_OFFLINE = 'offline'
 
-    PRESET_ANTIFFREEZE_SETTING = '01'
+    PRESET_ANTIFREEZE_SETTING = '01'
     PRESET_ECO_SETTING = '02'
     PRESET_COMFORT_SETTING = '03'
     PRESET_SUPERCOMFORT_SETTING = '04'
+
+    preset_names = {
+        '01': 'antifreeze',
+        '02': 'eco',
+        '03': 'comfort',
+        '04': 'supercomfort'
+    }
 
     mode = '-'
     valve = 0
@@ -80,6 +87,7 @@ class Device:
             "synced": self.synced,
             "available": self.available,
             "pending-commands": len(commands.buffer[self.addr]) if self.addr in commands.buffer else 0,
+            "preset": self.get_current_preset()
         }
 
     def set_stats(self, stats):
@@ -87,6 +95,15 @@ class Device:
             setattr(self, key, value)
         self.set_availability()
         return self
+
+    def get_current_preset(self):
+        try:
+            for setting, name in self.preset_names.items():
+                if int(self.wanted * 2) == int(self.settings[setting], 16):
+                    return name
+        except KeyError:
+            pass
+        return '-'
 
     def set_availability(self):
         time_diff = int(time.time()) - self.time

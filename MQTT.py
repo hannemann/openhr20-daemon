@@ -64,7 +64,7 @@ class MQTT(threading.Thread):
                 device.reboot_device()
 
             elif cmnd == 'preset':
-                mapped_preset = config.get('mqtt-preset-receive', payload, fallback=False)
+                mapped_preset = config.get('mqtt-presets-receive', payload, fallback=False)
                 if mapped_preset is not False:
                     payload = mapped_preset
                 device.set_preset(payload)
@@ -95,6 +95,9 @@ class MQTT(threading.Thread):
         mapped_mode = config.get('mqtt-modes-publish', stats['mode'], fallback=False)
         if mapped_mode is not False:
             stats['mode'] = mapped_mode
+        mapped_preset = config.get('mqtt-presets-publish', stats['preset'], fallback=False)
+        if mapped_preset is not False:
+            stats['preset'] = mapped_preset
         self.publish(self.stats_topic.strip('/') + '/%d' % device.addr, json.dumps(stats))
 
     def run(self):

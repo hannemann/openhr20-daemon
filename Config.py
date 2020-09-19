@@ -33,13 +33,13 @@ defaults = {
         '-': 'auto',
         'manu': 'manu'
     },
-    'mqtt-preset-receive': {
+    'mqtt-presets-receive': {
         'antifreeze': 'antifreeze',
         'eco': 'eco',
         'comfort': 'comfort',
         'supercomfort': 'supercomfort',
     },
-    'mqtt-preset-publish': {
+    'mqtt-presets-publish': {
         'antifreeze': 'antifreeze',
         'eco': 'eco',
         'comfort': 'comfort',

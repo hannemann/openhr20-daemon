@@ -27,6 +27,7 @@ class ThermostatCard {
         this.mode = this.card.querySelector('[data-item="mode"] .mode-button');
         this.update = this.card.querySelector('h3 .update-button');
         this.loading = this.card.querySelector('span.loading');
+        this.presets = this.card.querySelectorAll('[data-item="presets"] span.preset');
 
         return this;
     }
@@ -57,6 +58,13 @@ class ThermostatCard {
         if (this.update) {
             this.update.addEventListener('pointerup', this.handleUpdate);
         }
+
+        this.presets.forEach(p => {
+            p.addEventListener('pointerdown', () => {
+                this.wanted.value = p.dataset.temperature;
+                this.handleWanted();
+            })
+        })
 
         return this;
     }

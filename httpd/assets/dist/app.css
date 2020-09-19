@@ -267,6 +267,28 @@ main > div:first-of-type,
   font-weight: bold;
 }
 
+.thermostat--card--item[data-item=presets] {
+  justify-content: flex-start;
+}
+
+.thermostat--card--item[data-item=presets] span:first-child {
+  margin-right: var(--grid-base);
+}
+
+.thermostat--card--item[data-item=presets] .value-display {
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.thermostat--card--item[data-item=presets] .value-display span {
+  margin: calc(var(--grid-base) / 2);
+  padding: var(--grid-base);
+  background: var(--light-bg-color);
+  border-radius: var(--border-radius);
+  line-height: 1;
+}
+
 .thermostat--card--item[data-item=time] .value-display {
   flex-basis: auto;
 }
@@ -284,6 +306,13 @@ main > div:first-of-type,
   margin-right: var(--grid-base);
   color: var(--light-fg-color);
   text-decoration: none;
+}
+
+.thermostat--card[data-preset=antifreeze] [data-preset=antifreeze],
+.thermostat--card[data-preset=eco] [data-preset=eco],
+.thermostat--card[data-preset=comfort] [data-preset=comfort],
+.thermostat--card[data-preset=supercomfort] [data-preset=supercomfort] {
+  font-weight: bold;
 }
 
 .thermostat--card[data-available=online][data-synced=true] [data-item=actions] {

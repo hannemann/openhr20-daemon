@@ -79,6 +79,24 @@
         }
       }
     }
+    &[data-item="presets"] {
+      justify-content: flex-start;
+      span:first-child {
+        margin-right: var(--grid-base)
+      }
+      .value-display {
+        flex: 1 0 auto;
+        display: flex;
+        justify-content: center;
+        span {
+          margin: calc(var(--grid-base) / 2);
+          padding: var(--grid-base);
+          background: var(--light-bg-color);
+          border-radius: var(--border-radius);
+          line-height: 1;
+        }
+      }
+    }
 
     &[data-item="time"] .value-display {
       flex-basis: auto;
@@ -98,6 +116,13 @@
         text-decoration: none;
       }
     }
+  }
+
+  &[data-preset="antifreeze"] [data-preset="antifreeze"],
+  &[data-preset="eco"] [data-preset="eco"],
+  &[data-preset="comfort"] [data-preset="comfort"],
+  &[data-preset="supercomfort"] [data-preset="supercomfort"] {
+    font-weight: bold;
   }
 
   &[data-available="online"][data-synced="true"] [data-item="actions"] {

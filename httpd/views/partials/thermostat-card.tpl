@@ -1,4 +1,8 @@
 %from datetime import datetime
+% antifreeze = int(device.settings[device.PRESET_ANTIFREEZE_SETTING], 16) / 2 if device.PRESET_ANTIFREEZE_SETTING in device.settings else 0
+% eco = int(device.settings[device.PRESET_ECO_SETTING], 16) / 2 if device.PRESET_ECO_SETTING in device.settings else 0
+% comfort = int(device.settings[device.PRESET_COMFORT_SETTING], 16) / 2 if device.PRESET_COMFORT_SETTING in device.settings else 0
+% supercomfort = int(device.settings[device.PRESET_SUPERCOMFORT_SETTING], 16) / 2 if device.PRESET_SUPERCOMFORT_SETTING in device.settings else 0
 <div class="thermostat--card"
      data-name="{{ device.name }}"
      % for attr, value in device.get_stats().items():
@@ -15,6 +19,15 @@
             {{ datetime.fromtimestamp(device.time).strftime('%d.%m.%Y %H:%M:%S') }}
         </span>
     </h3>
+    <div class="thermostat--card--item" data-item="presets">
+        <span>Preset:</span>
+        <span class="value-display">
+            <span class="preset" data-preset="antifreeze" data-temperature="{{ antifreeze }}">{{ antifreeze }}</span>
+            <span class="preset" data-preset="eco" data-temperature="{{ eco }}">{{ eco }}</span>
+            <span class="preset" data-preset="comfort" data-temperature="{{ comfort }}">{{ comfort }}</span>
+            <span class="preset" data-preset="supercomfort" data-temperature="{{ supercomfort }}">{{ supercomfort }}</span>
+        </span>
+    </div>
     <div class="thermostat--card--item" data-item="mode">
         <span>Mode</span>
         <span class="value-display mode-button">

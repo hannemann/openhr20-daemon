@@ -53,21 +53,30 @@ class MQTT(threading.Thread):
                 if mapped_mode is not False:
                     payload = mapped_mode
                 device.set_mode(payload)
+                for dev in device.group.devices:
+                    self.publish_availability(dev)
 
             elif cmnd == CommandTemperature.abbr:
                 device.set_temperature(payload)
+                for dev in device.group.devices:
+                    self.publish_availability(dev)
 
             elif cmnd == CommandStatus.abbr:
                 device.update_stats()
+                self.publish_availability(device)
 
             elif cmnd == CommandReboot.abbr:
                 device.reboot_device()
+                self.publish_availability(device)
 
             elif cmnd == 'preset':
                 mapped_preset = config.get('mqtt-presets-receive', payload, fallback=False)
                 if mapped_preset is not False:
                     payload = mapped_preset
                 device.set_preset(payload)
+                for dev in device.group.devices:
+                    self.publish_availability(dev)
+
 
         except KeyError:
             pass
@@ -104,7 +113,8 @@ class MQTT(threading.Thread):
     def publish_availability(device):
         topic = config.get(
             'mqtt', 'availability_topic', fallback='stat/openhr20/AVAILABLE/').strip('/') + '/%d' % device.addr
-        mqtt.publish(topic, 'offline' if device.available == device.AVAILABLE_OFFLINE else 'online')
+        payload = 'offline' if device.available == device.AVAILABLE_OFFLINE or device.synced is False else 'online'
+        mqtt.publish(topic, payload)
 
     def run(self):
         self.client.connect(self.host, self.port, 60)

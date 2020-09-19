@@ -7,6 +7,7 @@ from Devices import devices
 import threading
 import json
 from Eeprom import get_eeprom_layout
+from MQTT import mqtt
 
 debug = config.getboolean('openhr20', 'debug', fallback='no')
 httpd_path = '/' + str(pathlib.Path(__file__).parent.absolute()).strip('/') + '/httpd/'
@@ -66,7 +67,10 @@ class Httpd(threading.Thread):
     def set_temp(addr):
         temp = float(request.json.get('temp'))
         try:
-            devices.get_device(addr).set_temperature(temp)
+            device = devices.get_device(addr)
+            device.set_temperature(temp)
+            for dev in device.group.devices:
+                mqtt.publish_availability(dev)
         except KeyError:
             pass
         except ValueError:
@@ -77,7 +81,10 @@ class Httpd(threading.Thread):
     def set_mode(addr):
         mode = request.json.get('mode')
         try:
-            devices.get_device(addr).set_mode(mode)
+            device = devices.get_device(addr)
+            device.set_mode(mode)
+            for dev in device.group.devices:
+                mqtt.publish_availability(dev)
         except KeyError:
             pass
         except ValueError:
@@ -87,7 +94,9 @@ class Httpd(threading.Thread):
     @staticmethod
     def update_stats(addr):
         try:
-            devices.get_device(addr).update_stats()
+            device = devices.get_device(addr)
+            device.update_stats()
+            mqtt.publish_availability(device)
         except KeyError:
             pass
         except ValueError:
@@ -97,7 +106,9 @@ class Httpd(threading.Thread):
     @staticmethod
     def reboot(addr):
         try:
-            devices.get_device(addr).reboot_device()
+            device = devices.get_device(addr)
+            device.reboot_device()
+            mqtt.publish_availability(device)
         except KeyError:
             pass
         except ValueError:
@@ -107,7 +118,9 @@ class Httpd(threading.Thread):
     @staticmethod
     def request_settings(addr):
         try:
-            devices.get_device(addr).request_settings()
+            device = devices.get_device(addr)
+            device.request_settings()
+            mqtt.publish_availability(device)
         except KeyError:
             pass
         print('HTTP: %d request_settings' % addr)
@@ -131,13 +144,19 @@ class Httpd(threading.Thread):
                 new = request.json.get(idx)
                 if new != value:
                     device.send_setting(idx, new)
+            mqtt.publish_availability(device)
         except KeyError:
             pass
         print('HTTP: %d set_settings' % addr)
 
     @staticmethod
     def request_timers(addr):
-        devices.get_device(addr).request_timers()
+        try:
+            device = devices.get_device(addr)
+            device.request_timers()
+            mqtt.publish_availability(device)
+        except KeyError:
+            pass
         print('HTTP: %d request_timers' % addr)
 
     @staticmethod
@@ -169,6 +188,7 @@ class Httpd(threading.Thread):
             for day, value in request.json.items():
                 if timers[int(day[0])][int(day[1])] != value:
                     device.send_timer(day, value)
+            mqtt.publish_availability(device)
         except KeyError:
             pass
         print('HTTP: %d set_timers' % addr)

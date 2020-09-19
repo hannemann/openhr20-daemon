@@ -17,6 +17,7 @@ class Commands:
             sys.stdout.flush()
         else:
             self.buffer[addr].append(command)
+            device.pending_commands += 1
 
         device.synced = False
 
@@ -48,6 +49,7 @@ class Commands:
             for cmnd in self.buffer[device.addr]:
                 if cmnd.sent > 0:
                     self.buffer[device.addr].remove(cmnd)
+                    device.pending_commands -= 1
                     break
 
             if len(self.buffer[device.addr]) < 1:

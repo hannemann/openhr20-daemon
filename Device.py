@@ -48,6 +48,7 @@ class Device:
     battery = 0
     error = 0
     group = None
+    pending_commands = 0
 
     def __init__(self, addr, name, stats, timers, settings, group):
         self.addr = addr
@@ -93,7 +94,7 @@ class Device:
             "time": self.time,
             "synced": self.synced,
             "available": self.available,
-            "pending-commands": len(commands.buffer[self.addr]) if self.addr in commands.buffer else 0,
+            "pending-commands": self.pending_commands,
             "preset": self.get_current_preset()
         }
 

@@ -67,8 +67,11 @@ class ThermostatCard {
             selector = `[data-item="${attribute}"] .value-display span`
         ;
 
-        if (['wanted', 'synced', 'time'].indexOf(attribute) < -1) {
-            this.card.querySelector(selector).innerText = value;
+        if (['real', 'valve', 'battery'].indexOf(attribute) > -1) {
+            let item = this.card.querySelector(selector);
+            if (item) {
+                item.innerText = value;
+            }
         }
 
         if (!this.card.dataset.preventupdate) {

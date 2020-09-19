@@ -1,3 +1,5 @@
+import pickle
+
 from bottle import ServerAdapter, route, template, static_file, request, response
 import bottle
 import sys
@@ -8,6 +10,7 @@ import threading
 import json
 from Eeprom import get_eeprom_layout
 from MQTT import mqtt
+import http.client
 
 debug = config.getboolean('openhr20', 'debug', fallback='no')
 httpd_path = '/' + str(pathlib.Path(__file__).parent.absolute()).strip('/') + '/httpd/'
@@ -201,6 +204,15 @@ class Httpd(threading.Thread):
             devs[addr] = device.get_data()
         return json.dumps(devs)
 
+    @staticmethod
+    def get_serialized_device(addr):
+        response.content_type = 'application/octet-stream'
+        try:
+            device = devices.get_device(addr)
+            return pickle.dumps(device)
+        except KeyError:
+            pass
+
     def shutdown(self):
         self.server.stop()
 
@@ -220,3 +232,4 @@ route('/request_timers/<addr:int>', method='POST')(httpd.request_timers)
 route('/timers/<addr:int>', method='GET')(httpd.timers)
 route('/set_timers/<addr:int>', method='POST')(httpd.set_timers)
 route('/reboot/<addr:int>', method='POST')(httpd.reboot)
+route('/device/serialized/<addr:int>', method='GET')(httpd.get_serialized_device)

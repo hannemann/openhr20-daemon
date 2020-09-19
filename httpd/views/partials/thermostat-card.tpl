@@ -93,6 +93,9 @@
             <span class="error-icon" data-error="128" data-descr="Battery error">
                 <span class="iconify" data-icon="mdi-battery-off-outline"></span>
             </span>
+            <span class="error-icon" data-error="256" data-descr="Offline">
+                <span class="iconify" data-icon="mdi-access-point-off"></span>
+            </span>
         </span>
     </div>
     <div class="thermostat--card--item" data-item="actions">

@@ -59,6 +59,13 @@ class Httpd(threading.Thread):
     def index():
         groups = sorted(devices.groups.values(), key=lambda g: g.name)
         ungrouped = sorted([d for d in devices.devices.values() if d.group is None], key=lambda d: d.name)
+
+        for addr, proxy in dict(devices.buffer['proxy_devices']).items():
+            conn = http.client.HTTPConnection(proxy)
+            conn.request('GET', '/device/serialized/%s' % addr)
+            ungrouped.append(pickle.loads(conn.getresponse().read()))
+            conn.close()
+
         return template('index', title='OpenHR20', ungrouped_devices=ungrouped, groups=groups)
 
     @staticmethod
@@ -70,10 +77,14 @@ class Httpd(threading.Thread):
     def set_temp(addr):
         temp = float(request.json.get('temp'))
         try:
-            device = devices.get_device(addr)
-            device.set_temperature(temp)
-            for dev in device.group.devices:
-                mqtt.publish_availability(dev)
+            proxy = devices.buffer.get('proxy_devices', str(addr), fallback=None)
+            if proxy is None:
+                device = devices.get_device(addr)
+                device.set_temperature(temp)
+                for dev in device.group.devices:
+                    mqtt.publish_availability(dev)
+            else:
+                Httpd.redirect_to_proxy(request, proxy)
         except KeyError:
             pass
         except ValueError:
@@ -84,10 +95,14 @@ class Httpd(threading.Thread):
     def set_mode(addr):
         mode = request.json.get('mode')
         try:
-            device = devices.get_device(addr)
-            device.set_mode(mode)
-            for dev in device.group.devices:
-                mqtt.publish_availability(dev)
+            proxy = devices.buffer.get('proxy_devices', str(addr), fallback=None)
+            if proxy is None:
+                device = devices.get_device(addr)
+                device.set_mode(mode)
+                for dev in device.group.devices:
+                    mqtt.publish_availability(dev)
+            else:
+                Httpd.redirect_to_proxy(request, proxy)
         except KeyError:
             pass
         except ValueError:
@@ -202,16 +217,37 @@ class Httpd(threading.Thread):
         devs = {}
         for addr, device in devices.devices.items():
             devs[addr] = device.get_data()
+        for addr, proxy in dict(devices.buffer['proxy_devices']).items():
+            conn = http.client.HTTPConnection(proxy)
+            conn.request('GET', '/device/serialized/%s' % addr)
+            dev = pickle.loads(conn.getresponse().read())
+            devs[dev.addr] = dev.get_data()
+            conn.close()
         return json.dumps(devs)
 
     @staticmethod
-    def get_serialized_device(addr):
+    def get_device_serialized(addr):
         response.content_type = 'application/octet-stream'
         try:
             device = devices.get_device(addr)
             return pickle.dumps(device)
         except KeyError:
             pass
+
+    @staticmethod
+    def get_group_serialized(name):
+        response.content_type = 'application/octet-stream'
+        try:
+            group = devices.groups[name]
+            return pickle.dumps(group)
+        except KeyError:
+            pass
+
+    @staticmethod
+    def redirect_to_proxy(req, proxy):
+        conn = http.client.HTTPConnection(proxy)
+        conn.request(req.method, req.fullpath, req.body.read().decode('utf-8'), dict(req.headers))
+        conn.close()
 
     def shutdown(self):
         self.server.stop()
@@ -232,4 +268,5 @@ route('/request_timers/<addr:int>', method='POST')(httpd.request_timers)
 route('/timers/<addr:int>', method='GET')(httpd.timers)
 route('/set_timers/<addr:int>', method='POST')(httpd.set_timers)
 route('/reboot/<addr:int>', method='POST')(httpd.reboot)
-route('/device/serialized/<addr:int>', method='GET')(httpd.get_serialized_device)
+route('/device/serialized/<addr:int>', method='GET')(httpd.get_device_serialized)
+route('/group/serialized/<name>', method='GET')(httpd.get_group_serialized)

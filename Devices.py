@@ -23,6 +23,8 @@ class Devices:
             self.buffer['timers'] = {}
             self.buffer['settings'] = {}
             self.buffer['groups'] = {}
+            self.buffer['proxy_groups'] = {}
+            self.buffer['proxy_devices'] = {}
             self.flush()
         else:
             self.buffer.read(self.file)

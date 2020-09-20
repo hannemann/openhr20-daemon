@@ -61,10 +61,8 @@ class Httpd(threading.Thread):
         ungrouped = sorted([d for d in devices.devices.values() if d.group is None], key=lambda d: d.name)
 
         for addr, proxy in dict(devices.buffer['proxy_devices']).items():
-            conn = http.client.HTTPConnection(proxy)
-            conn.request('GET', '/device/serialized/%s' % addr)
-            ungrouped.append(pickle.loads(conn.getresponse().read()))
-            conn.close()
+            device = Httpd.get_device_from_proxy(addr)
+            ungrouped.append(device)
 
         return template('index', title='OpenHR20', ungrouped_devices=ungrouped, groups=groups)
 
@@ -77,14 +75,13 @@ class Httpd(threading.Thread):
     def set_temp(addr):
         temp = float(request.json.get('temp'))
         try:
-            proxy = devices.buffer.get('proxy_devices', str(addr), fallback=None)
-            if proxy is None:
+            if devices.has_proxy(addr):
+                Httpd.redirect_to_proxy(request, addr)
+            else:
                 device = devices.get_device(addr)
                 device.set_temperature(temp)
                 for dev in device.group.devices:
                     mqtt.publish_availability(dev)
-            else:
-                Httpd.redirect_to_proxy(request, proxy)
         except KeyError:
             pass
         except ValueError:
@@ -95,14 +92,13 @@ class Httpd(threading.Thread):
     def set_mode(addr):
         mode = request.json.get('mode')
         try:
-            proxy = devices.buffer.get('proxy_devices', str(addr), fallback=None)
-            if proxy is None:
+            if devices.has_proxy(addr):
+                Httpd.redirect_to_proxy(request, addr)
+            else:
                 device = devices.get_device(addr)
                 device.set_mode(mode)
                 for dev in device.group.devices:
                     mqtt.publish_availability(dev)
-            else:
-                Httpd.redirect_to_proxy(request, proxy)
         except KeyError:
             pass
         except ValueError:
@@ -112,9 +108,12 @@ class Httpd(threading.Thread):
     @staticmethod
     def update_stats(addr):
         try:
-            device = devices.get_device(addr)
-            device.update_stats()
-            mqtt.publish_availability(device)
+            if devices.has_proxy(addr):
+                Httpd.redirect_to_proxy(request, addr)
+            else:
+                device = devices.get_device(addr)
+                device.update_stats()
+                mqtt.publish_availability(device)
         except KeyError:
             pass
         except ValueError:
@@ -124,9 +123,12 @@ class Httpd(threading.Thread):
     @staticmethod
     def reboot(addr):
         try:
-            device = devices.get_device(addr)
-            device.reboot_device()
-            mqtt.publish_availability(device)
+            if devices.has_proxy(addr):
+                Httpd.redirect_to_proxy(request, addr)
+            else:
+                device = devices.get_device(addr)
+                device.reboot_device()
+                mqtt.publish_availability(device)
         except KeyError:
             pass
         except ValueError:
@@ -136,9 +138,12 @@ class Httpd(threading.Thread):
     @staticmethod
     def request_settings(addr):
         try:
-            device = devices.get_device(addr)
-            device.request_settings()
-            mqtt.publish_availability(device)
+            if devices.has_proxy(addr):
+                Httpd.redirect_to_proxy(request, addr)
+            else:
+                device = devices.get_device(addr)
+                device.request_settings()
+                mqtt.publish_availability(device)
         except KeyError:
             pass
         print('HTTP: %d request_settings' % addr)
@@ -146,7 +151,10 @@ class Httpd(threading.Thread):
     @staticmethod
     def settings(addr):
         try:
-            settings = devices.get_device(addr).settings
+            if devices.has_proxy(addr):
+                settings = Httpd.get_device_from_proxy(addr).settings
+            else:
+                settings = devices.get_device(addr).settings
             if 'ff' in settings:
                 layout = get_eeprom_layout(int('0x' + settings['ff'], 16))
                 return template('settings', title='Settings', layout=layout, device_settings=settings)
@@ -157,12 +165,15 @@ class Httpd(threading.Thread):
     @staticmethod
     def set_settings(addr):
         try:
-            device = devices.get_device(addr)
-            for idx, value in device.settings.items():
-                new = request.json.get(idx)
-                if new != value:
-                    device.send_setting(idx, new)
-            mqtt.publish_availability(device)
+            if devices.has_proxy(addr):
+                Httpd.redirect_to_proxy(request, addr)
+            else:
+                device = devices.get_device(addr)
+                for idx, value in device.settings.items():
+                    new = request.json.get(idx)
+                    if new != value:
+                        device.send_setting(idx, new)
+                mqtt.publish_availability(device)
         except KeyError:
             pass
         print('HTTP: %d set_settings' % addr)
@@ -170,9 +181,12 @@ class Httpd(threading.Thread):
     @staticmethod
     def request_timers(addr):
         try:
-            device = devices.get_device(addr)
-            device.request_timers()
-            mqtt.publish_availability(device)
+            if devices.has_proxy(addr):
+                Httpd.redirect_to_proxy(request, addr)
+            else:
+                device = devices.get_device(addr)
+                device.request_timers()
+                mqtt.publish_availability(device)
         except KeyError:
             pass
         print('HTTP: %d request_timers' % addr)
@@ -180,7 +194,10 @@ class Httpd(threading.Thread):
     @staticmethod
     def timers(addr):
         try:
-            device = devices.get_device(addr)
+            if devices.has_proxy(addr):
+                device = Httpd.get_device_from_proxy(addr)
+            else:
+                device = devices.get_device(addr)
             mode = device.settings['01']
             mode = 1 if mode is not None and int(mode, 16) > 0 else 0
             preset0 = device.settings['01']
@@ -201,12 +218,15 @@ class Httpd(threading.Thread):
     @staticmethod
     def set_timers(addr):
         try:
-            device = devices.get_device(addr)
-            timers = device.timers
-            for day, value in request.json.items():
-                if timers[int(day[0])][int(day[1])] != value:
-                    device.send_timer(day, value)
-            mqtt.publish_availability(device)
+            if devices.has_proxy(addr):
+                Httpd.redirect_to_proxy(request, addr)
+            else:
+                device = devices.get_device(addr)
+                timers = device.timers
+                for day, value in request.json.items():
+                    if timers[int(day[0])][int(day[1])] != value:
+                        device.send_timer(day, value)
+                mqtt.publish_availability(device)
         except KeyError:
             pass
         print('HTTP: %d set_timers' % addr)
@@ -218,11 +238,8 @@ class Httpd(threading.Thread):
         for addr, device in devices.devices.items():
             devs[addr] = device.get_data()
         for addr, proxy in dict(devices.buffer['proxy_devices']).items():
-            conn = http.client.HTTPConnection(proxy)
-            conn.request('GET', '/device/serialized/%s' % addr)
-            dev = pickle.loads(conn.getresponse().read())
+            dev = Httpd.get_device_from_proxy(addr)
             devs[dev.addr] = dev.get_data()
-            conn.close()
         return json.dumps(devs)
 
     @staticmethod
@@ -244,7 +261,21 @@ class Httpd(threading.Thread):
             pass
 
     @staticmethod
-    def redirect_to_proxy(req, proxy):
+    def get_device_from_proxy(addr):
+        proxy = devices.buffer.get('proxy_devices', str(addr), fallback=None)
+        if proxy is not None:
+            conn = http.client.HTTPConnection(proxy)
+            conn.request('GET', '/device/serialized/%s' % addr)
+            device = pickle.loads(conn.getresponse().read())
+            conn.close()
+            return device
+        else:
+            raise KeyError
+
+
+    @staticmethod
+    def redirect_to_proxy(req, addr):
+        proxy = devices.get_proxy(addr)
         conn = http.client.HTTPConnection(proxy)
         conn.request(req.method, req.fullpath, req.body.read().decode('utf-8'), dict(req.headers))
         conn.close()

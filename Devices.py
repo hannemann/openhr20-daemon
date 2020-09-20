@@ -77,5 +77,11 @@ class Devices:
     def get_device(self, addr):
         return self.devices[str(addr)]
 
+    def get_proxy(self, addr):
+        return self.buffer.get('proxy_devices', str(addr), fallback=None)
+
+    def has_proxy(self, addr):
+        return str(addr) in dict(self.buffer['proxy_devices'])
+
 
 devices = Devices()

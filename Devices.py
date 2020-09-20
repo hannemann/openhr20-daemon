@@ -101,9 +101,6 @@ class Devices:
             conn = http.client.HTTPConnection(proxy)
             conn.request('GET', '/device/serialized/%s' % addr)
             device = pickle.loads(conn.getresponse().read())
-
-            device.group = None
-
             conn.close()
             return device
         else:

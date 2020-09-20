@@ -56,7 +56,7 @@ class Httpd(threading.Thread):
 
     @staticmethod
     def index():
-        groups = sorted(devices.groups.values(), key=lambda g: g.name)
+        groups = sorted(devices.get_groups().values(), key=lambda g: g.name)
         ungrouped = sorted([d for d in devices.get_devices().values() if d.group is None], key=lambda d: d.name)
 
         return template('index', title='OpenHR20', ungrouped_devices=ungrouped, groups=groups)

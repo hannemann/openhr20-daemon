@@ -427,52 +427,52 @@ main > div:first-of-type,
   content: attr(data-descr);
 }
 
-.thermostat--card[data-error="4"] [data-item=error] [data-error="8"],
-.thermostat--card[data-error="4"] [data-item=error] [data-error="16"],
-.thermostat--card[data-error="4"] [data-item=error] [data-error="64"],
-.thermostat--card[data-error="4"] [data-item=error] [data-error="128"],
-.thermostat--card[data-error="4"] [data-item=error] [data-error="256"] {
+.thermostat--card[data-error="4"] [data-item=error] [data-error] {
   display: none;
 }
 
-.thermostat--card[data-error="8"] [data-item=error] [data-error="4"],
-.thermostat--card[data-error="8"] [data-item=error] [data-error="16"],
-.thermostat--card[data-error="8"] [data-item=error] [data-error="64"],
-.thermostat--card[data-error="8"] [data-item=error] [data-error="128"],
-.thermostat--card[data-error="8"] [data-item=error] [data-error="256"] {
+.thermostat--card[data-error="4"] [data-item=error] [data-error="4"] {
+  display: block;
+}
+
+.thermostat--card[data-error="8"] [data-item=error] [data-error] {
   display: none;
 }
 
-.thermostat--card[data-error="16"] [data-item=error] [data-error="4"],
-.thermostat--card[data-error="16"] [data-item=error] [data-error="8"],
-.thermostat--card[data-error="16"] [data-item=error] [data-error="64"],
-.thermostat--card[data-error="16"] [data-item=error] [data-error="128"],
-.thermostat--card[data-error="16"] [data-item=error] [data-error="256"] {
+.thermostat--card[data-error="8"] [data-item=error] [data-error="8"] {
+  display: block;
+}
+
+.thermostat--card[data-error="16"] [data-item=error] [data-error] {
   display: none;
 }
 
-.thermostat--card[data-error="64"] [data-item=error] [data-error="4"],
-.thermostat--card[data-error="64"] [data-item=error] [data-error="8"],
-.thermostat--card[data-error="64"] [data-item=error] [data-error="16"],
-.thermostat--card[data-error="64"] [data-item=error] [data-error="128"],
-.thermostat--card[data-error="64"] [data-item=error] [data-error="256"] {
+.thermostat--card[data-error="16"] [data-item=error] [data-error="16"] {
+  display: block;
+}
+
+.thermostat--card[data-error="64"] [data-item=error] [data-error] {
   display: none;
 }
 
-.thermostat--card[data-error="128"] [data-item=error] [data-error="4"],
-.thermostat--card[data-error="128"] [data-item=error] [data-error="8"],
-.thermostat--card[data-error="128"] [data-item=error] [data-error="16"],
-.thermostat--card[data-error="128"] [data-item=error] [data-error="64"],
-.thermostat--card[data-error="128"] [data-item=error] [data-error="256"] {
+.thermostat--card[data-error="64"] [data-item=error] [data-error="64"] {
+  display: block;
+}
+
+.thermostat--card[data-error="128"] [data-item=error] [data-error] {
   display: none;
 }
 
-.thermostat--card[data-error="256"] [data-item=error] [data-error="4"],
-.thermostat--card[data-error="256"] [data-item=error] [data-error="8"],
-.thermostat--card[data-error="256"] [data-item=error] [data-error="16"],
-.thermostat--card[data-error="256"] [data-item=error] [data-error="64"],
-.thermostat--card[data-error="256"] [data-item=error] [data-error="128"] {
+.thermostat--card[data-error="128"] [data-item=error] [data-error="128"] {
+  display: block;
+}
+
+.thermostat--card[data-error="256"] [data-item=error] [data-error] {
   display: none;
+}
+
+.thermostat--card[data-error="256"] [data-item=error] [data-error="256"] {
+  display: block;
 }
 
 .thermostat-settings {

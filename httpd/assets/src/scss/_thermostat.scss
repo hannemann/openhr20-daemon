@@ -230,45 +230,17 @@
       }
     }
   }
-  &[data-error="4"] {
-    [data-item="error"] {
-      [data-error="8"], [data-error="16"], [data-error="64"], [data-error="128"], [data-error="256"] {
-        display: none
-      }
-    }
-  }
-  &[data-error="8"] {
-    [data-item="error"] {
-      [data-error="4"], [data-error="16"], [data-error="64"], [data-error="128"], [data-error="256"] {
-        display: none
-      }
-    }
-  }
-  &[data-error="16"] {
-    [data-item="error"] {
-      [data-error="4"], [data-error="8"], [data-error="64"], [data-error="128"], [data-error="256"] {
-        display: none
-      }
-    }
-  }
-  &[data-error="64"] {
-    [data-item="error"] {
-      [data-error="4"], [data-error="8"], [data-error="16"], [data-error="128"], [data-error="256"] {
-        display: none
-      }
-    }
-  }
-  &[data-error="128"] {
-    [data-item="error"] {
-      [data-error="4"], [data-error="8"], [data-error="16"], [data-error="64"], [data-error="256"] {
-        display: none
-      }
-    }
-  }
-  &[data-error="256"] {
-    [data-item="error"] {
-      [data-error="4"], [data-error="8"], [data-error="16"], [data-error="64"], [data-error="128"] {
-        display: none
+
+  $errors: 4, 8, 16, 64, 128, 256;
+  @each $error in $errors {
+    &[data-error="#{$error}"] {
+      [data-item="error"] {
+        [data-error] {
+          display: none
+        }
+        [data-error="#{$error}"] {
+          display: block
+        }
       }
     }
   }

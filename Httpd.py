@@ -1,5 +1,4 @@
 import pickle
-
 from bottle import ServerAdapter, route, template, static_file, request, response
 import bottle
 import sys
@@ -58,11 +57,7 @@ class Httpd(threading.Thread):
     @staticmethod
     def index():
         groups = sorted(devices.groups.values(), key=lambda g: g.name)
-        ungrouped = sorted([d for d in devices.devices.values() if d.group is None], key=lambda d: d.name)
-
-        for addr, proxy in dict(devices.buffer['proxy_devices']).items():
-            device = Httpd.get_device_from_proxy(addr)
-            ungrouped.append(device)
+        ungrouped = sorted([d for d in devices.get_devices().values() if d.group is None], key=lambda d: d.name)
 
         return template('index', title='OpenHR20', ungrouped_devices=ungrouped, groups=groups)
 
@@ -152,7 +147,7 @@ class Httpd(threading.Thread):
     def settings(addr):
         try:
             if devices.has_proxy(addr):
-                settings = Httpd.get_device_from_proxy(addr).settings
+                settings = devices.get_device_from_proxy(addr).settings
             else:
                 settings = devices.get_device(addr).settings
             if 'ff' in settings:
@@ -195,7 +190,7 @@ class Httpd(threading.Thread):
     def timers(addr):
         try:
             if devices.has_proxy(addr):
-                device = Httpd.get_device_from_proxy(addr)
+                device = devices.get_device_from_proxy(addr)
             else:
                 device = devices.get_device(addr)
             mode = device.settings['01']
@@ -235,11 +230,8 @@ class Httpd(threading.Thread):
     def get_stats():
         response.content_type = 'application/json'
         devs = {}
-        for addr, device in devices.devices.items():
+        for addr, device in devices.get_devices().items():
             devs[addr] = device.get_data()
-        for addr, proxy in dict(devices.buffer['proxy_devices']).items():
-            dev = Httpd.get_device_from_proxy(addr)
-            devs[dev.addr] = dev.get_data()
         return json.dumps(devs)
 
     @staticmethod
@@ -259,19 +251,6 @@ class Httpd(threading.Thread):
             return pickle.dumps(group)
         except KeyError:
             pass
-
-    @staticmethod
-    def get_device_from_proxy(addr):
-        proxy = devices.buffer.get('proxy_devices', str(addr), fallback=None)
-        if proxy is not None:
-            conn = http.client.HTTPConnection(proxy)
-            conn.request('GET', '/device/serialized/%s' % addr)
-            device = pickle.loads(conn.getresponse().read())
-            conn.close()
-            return device
-        else:
-            raise KeyError
-
 
     @staticmethod
     def redirect_to_proxy(req, addr):

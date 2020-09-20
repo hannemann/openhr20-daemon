@@ -1,9 +1,12 @@
 import configparser
+import pickle
+import http.client
 import os
 import json
 from Device import Device
 from Group import Group
 from Config import config, defaults
+import copy
 
 
 class Devices:
@@ -45,23 +48,19 @@ class Devices:
                 json.loads(self.buffer.get('stats', addr, fallback='{"addr":%s}' % addr)),
                 json.loads(self.buffer.get('timers', addr, fallback=json.dumps([[''] * 8] * 8))),
                 json.loads(self.buffer.get('settings', addr, fallback='{}')),
-                group
+                None
             )
             self.devices[addr] = device
 
     def init_groups(self):
-        for addr, device in self.devices.items():
-            if device.group is not None:
-                if device.group['name'] not in self.groups:
-                    group = device.group
-                    group = Group(
-                        group['name'],
-                        [d for d in self.devices.values() if d.addr in [d for d in group['devices']]]
-                    )
-                    device.group = group
-                    self.groups[group.name] = group
-                else:
-                    device.group = self.groups[device.group['name']]
+        groups = dict(self.buffer['groups'])
+        for key, group in groups.items():
+            group = json.loads(group)
+            devs = [d for d in self.devices.values() if d.addr in [d for d in group['devices']]]
+            self.groups[key] = Group(group['name'], devs)
+            for device in devs:
+                device.group = self.groups[key]
+
 
     def flush(self):
         fd = open(self.file, 'w')
@@ -77,11 +76,50 @@ class Devices:
     def get_device(self, addr):
         return self.devices[str(addr)]
 
+    def get_devices(self):
+        devs = self.devices.copy()
+        for addr, proxy in dict(self.buffer['proxy_devices']).items():
+            devs[addr] = self.get_device_from_proxy(addr)
+        return devs
+
+    def get_groups(self):
+        grps = self.groups.copy()
+        for name, proxy in dict(self.buffer['proxy_groups']).items():
+            grps[name] = self.get_group_from_proxy(name)
+        return grps
+
     def get_proxy(self, addr):
         return self.buffer.get('proxy_devices', str(addr), fallback=None)
 
     def has_proxy(self, addr):
         return str(addr) in dict(self.buffer['proxy_devices'])
+
+    @staticmethod
+    def get_device_from_proxy(addr):
+        proxy = devices.buffer.get('proxy_devices', str(addr), fallback=None)
+        if proxy is not None:
+            conn = http.client.HTTPConnection(proxy)
+            conn.request('GET', '/device/serialized/%s' % addr)
+            device = pickle.loads(conn.getresponse().read())
+
+            device.group = None
+
+            conn.close()
+            return device
+        else:
+            raise KeyError
+
+    @staticmethod
+    def get_group_from_proxy(name):
+        proxy = devices.buffer.get('proxy_groups', name, fallback=None)
+        if proxy is not None:
+            conn = http.client.HTTPConnection(proxy)
+            conn.request('GET', '/group/serialized/%s' % name)
+            group = pickle.loads(conn.getresponse().read())
+            conn.close()
+            return group
+        else:
+            raise KeyError
 
 
 devices = Devices()

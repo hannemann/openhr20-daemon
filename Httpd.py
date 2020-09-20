@@ -70,8 +70,8 @@ class Httpd(threading.Thread):
     def set_temp(addr):
         temp = float(request.json.get('temp'))
         try:
-            if devices.has_proxy(addr):
-                Httpd.redirect_to_proxy(request, addr)
+            if devices.is_remote_device(addr):
+                Httpd.redirect_to_remote(request, addr)
             else:
                 device = devices.get_device(addr)
                 device.set_temperature(temp)
@@ -87,8 +87,8 @@ class Httpd(threading.Thread):
     def set_mode(addr):
         mode = request.json.get('mode')
         try:
-            if devices.has_proxy(addr):
-                Httpd.redirect_to_proxy(request, addr)
+            if devices.is_remote_device(addr):
+                Httpd.redirect_to_remote(request, addr)
             else:
                 device = devices.get_device(addr)
                 device.set_mode(mode)
@@ -103,8 +103,8 @@ class Httpd(threading.Thread):
     @staticmethod
     def update_stats(addr):
         try:
-            if devices.has_proxy(addr):
-                Httpd.redirect_to_proxy(request, addr)
+            if devices.is_remote_device(addr):
+                Httpd.redirect_to_remote(request, addr)
             else:
                 device = devices.get_device(addr)
                 device.update_stats()
@@ -118,8 +118,8 @@ class Httpd(threading.Thread):
     @staticmethod
     def reboot(addr):
         try:
-            if devices.has_proxy(addr):
-                Httpd.redirect_to_proxy(request, addr)
+            if devices.is_remote_device(addr):
+                Httpd.redirect_to_remote(request, addr)
             else:
                 device = devices.get_device(addr)
                 device.reboot_device()
@@ -133,8 +133,8 @@ class Httpd(threading.Thread):
     @staticmethod
     def request_settings(addr):
         try:
-            if devices.has_proxy(addr):
-                Httpd.redirect_to_proxy(request, addr)
+            if devices.is_remote_device(addr):
+                Httpd.redirect_to_remote(request, addr)
             else:
                 device = devices.get_device(addr)
                 device.request_settings()
@@ -146,8 +146,8 @@ class Httpd(threading.Thread):
     @staticmethod
     def settings(addr):
         try:
-            if devices.has_proxy(addr):
-                settings = devices.get_device_from_proxy(addr).settings
+            if devices.is_remote_device(addr):
+                settings = devices.get_device_from_remote(addr).settings
             else:
                 settings = devices.get_device(addr).settings
             if 'ff' in settings:
@@ -160,8 +160,8 @@ class Httpd(threading.Thread):
     @staticmethod
     def set_settings(addr):
         try:
-            if devices.has_proxy(addr):
-                Httpd.redirect_to_proxy(request, addr)
+            if devices.is_remote_device(addr):
+                Httpd.redirect_to_remote(request, addr)
             else:
                 device = devices.get_device(addr)
                 for idx, value in device.settings.items():
@@ -176,8 +176,8 @@ class Httpd(threading.Thread):
     @staticmethod
     def request_timers(addr):
         try:
-            if devices.has_proxy(addr):
-                Httpd.redirect_to_proxy(request, addr)
+            if devices.is_remote_device(addr):
+                Httpd.redirect_to_remote(request, addr)
             else:
                 device = devices.get_device(addr)
                 device.request_timers()
@@ -189,8 +189,8 @@ class Httpd(threading.Thread):
     @staticmethod
     def timers(addr):
         try:
-            if devices.has_proxy(addr):
-                device = devices.get_device_from_proxy(addr)
+            if devices.is_remote_device(addr):
+                device = devices.get_device_from_remote(addr)
             else:
                 device = devices.get_device(addr)
             mode = device.settings['01']
@@ -213,8 +213,8 @@ class Httpd(threading.Thread):
     @staticmethod
     def set_timers(addr):
         try:
-            if devices.has_proxy(addr):
-                Httpd.redirect_to_proxy(request, addr)
+            if devices.is_remote_device(addr):
+                Httpd.redirect_to_remote(request, addr)
             else:
                 device = devices.get_device(addr)
                 timers = device.timers
@@ -253,9 +253,9 @@ class Httpd(threading.Thread):
             pass
 
     @staticmethod
-    def redirect_to_proxy(req, addr):
-        proxy = devices.get_proxy(addr)
-        conn = http.client.HTTPConnection(proxy)
+    def redirect_to_remote(req, addr):
+        remote = devices.get_remote(addr)
+        conn = http.client.HTTPConnection(remote)
         conn.request(req.method, req.fullpath, req.body.read().decode('utf-8'), dict(req.headers))
         conn.close()
 

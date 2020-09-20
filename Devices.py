@@ -26,8 +26,8 @@ class Devices:
             self.buffer['timers'] = {}
             self.buffer['settings'] = {}
             self.buffer['groups'] = {}
-            self.buffer['proxy_groups'] = {}
-            self.buffer['proxy_devices'] = {}
+            self.buffer['remote_groups'] = {}
+            self.buffer['remote_devices'] = {}
             self.flush()
         else:
             self.buffer.read(self.file)
@@ -78,27 +78,26 @@ class Devices:
 
     def get_devices(self):
         devs = self.devices.copy()
-        for addr, proxy in dict(self.buffer['proxy_devices']).items():
-            devs[addr] = self.get_device_from_proxy(addr)
+        for addr, remote in dict(self.buffer['remote_devices']).items():
+            devs[addr] = self.get_device_from_remote(addr)
         return devs
 
     def get_groups(self):
         grps = self.groups.copy()
-        for name, proxy in dict(self.buffer['proxy_groups']).items():
-            grps[name] = self.get_group_from_proxy(name)
+        for name, remote in dict(self.buffer['remote_groups']).items():
+            grps[name] = self.get_group_from_remote(name)
         return grps
 
-    def get_proxy(self, addr):
-        return self.buffer.get('proxy_devices', str(addr), fallback=None)
+    def get_remote(self, addr):
+        return self.buffer.get('remote_devices', str(addr), fallback=None)
 
-    def has_proxy(self, addr):
-        return str(addr) in dict(self.buffer['proxy_devices'])
+    def is_remote_device(self, addr):
+        return str(addr) in dict(self.buffer['remote_devices'])
 
-    @staticmethod
-    def get_device_from_proxy(addr):
-        proxy = devices.buffer.get('proxy_devices', str(addr), fallback=None)
-        if proxy is not None:
-            conn = http.client.HTTPConnection(proxy)
+    def get_device_from_remote(self, addr):
+        remote = self.get_remote(addr)
+        if remote is not None:
+            conn = http.client.HTTPConnection(remote)
             conn.request('GET', '/device/serialized/%s' % addr)
             device = pickle.loads(conn.getresponse().read())
             conn.close()
@@ -106,11 +105,10 @@ class Devices:
         else:
             raise KeyError
 
-    @staticmethod
-    def get_group_from_proxy(name):
-        proxy = devices.buffer.get('proxy_groups', name, fallback=None)
-        if proxy is not None:
-            conn = http.client.HTTPConnection(proxy)
+    def get_group_from_remote(self, name):
+        remote = self.buffer.get('remote_groups', name, fallback=None)
+        if remote is not None:
+            conn = http.client.HTTPConnection(remote)
             conn.request('GET', '/group/serialized/%s' % name)
             group = pickle.loads(conn.getresponse().read())
             conn.close()

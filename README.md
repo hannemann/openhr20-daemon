@@ -14,8 +14,8 @@ sudo apt install python3-paho-mqtt python3-bottle
 ```
 ### Rasbian (Stretch)
 ```bash
-pip3 install paho-mqtt
-sudo apt install python3-bottle
+sudo apt install python3-bottle python3-serial python3-pip
+sudo pip3 install paho-mqtt
 ```
 ```
 git clone https://github.com/hannemann/openhr20-daemon.git
@@ -25,7 +25,7 @@ git clone https://github.com/hannemann/openhr20-daemon.git
 Install the systemd service file
 ```bash
 mkdir /etc/openhr20
-mkdir/var/cache/openhr20
+mkdir /var/cache/openhr20
 systemctl start openhr20-python-daemon
 ```
 ### Init configuration

@@ -550,6 +550,10 @@ main > div:first-of-type,
   width: 5ch;
 }
 
+.thermostat-timers .timer-slot--time input {
+  max-width: 100px;
+}
+
 .thermostat-timers .timer-slot:last-of-type {
   border: unset;
 }

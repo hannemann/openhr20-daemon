@@ -12,8 +12,14 @@ class Timers {
                 let parent = i.closest('.timer-slot--preset');
                 parent.querySelector('output')
                     .value = Array.from(parent.querySelector('datalist').options).find(o => {
-                        return o.value === i.value;
+                    return o.value === i.value;
                 }).label
+            })
+        })
+
+        document.querySelectorAll('.timer-slot span.timer-delete').forEach(i => {
+            i.addEventListener('pointerup', () => {
+                i.parentNode.querySelector('input[type="time"]').value = '';
             })
         })
         

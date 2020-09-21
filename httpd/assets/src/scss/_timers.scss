@@ -26,6 +26,12 @@
       }
     }
 
+    &--time {
+      input {
+        max-width: 100px;
+      }
+    }
+
     &:last-of-type {
       border: unset;
     }

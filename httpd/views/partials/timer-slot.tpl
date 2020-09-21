@@ -9,5 +9,10 @@
             %end
         </datalist>
     </div>
-    <input type="time" name="{{ 'v%d%d' % (day, slot) }}" {{ 'value=%0.2d:%0.2d' % (hour, minute) if minutes <= 60 * 24 else '' }}>
+    <div class="timer-slot--time">
+        <span class="timer-delete">
+            <span class="iconify" data-icon="mdi-close"></span>
+        </span>
+        <input type="time" name="{{ 'v%d%d' % (day, slot) }}" {{ 'value=%0.2d:%0.2d' % (hour, minute) if minutes <= 60 * 24 else '' }}>
+    </div>
 </div>

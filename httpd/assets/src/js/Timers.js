@@ -31,11 +31,14 @@ class Timers {
 
         document.querySelector('.thermostat-timers button[data-action="save"]').addEventListener('click', async () => {
 
-            let data = {};
+            let data = {
+                timers: {},
+                mode: document.querySelector('input[name="G22"]:checked').value
+            };
 
             document.querySelectorAll('.timer-slot').forEach(s => {
                 let index = s.querySelector('input').name.substr(1);
-                data[index] = [
+                data.timers[index] = [
                     s.querySelector('input').value,
                     (s.querySelector('input[type="time"]').value.split(':').reverse()
                         .map((v, k) => (k ? 60 : 1) * parseInt(v, 10))

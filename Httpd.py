@@ -193,7 +193,7 @@ class Httpd(threading.Thread):
                 device = devices.get_device_from_remote(addr)
             else:
                 device = devices.get_device(addr)
-            mode = device.settings['01']
+            mode = device.settings['22']
             mode = 1 if mode is not None and int(mode, 16) > 0 else 0
             preset0 = device.settings['01']
             preset1 = device.settings['02']
@@ -218,9 +218,12 @@ class Httpd(threading.Thread):
             else:
                 device = devices.get_device(addr)
                 timers = device.timers
-                for day, value in request.json.items():
+                for day, value in request.json['timers'].items():
                     if timers[int(day[0])][int(day[1])] != value:
                         device.send_timer(day, value)
+                new_mode = int(request.json['mode'])
+                if new_mode != (0 if int(device.settings['22'], 16) == 0 else 1):
+                    device.send_setting('22', '%0.2x' % new_mode)
                 mqtt.publish_availability(device)
         except KeyError:
             pass

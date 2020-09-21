@@ -239,7 +239,7 @@ def get_eeprom_layout(layout_id, hr25=False):
         },
         {
             'idx': '22',
-            'name': 'timer_mode FIX!!',
+            'name': 'timer_mode',
             'description': '0: only one program, 1: programs for weekdays',
             'type': 'int',
             'range': [0, 1]

@@ -37,7 +37,7 @@ class ThermostatCard {
         this.handleWanted = this.tempHandler.bind(this);
         this.handleWantedDown = this.wantedDownHandler.bind(this);
         this.handleMode = this.modeHandler.bind(this);
-        this.handleWantedInout = this.wantedInputHandler.bind(this);
+        this.handleWantedInput = this.wantedInputHandler.bind(this);
         this.handleAttributeMutation = this.attributeMutationHandler.bind(this);
         return this;
     }
@@ -49,7 +49,7 @@ class ThermostatCard {
         if (this.wanted) {
             this.wanted.addEventListener('pointerdown', this.handleWantedDown);
             this.wanted.addEventListener('pointerup', this.handleWanted);
-            this.wanted.addEventListener('input', this.handleWantedInout);
+            this.wanted.addEventListener('input', this.handleWantedInput);
         }
         if (this.mode) {
             this.mode.addEventListener('pointerdown', () => this.card.dataset.preventupdate = 'true');
@@ -88,12 +88,6 @@ class ThermostatCard {
                     this.wanted.value = value;
                     this.wanted.dispatchEvent(new Event("input"));
                 }
-            }
-        }
-
-        if ('synced' === attribute) {
-            if (this.wanted) {
-                this.wanted.disabled = value === 'false'
             }
         }
 
@@ -169,22 +163,20 @@ class ThermostatCard {
 
     wantedDownHandler() {
         this.card.dataset.preventupdate = 'true';
-        this.wanted.parentNode.dataset.active = 'true';
-        this.wanted.parentNode.dataset.isCurrent = 'true';
     }
 
     wantedInputHandler() {
 
         let precision = this.wanted.value >= 10 ? 3 : 2,
-            value = parseFloat(this.wanted.value).toPrecision(precision).padStart(5, ' ')
-        this.wanted.closest('.thermostat--card--item')
-            .querySelector('.value-display span').innerText = value
-        this.wanted.nextElementSibling.firstElementChild.innerText = value;
+            value = parseFloat(this.wanted.value).toPrecision(precision).padStart(5, ' '),
+            item = this.wanted.closest('.thermostat--card--item');
+
+        item.querySelector('.value-display span').innerText = value;
 
         if (parseFloat(value) === parseFloat(this.card.dataset.wanted)) {
-            this.wanted.parentNode.dataset.isCurrent = 'true';
+            item.querySelector('.value-display').dataset.isCurrent = 'true';
         } else {
-            delete this.wanted.parentNode.dataset.isCurrent
+            delete item.querySelector('.value-display').dataset.isCurrent;
         }
 
     }

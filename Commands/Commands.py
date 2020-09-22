@@ -7,19 +7,20 @@ class Commands:
     buffer = {}
 
     def add(self, device, command):
-        addr = device.addr
-        if addr not in self.buffer:
-            self.buffer[addr] = []
+        if device.is_available():
+            addr = device.addr
+            if addr not in self.buffer:
+                self.buffer[addr] = []
 
-        buffered_command = next((x for x in self.buffer[addr] if x.command == command.command), None)
-        if buffered_command is not None:
-            print('Command %s already buffered. Discarding new command...' % buffered_command.command)
-            sys.stdout.flush()
-        else:
-            self.buffer[addr].append(command)
-            device.pending_commands += 1
+            buffered_command = next((x for x in self.buffer[addr] if x.command == command.command), None)
+            if buffered_command is not None:
+                print('Command %s already buffered. Discarding new command...' % buffered_command.command)
+                sys.stdout.flush()
+            else:
+                self.buffer[addr].append(command)
+                device.pending_commands += 1
 
-        device.synced = False
+            device.synced = False
 
     def send(self, device):
         weight = 0

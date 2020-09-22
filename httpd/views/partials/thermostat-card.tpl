@@ -19,53 +19,57 @@
             {{ datetime.fromtimestamp(device.time).strftime('%d.%m.%Y %H:%M:%S') }}
         </span>
     </h3>
-    <div class="thermostat--card--item" data-item="presets">
-        <span>Preset:</span>
-        <span class="value-display">
-            <span class="preset" data-preset="antifreeze" data-temperature="{{ antifreeze }}">{{ antifreeze }}</span>
-            <span class="preset" data-preset="eco" data-temperature="{{ eco }}">{{ eco }}</span>
-            <span class="preset" data-preset="comfort" data-temperature="{{ comfort }}">{{ comfort }}</span>
-            <span class="preset" data-preset="supercomfort" data-temperature="{{ supercomfort }}">{{ supercomfort }}</span>
-        </span>
-    </div>
-    <div class="thermostat--card--item" data-item="mode">
-        <span>Mode</span>
-        <span class="value-display mode-button">
-            <span class="mode-manu">
-                <span class="iconify" data-icon="mdi-hand-left"></span>
+    <div class="control">
+        <div class="thermostat--card--item" data-item="mode">
+            <span class="label">Mode</span>
+            <span class="value-display mode-button">
+                <span class="mode-manu">
+                    <span class="iconify" data-icon="mdi-hand-left"></span>
+                </span>
+                <span class="mode-auto">
+                    <span class="iconify" data-icon="mdi-calendar-clock"></span>
+                </span>
+                <span class="mode--">
+                    -
+                </span>
             </span>
-            <span class="mode-auto">
-                <span class="iconify" data-icon="mdi-calendar-clock"></span>
+        </div>
+        <div class="thermostat--card--item" data-item="wanted">
+            <label for="{{ device.addr }}-wanted">
+                Wanted:
+            </label>
+            <span class="wanted-control">
+                <input id="{{ device.addr }}-wanted" type="range" step="0.5" min="5" max="30" value="{{ device.wanted }}">
             </span>
-            <span class="mode--">
-                -
+            <span class="value-display" data-is-current="true"><span>{{ device.wanted }}</span> °C</span>
+        </div>
+        <div class="thermostat--card--item" data-item="presets">
+            <span class="label">Preset:</span>
+            <span class="value-display">
+                <span class="preset" data-preset="antifreeze" data-temperature="{{ antifreeze }}">{{ antifreeze }}</span>
+                <span class="preset" data-preset="eco" data-temperature="{{ eco }}">{{ eco }}</span>
+                <span class="preset" data-preset="comfort" data-temperature="{{ comfort }}">{{ comfort }}</span>
+                <span class="preset" data-preset="supercomfort" data-temperature="{{ supercomfort }}">{{ supercomfort }}</span>
             </span>
-        </span>
+        </div>
     </div>
-    <div class="thermostat--card--item" data-item="wanted">
-        <label for="{{ device.addr }}-wanted">
-            Wanted:
-        </label>
-        <span class="wanted-control">
-            <input id="{{ device.addr }}-wanted" type="range" step="0.5" min="5" max="30" value="{{ device.wanted }}">
-            <span><span>{{ device.wanted }}</span> °C</span>
-        </span>
-        <span class="value-display"><span>{{ device.wanted }}</span> °C</span>
-    </div>
-    <div class="thermostat--card--item" data-item="real">
-        <span>Real:</span>
-        <span class="value-display"><span>{{ device.real }}</span> °C</span>
-    </div>
-    <div class="thermostat--card--item" data-item="valve">
-        <span>Valve:</span>
-        <span class="value-display"><span>{{ device.valve }}</span> %</span>
-    </div>
-    <div class="thermostat--card--item" data-item="battery">
-        <span>Battery:</span>
-        <span class="value-display"><span>{{ device.battery }}</span> V
+
+    <div class="data">
+        <div class="thermostat--card--item" data-item="real">
+            <span class="label">Real:</span>
+            <span class="value-display"><span>{{ device.real }}</span> °C</span>
+        </div>
+        <div class="thermostat--card--item" data-item="valve">
+            <span class="label">Valve:</span>
+            <span class="value-display"><span>{{ device.valve }}</span> %</span>
+        </div>
+        <div class="thermostat--card--item" data-item="battery">
+            <span class="label">Battery:</span>
+            <span class="value-display"><span>{{ device.battery }}</span> V
+        </div>
     </div>
     <div class="thermostat--card--item" data-item="synced">
-        <span>Synced:</span>
+        <span class="label">Synced:</span>
         <span class="value-display">
             <span class="synced">
                 <span class="iconify" data-icon="mdi-check-box-outline"></span>
@@ -76,7 +80,7 @@
         </span>
     </div>
     <div class="thermostat--card--item" data-item="error">
-        <span>Error</span>
+        <span class="label">Error</span>
         <span class="value-display">
             <span class="error-icon" data-error="4" data-descr="Montage">
                 <span class="iconify" data-icon="mdi-cog-refresh-outline"></span>

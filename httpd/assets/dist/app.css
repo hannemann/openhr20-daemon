@@ -207,6 +207,7 @@ main > div:first-of-type,
   align-items: center;
   font-size: 1.1em;
   font-weight: normal;
+  margin-bottom: var(--grid-base);
 }
 
 .thermostat--card h3 > * {
@@ -221,13 +222,28 @@ main > div:first-of-type,
   text-align: right;
 }
 
+.thermostat--card .data {
+  display: flex;
+  justify-content: space-between;
+}
+
+.thermostat--card .data .thermostat--card--item {
+  flex-direction: column;
+  align-items: center;
+}
+
+.thermostat--card .data .thermostat--card--item .value-display {
+  flex-basis: auto;
+}
+
 .thermostat--card--item {
   display: flex;
   justify-content: flex-end;
 }
 
-.thermostat--card--item > *:first-child {
-  margin-right: auto;
+.thermostat--card--item > label,
+.thermostat--card--item > .label {
+  font-size: 0.8em;
 }
 
 .thermostat--card--item .value-display {
@@ -235,35 +251,47 @@ main > div:first-of-type,
   flex-basis: 70px;
 }
 
+.thermostat--card--item[data-item=mode] {
+  justify-content: flex-start;
+}
+
+.thermostat--card--item[data-item=mode] .label {
+  display: none;
+}
+
+.thermostat--card--item[data-item=mode] .value-display {
+  text-align: initial;
+  flex-basis: auto;
+}
+
+.thermostat--card--item[data-item=wanted] {
+  flex-direction: column;
+  align-items: center;
+}
+
+.thermostat--card--item[data-item=wanted] label {
+  display: none;
+}
+
 .thermostat--card--item[data-item=wanted] span.wanted-control {
   position: relative;
-  flex: 1 0 auto;
-  margin-left: calc(2 * var(--grid-base));
+  width: 60%;
   max-width: 350px;
+  order: 2;
 }
 
 .thermostat--card--item[data-item=wanted] span.wanted-control input {
   width: 100%;
 }
 
-.thermostat--card--item[data-item=wanted] span.wanted-control > span {
-  display: none;
-  position: absolute;
-  top: -288%;
-  background: #b3b3b3;
-  padding: calc(2 * var(--grid-base));
-  font-family: monospace;
-  width: calc(7ch + 4 * var(--grid-base));
-  left: calc(50% - (7ch + 4 * var(--grid-base)) / 2);
-  color: black;
-  border-radius: var(--border-radius);
+.thermostat--card--item[data-item=wanted] .value-display {
+  order: 1;
+  flex-basis: auto;
+  margin: 0;
+  font-size: 2em;
 }
 
-.thermostat--card--item[data-item=wanted] span.wanted-control[data-active=true] > span {
-  display: block;
-}
-
-.thermostat--card--item[data-item=wanted] span.wanted-control[data-is-current] {
+.thermostat--card--item[data-item=wanted] .value-display[data-is-current] {
   font-weight: bold;
 }
 
@@ -271,8 +299,8 @@ main > div:first-of-type,
   justify-content: flex-start;
 }
 
-.thermostat--card--item[data-item=presets] span:first-child {
-  margin-right: var(--grid-base);
+.thermostat--card--item[data-item=presets] .label {
+  display: none;
 }
 
 .thermostat--card--item[data-item=presets] .value-display {
@@ -287,10 +315,6 @@ main > div:first-of-type,
   background: var(--light-bg-color);
   border-radius: var(--border-radius);
   line-height: 1;
-}
-
-.thermostat--card--item[data-item=time] .value-display {
-  flex-basis: auto;
 }
 
 .thermostat--card--item[data-item=synced] {

@@ -21,11 +21,13 @@
     align-items: center;
     font-size: 1.1em;
     font-weight: normal;
+    margin-bottom: var(--grid-base);
 
     & > * {
       margin-right: var(--grid-base);
     }
 
+    // Time
     [data-item="time"] {
       margin-left: auto;
       margin-right: 0;
@@ -35,12 +37,25 @@
     }
   }
 
+  .data {
+    display: flex;
+    justify-content: space-between;
+
+    .thermostat--card--item {
+      flex-direction: column;
+      align-items: center;
+      .value-display {
+        flex-basis: auto;
+      }
+    }
+  }
+
   &--item {
     display: flex;
     justify-content: flex-end;
 
-    & > *:first-child {
-      margin-right: auto;
+    & > label, & > .label {
+      font-size: .8em;
     }
 
     .value-display {
@@ -48,41 +63,54 @@
       flex-basis: 70px;
     }
 
+    &[data-item="mode"] {
+      justify-content: flex-start;
+      .label {
+        display: none;
+      }
+      .value-display {
+        text-align: initial;
+        flex-basis: auto;
+      }
+    }
+
     &[data-item="wanted"] {
+
+      flex-direction: column;
+      align-items: center;
+
+      label {
+        display: none;
+      }
+
       span.wanted-control {
         position: relative;
-        flex: 1 0 auto;
-        margin-left: calc(2 * var(--grid-base));
+        width: 60%;
         max-width: 350px;
+        order: 2;
 
         input {
           width: 100%;
         }
+      }
+      .value-display {
+        order: 1;
+        flex-basis: auto;
+        margin: 0;
+        font-size: 2em;
 
-        & > span {
-          display: none;
-          position: absolute;
-          top: -288%;
-          background: hsla(0deg 0% 70%);
-          padding: calc(2 * var(--grid-base));
-          font-family: monospace;
-          width: calc(7ch + 4 * var(--grid-base));
-          left: calc(50% - (7ch + 4 * var(--grid-base)) / 2);
-          color: black;
-          border-radius: var(--border-radius);
-        }
-        &[data-active="true"] > span {
-          display: block;
-        }
         &[data-is-current] {
           font-weight: bold;
         }
       }
     }
+
+
+    // Presets
     &[data-item="presets"] {
       justify-content: flex-start;
-      span:first-child {
-        margin-right: var(--grid-base)
+      .label {
+        display: none;
       }
       .value-display {
         flex: 1 0 auto;
@@ -98,14 +126,12 @@
       }
     }
 
-    &[data-item="time"] .value-display {
-      flex-basis: auto;
-    }
-
+    // Synced
     &[data-item="synced"] {
       display: none;
     }
 
+    // Actions
     &[data-item="actions"] {
       display: none;
       justify-content: flex-start;
@@ -125,10 +151,10 @@
     font-weight: bold;
   }
 
+  // Actions
   &[data-available="online"][data-synced="true"] [data-item="actions"] {
     display: initial;
   }
-
   &[data-synced="false"] {
     .value-display span.synced {
       display:none;
@@ -147,6 +173,7 @@
     }
   }
 
+  // Mode
   &[data-mode="auto"],
   &[data-mode="-"] {
     .value-display span.mode-manu,
@@ -171,6 +198,7 @@
     display: none;
   }
 
+  // Loading
   span.loading {
     position: absolute;
     top: 0;
@@ -212,6 +240,8 @@
       }
     }
   }
+
+  // Error
   &[data-error="0"] {
     [data-item="error"] {
       display: none;

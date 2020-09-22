@@ -410,12 +410,30 @@ main > div:first-of-type,
   line-height: 1;
 }
 
+.thermostat--card span.loading .cancel {
+  position: absolute;
+  top: calc(var(--grid-base) * 2);
+  right: calc(var(--grid-base) * 2);
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--border-radius);
+  line-height: 1rem;
+}
+
+.thermostat--card span.loading .cancel svg[data-icon=mdi-close] {
+  display: block;
+}
+
+.thermostat--card span.loading .cancel svg[data-icon=mdi-close] path {
+  fill: var(--dark-color);
+}
+
 .thermostat--card[data-synced=false] span.loading {
   display: flex;
   background: rgba(255, 255, 255, 0.5);
 }
 
-.thermostat--card[data-synced=false] span.loading svg {
+.thermostat--card[data-synced=false] span.loading svg[data-icon=mdi-loading] {
   -webkit-animation-name: spin;
           animation-name: spin;
   -webkit-animation-duration: 4000ms;
@@ -426,7 +444,7 @@ main > div:first-of-type,
           animation-timing-function: linear;
 }
 
-.thermostat--card[data-synced=false] span.loading svg path {
+.thermostat--card[data-synced=false] span.loading svg[data-icon=mdi-loading] path {
   fill: var(--dark-color);
 }
 

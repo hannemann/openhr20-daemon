@@ -112,5 +112,8 @@
     </div>
     <span class="loading">
         <span class="iconify" data-icon="mdi-loading"></span>
+        <span class="cancel">
+            <span class="iconify" data-icon="mdi-close"></span>
+        </span>
     </span>
 </div>

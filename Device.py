@@ -212,3 +212,6 @@ class Device:
                         commands.add(self, CommandGetSetting(field['idx']))
         except KeyError:
             commands.add(self, CommandGetSetting('ff'))
+
+    def cancel_commands(self):
+        commands.discard_all(self)

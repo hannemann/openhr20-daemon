@@ -59,6 +59,8 @@ class Commands:
     def discard_all(self, device):
         if self.has_command(device):
             del self.buffer[device.addr]
+            device.pending_commands = 0
+            device.synced = True
 
     def has_command(self, device):
         result = device.addr in self.buffer and len(self.buffer[device.addr]) > 0

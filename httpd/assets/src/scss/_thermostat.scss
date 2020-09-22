@@ -223,13 +223,29 @@
       background: hsla(0, 0%, 100%, .5);
       line-height: 1;
     }
+
+    .cancel {
+      position: absolute;
+      top: calc(var(--grid-base) * 2);
+      right: calc(var(--grid-base) * 2);
+      font-size: 1rem;
+      background: hsla(0, 0%, 100%, .5);
+      border-radius: var(--border-radius);
+      line-height: 1rem;
+      svg[data-icon="mdi-close"] {
+        display: block;
+        path {
+          fill: var(--dark-color);
+        }
+      }
+    }
   }
   &[data-synced="false"] {
     span.loading {
       display: flex;
       background: hsla(0, 0%, 100%, .5);
 
-      svg {
+      svg[data-icon="mdi-loading"] {
         path {
           fill: var(--dark-color);
         }

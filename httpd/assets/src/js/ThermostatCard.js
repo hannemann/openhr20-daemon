@@ -27,6 +27,7 @@ class ThermostatCard {
         this.mode = this.card.querySelector('[data-item="mode"] .mode-button');
         this.update = this.card.querySelector('h3 .update-button');
         this.loading = this.card.querySelector('span.loading');
+        this.cancel = this.card.querySelector('span.loading .cancel');
         this.presets = this.card.querySelectorAll('[data-item="presets"] span.preset');
 
         return this;
@@ -39,6 +40,7 @@ class ThermostatCard {
         this.handleMode = this.modeHandler.bind(this);
         this.handleWantedInput = this.wantedInputHandler.bind(this);
         this.handleAttributeMutation = this.attributeMutationHandler.bind(this);
+        this.handleCancel = this.cancelHandler.bind(this);
         return this;
     }
 
@@ -65,6 +67,8 @@ class ThermostatCard {
                 this.handleWanted();
             })
         })
+
+        this.cancel.addEventListener('pointerup', this.handleCancel);
 
         return this;
     }
@@ -146,6 +150,17 @@ class ThermostatCard {
             this.card.dataset.synced = 'false';
             await this.post(`${location.origin}/update/${this.addr}`)
             console.info('Update of \'%s\' requested', this.name);
+        } catch (e) {
+            console.error(axios.isCancel(e) ? e.message : e)
+        } finally {
+            clearTimeout(this.cancelTimeout)
+        }
+    }
+
+    async cancelHandler() {
+        try {
+            await this.post(`${location.origin}/cancel/${this.addr}`)
+            console.info('Cancel of all commands for device \'%s\' requested', this.name);
         } catch (e) {
             console.error(axios.isCancel(e) ? e.message : e)
         } finally {

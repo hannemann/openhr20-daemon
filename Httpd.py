@@ -230,6 +230,17 @@ class Httpd(threading.Thread):
         print('HTTP: %d set_timers' % addr)
 
     @staticmethod
+    def cancel_commands(addr):
+        try:
+            if devices.is_remote_device(addr):
+                Httpd.redirect_to_remote(request, addr)
+            else:
+                devices.get_device(addr).cancel_commands()
+        except KeyError:
+            pass
+        print('HTTP: %d cancel_commands' % addr)
+
+    @staticmethod
     def get_stats():
         response.content_type = 'application/json'
         devs = {}
@@ -281,5 +292,6 @@ route('/request_timers/<addr:int>', method='POST')(httpd.request_timers)
 route('/timers/<addr:int>', method='GET')(httpd.timers)
 route('/set_timers/<addr:int>', method='POST')(httpd.set_timers)
 route('/reboot/<addr:int>', method='POST')(httpd.reboot)
+route('/cancel/<addr:int>', method='POST')(httpd.cancel_commands)
 route('/device/serialized/<addr:int>', method='GET')(httpd.get_device_serialized)
 route('/group/serialized/<name>', method='GET')(httpd.get_group_serialized)

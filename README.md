@@ -42,3 +42,8 @@ sudo systemctl start openhr20-python-daemon
 ```
 
 #### Notes
+
+##### Docker
+```
+docker-compose up
+```

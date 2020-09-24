@@ -62,8 +62,8 @@ if not os.path.exists(file):
     config['mqtt'] = defaults['mqtt']
     config['mqtt-modes-receive'] = defaults['mqtt-modes-receive']
     config['mqtt-modes-send'] = defaults['mqtt-modes-publish']
-    config['mqtt-preset-receive'] = defaults['mqtt-preset-receive']
-    config['mqtt-preset-send'] = defaults['mqtt-preset-publish']
+    config['mqtt-presets-receive'] = defaults['mqtt-presets-receive']
+    config['mqtt-presets-send'] = defaults['mqtt-presets-publish']
     write_file()
 else:
     config.read(file)

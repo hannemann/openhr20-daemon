@@ -44,6 +44,16 @@ sudo systemctl start openhr20-python-daemon
 #### Notes
 
 ##### Docker
+Raspbian
 ```
+curl -sSL https://get.docker.com | sh
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo usermod -aG docker pi
+docker-compose build
 docker-compose up
+```
+Logs:
+```
+docker-compose logs -f --tail 10 openhr20-daemon
 ```

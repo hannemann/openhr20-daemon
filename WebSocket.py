@@ -28,6 +28,8 @@ class WebSocket(threading.Thread):
             while True:
                 message = await websocket.recv()
                 print(message)
+        # except ConnectionClosedError:
+        #    pass
         finally:
             self.connected.remove(websocket)
 

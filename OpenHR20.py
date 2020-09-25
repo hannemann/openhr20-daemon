@@ -6,6 +6,7 @@ import threading
 from Commands.Commands import commands
 from Stats import Stats
 from Devices import devices
+from WebSocket import ws
 
 
 class OpenHR20 (threading.Thread):
@@ -108,6 +109,7 @@ class OpenHR20 (threading.Thread):
         self.device.set_stats(stats)
         mqtt.publish_stats(self.device)
         mqtt.publish_availability(self.device)
+        ws.send_device_stats(self.device)
 
     def shutdown(self):
         self.alive = False

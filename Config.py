@@ -25,6 +25,10 @@ defaults = {
         'host': '0.0.0.0',
         'port': 8020
     },
+    'ws': {
+        'host': '0.0.0.0',
+        'port': 8021
+    },
     'mqtt-modes-receive': {
         'auto': 'auto',
         'manu': 'manu'
@@ -58,6 +62,7 @@ def write_file():
 
 if not os.path.exists(file):
     config['httpd'] = defaults['httpd']
+    config['ws'] = defaults['ws']
     config['openhr20'] = defaults['openhr20']
     config['mqtt'] = defaults['mqtt']
     config['mqtt-modes-receive'] = defaults['mqtt-modes-receive']

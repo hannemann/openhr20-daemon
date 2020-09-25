@@ -6,10 +6,12 @@ import sys
 import signal
 from SerialIO import serialIO
 from Httpd import httpd
+from WebSocket import ws
 
 
 def signal_handler(sig, frame):
     openhr20.shutdown()
+    ws.shutdown()
     serialIO.shutdown()
     mqtt.shutdown()
     httpd.shutdown()
@@ -28,9 +30,11 @@ if __name__ == "__main__":
     if serialIO.ser:
         mqtt.start()
         httpd.start()
+        ws.start()
         openhr20.start()
         mqtt.join()
         httpd.join()
+        ws.join()
         openhr20.join()
     else:
         sys.exit(1)

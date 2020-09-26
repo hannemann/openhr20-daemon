@@ -11,14 +11,14 @@ class WebSocket(threading.Thread):
 
     def __init__(self):
         super().__init__()
-        self.host = config.get('ws', 'host', fallback=defaults['ws']['host'])
+        self.listen_address = config.get('ws', 'listen_address', fallback=defaults['ws']['listen_address'])
         self.port = config.getint('ws', 'port', fallback=defaults['ws']['port'])
         self.loop = asyncio.get_event_loop()
-        self.server = websockets.serve(self.listen, self.host, self.port)
+        self.server = websockets.serve(self.listen, self.listen_address, self.port)
         self.loop.run_until_complete(self.server)
 
     def run(self):
-        print('Websocket: Start listening on %s:%s...' % (self.host, str(self.port)))
+        print('Websocket: Start listening on %s:%s...' % (self.listen_address, str(self.port)))
         self.loop.run_forever()
         print('Websocket: Loop stopped')
 

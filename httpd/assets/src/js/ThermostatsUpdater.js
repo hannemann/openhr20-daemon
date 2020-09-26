@@ -2,6 +2,7 @@ class ThermostatsUpdater {
 
     constructor() {
         this.cards = {};
+        this.ws = {};
         document.querySelectorAll('.thermostats .thermostat--card').forEach(c => {
             this.cards[c.dataset.addr] = c
         });
@@ -9,7 +10,16 @@ class ThermostatsUpdater {
         this.interval = 5000;
 
         if (Object.keys(this.cards).length > 0) {
+            this.initWebsockets();
             this.initHandler().startInterval()
+        }
+    }
+
+    initWebsockets() {
+        for (let card of Object.values(this.cards)) {
+            if (!this.ws.hasOwnProperty(card.dataset.ws)) {
+                this.ws[card.dataset.ws] = new WebSocket(card.dataset.ws);
+            }
         }
     }
 

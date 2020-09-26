@@ -26,6 +26,8 @@ defaults = {
         'port': 8020
     },
     'ws': {
+        'listen_address': '0.0.0.0',
+        'scheme': 'ws',
         'host': '0.0.0.0',
         'port': 8021
     },

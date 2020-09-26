@@ -11,6 +11,7 @@ from Commands.CommandSetTimer import CommandSetTimer
 from Eeprom import get_eeprom_layout
 from Commands.Commands import commands
 from Group import Group
+from Config import config, defaults
 
 
 class Device:
@@ -56,6 +57,11 @@ class Device:
         self.set_stats(stats)
         self.timers = timers
         self.settings = settings
+        self.ws = '{}://{}:{}'.format(
+            config.get('ws', 'scheme', fallback=defaults['ws']['scheme']),
+            config.get('ws', 'host', fallback=defaults['ws']['host']),
+            config.get('ws', 'port', fallback=defaults['ws']['port'])
+        )
         self.group = group
 
     def __str__(self):
@@ -95,7 +101,8 @@ class Device:
             "synced": self.synced,
             "available": self.available,
             "pending-commands": self.pending_commands,
-            "preset": self.get_current_preset()
+            "preset": self.get_current_preset(),
+            "ws": self.ws
         }
 
     def set_stats(self, stats):

@@ -61,17 +61,24 @@ class Devices:
             for device in devs:
                 device.group = self.groups[key]
 
-
     def flush(self):
-        fd = open(self.file, 'w')
-        for addr in self.buffer['names']:
-            device = self.get_device(addr)
-            self.buffer.set('stats', addr, str(device))
-            self.buffer.set('settings', addr, json.dumps(device.settings))
-            self.buffer.set('timers', addr, json.dumps(device.timers))
-        self.buffer.write(fd)
-        fd.close()
-        print('Flushed devices to %s' % self.file)
+        try:
+            self.check()
+            fd = open(self.file, 'w')
+            for addr in self.buffer['names']:
+                device = self.get_device(addr)
+                self.buffer.set('stats', addr, str(device))
+                self.buffer.set('settings', addr, json.dumps(device.settings))
+                self.buffer.set('timers', addr, json.dumps(device.timers))
+            self.buffer.write(fd)
+            fd.close()
+            print('Flushed devices to %s' % self.file)
+        except ValueError:
+            print('Refused to flush devices db. Devices empty...')
+
+    def check(self):
+        if len(self.buffer['names'].values()) == 0:
+            raise ValueError
 
     def get_device(self, addr):
         return self.devices[str(addr)]

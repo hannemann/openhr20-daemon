@@ -76,9 +76,14 @@ class Httpd(threading.Thread):
             else:
                 device = devices.get_device(addr)
                 device.set_temperature(temp)
-                for dev in device.group.devices:
-                    mqtt.publish_availability(dev)
-                    ws.send_device_stats(dev)
+                if device.group is not None:
+                    for dev in device.group.devices:
+                        mqtt.publish_availability(dev)
+                        ws.send_device_stats(dev)
+                else:
+                    mqtt.publish_availability(device)
+                    ws.send_device_stats(device)
+
         except KeyError:
             pass
         except ValueError:
@@ -94,9 +99,13 @@ class Httpd(threading.Thread):
             else:
                 device = devices.get_device(addr)
                 device.set_mode(mode)
-                for dev in device.group.devices:
-                    mqtt.publish_availability(dev)
-                    ws.send_device_stats(dev)
+                if device.group is not None:
+                    for dev in device.group.devices:
+                        mqtt.publish_availability(dev)
+                        ws.send_device_stats(dev)
+                else:
+                    mqtt.publish_availability(device)
+                    ws.send_device_stats(device)
         except KeyError:
             pass
         except ValueError:

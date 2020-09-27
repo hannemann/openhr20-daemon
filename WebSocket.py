@@ -46,7 +46,11 @@ class WebSocket(threading.Thread):
 
     def send_device_stats(self, device):
         stats = device.get_stats()
-        self.queue.append(json.dumps(stats))
+        message = {
+            "type": "stats",
+            "payload": stats
+        }
+        self.queue.append(json.dumps(message))
 
     def shutdown(self):
         self.loop.call_soon_threadsafe(self.loop.stop)

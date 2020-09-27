@@ -11,7 +11,7 @@ class ThermostatsUpdater {
 
         if (Object.keys(this.cards).length > 0) {
             this.initWebsockets();
-            this.initHandler().startInterval()
+            this.initHandler()//.startInterval()
         }
     }
 
@@ -19,6 +19,21 @@ class ThermostatsUpdater {
         for (let card of Object.values(this.cards)) {
             if (!this.ws.hasOwnProperty(card.dataset.ws)) {
                 this.ws[card.dataset.ws] = new WebSocket(card.dataset.ws);
+                this.ws[card.dataset.ws].onmessage = (e) => {
+                    try {
+                        let data = JSON.parse(e.data);
+                        if ('stats' === data.type) {
+                            let response = {
+                                data : {
+                                    [data.payload.addr]: {stats: data.payload}
+                                }
+                            }
+                            this.updateHandler(response)
+                        }
+                    } catch (e) {
+
+                    }
+                }
             }
         }
     }

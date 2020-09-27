@@ -4,6 +4,7 @@ from Config import config, defaults
 import threading
 import json
 from collections import deque
+from Devices import devices
 
 
 class WebSocket(threading.Thread):
@@ -29,9 +30,15 @@ class WebSocket(threading.Thread):
         self.connected.add(websocket)
         try:
             while self.loop.is_running():
-                message = await websocket.recv()
+                message = json.loads(await websocket.recv())
                 print(message)
+                if 'type' in message:
+                    if message['type'] == 'update_stats':
+                        self.queue_all_stats()
+
         except websockets.exceptions.ConnectionClosedOK:
+            pass
+        except websockets.exceptions.ConnectionClosedError:
             pass
         finally:
             self.connected.remove(websocket)
@@ -51,6 +58,10 @@ class WebSocket(threading.Thread):
             "payload": stats
         }
         self.queue.append(json.dumps(message))
+
+    def queue_all_stats(self):
+        for device in devices.devices.values():
+            self.send_device_stats(device)
 
     def shutdown(self):
         self.loop.call_soon_threadsafe(self.loop.stop)

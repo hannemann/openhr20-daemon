@@ -10,12 +10,22 @@ class ThermostatsUpdater {
         this.interval = 5000;
 
         if (Object.keys(this.cards).length > 0) {
-            this.initWebsockets();
-            this.initHandler()//.startInterval()
+            this.initHandler()
+                .initWebsockets()
+                .addObserver()
+            ;
         }
     }
 
+    initHandler() {
+        this.handleVisibility = this.visibilityHandler.bind(this);
+        this.handleSocketOpen = this.socketOpenHandler.bind(this)
+
+        return this;
+    }
+
     initWebsockets() {
+        console.info('Init websocket connections');
         for (let card of Object.values(this.cards)) {
             if (!this.ws.hasOwnProperty(card.dataset.ws)) {
                 this.ws[card.dataset.ws] = new WebSocket(card.dataset.ws);
@@ -23,68 +33,58 @@ class ThermostatsUpdater {
                     try {
                         let data = JSON.parse(e.data);
                         if ('stats' === data.type) {
-                            let response = {
-                                data : {
-                                    [data.payload.addr]: {stats: data.payload}
-                                }
-                            }
-                            this.updateHandler(response)
+                            this.updateHandler(data.payload)
                         }
                     } catch (e) {
 
                     }
                 }
+                this.ws[card.dataset.ws].addEventListener('open', this.handleSocketOpen)
             }
         }
-    }
-
-    initHandler() {
-        this.handleUpdate = this.updateHandler.bind(this)
-
         return this;
     }
 
-    canUpdate(data, addr) {
-        return "undefined" !== typeof this.cards[addr] &&
-            !this.cards[addr].dataset.syncing &&
-            data.stats.synced
+    closeWebsockets() {
+        console.info('Closing websocket connections');
+        Object.keys(this.ws).forEach(s => {
+            this.ws[s].removeEventListener('open', this.handleSocketOpen)
+            this.ws[s].close()
+            delete this.ws[s]
+        })
+        return this;
     }
 
-    updateHandler(response) {
+    addObserver() {
 
-        Object.keys(response.data).forEach(addr => {
-            let data = response.data[addr];
-            Object.keys(data.stats).forEach(k => {
-                let keys = k.split('-')
+        document.addEventListener('visibilitychange', this.handleVisibility)
+        return this;
+    }
 
-                let key = keys.shift();
-                key += keys.map(k => k.charAt(0).toUpperCase() + k.slice(1)).join('');
+    socketOpenHandler(e) {
+        e.currentTarget.send(JSON.stringify({
+            type: 'update_stats'
+        }))
+    }
 
-                this.cards[addr].dataset[key] = data.stats[k];
-            })
+    updateHandler(stats) {
+        Object.keys(stats).forEach(k => {
+            let keys = k.split('-')
+
+            let key = keys.shift();
+            key += keys.map(k => k.charAt(0).toUpperCase() + k.slice(1)).join('');
+
+            this.cards[stats.addr].dataset[key] = stats[k];
         })
     }
 
-    startInterval() {
-
-        setInterval(async () => {
-            let cancelTimeout = null, source = axios.CancelToken.source();
-            cancelTimeout = setTimeout(() => source.cancel('Stats request cancelled after 2s'), 2000)
-            try {
-                let response = await axios.get(`${location.origin}/stats`, {cancelToken: source.token});
-                this.handleUpdate(response);
-            } catch(e) {
-                if (axios.isCancel(e)) {
-                    console.error(e.message)
-                } else {
-                    console.error(e)
-                }
-            } finally {
-                clearTimeout(cancelTimeout)
-            }
-        }, this.interval)
+    visibilityHandler() {
+        if (document.hidden) {
+            this.closeWebsockets()
+        } else {
+            this.initWebsockets()
+        }
     }
-
 }
 
 export {ThermostatsUpdater}

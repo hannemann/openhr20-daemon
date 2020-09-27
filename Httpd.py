@@ -253,7 +253,10 @@ class Httpd(threading.Thread):
             if devices.is_remote_device(addr):
                 Httpd.redirect_to_remote(request, addr)
             else:
-                devices.get_device(addr).cancel_commands()
+                device = devices.get_device(addr)
+                device.cancel_commands()
+                mqtt.publish_availability(device)
+                ws.send_device_stats(device)
         except KeyError:
             pass
         print('HTTP: %d cancel_commands' % addr)

@@ -7,8 +7,8 @@ services:
       - 8020:8020
       - 8021:8021
     volumes:
-      - /var/cache/openhr20/devices.db:/var/cache/openhr20/devices.db
-      - /etc/openhr20/daemon.conf:/etc/openhr20/daemon.conf
+      - ./data/devices.db:/var/cache/openhr20/devices.db
+      - ./data/daemon.conf:/etc/openhr20/daemon.conf
       - ./:/usr/src/app
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0

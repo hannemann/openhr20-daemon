@@ -11,4 +11,4 @@ services:
       - ./data/daemon.conf:/etc/openhr20/daemon.conf
       - ./:/usr/src/app
     devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
+      - ${master}:${master}

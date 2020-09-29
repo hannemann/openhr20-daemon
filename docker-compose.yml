@@ -2,10 +2,13 @@ version: "2"
 services:
   openhr20-daemon:
     restart: unless-stopped
-    build: .
+    build:
+      context: ./
+      args:
+        - "TZ=${TZ}"
     ports:
-      - 8020:8020
-      - 8021:8021
+      - ${HTTP_PORT}:8020
+      - ${WS_PORT}:8021
     volumes:
       - ./data/devices.db:/var/cache/openhr20/devices.db
       - ./data/daemon.conf:/etc/openhr20/daemon.conf

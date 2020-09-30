@@ -1,0 +1,22 @@
+[names]
+1 = Living Left
+2 = Living Right
+3 = Bedroom
+4 = Kitchen
+
+[stats]
+
+[settings]
+
+[timers]
+
+[groups]
+living = {"name": "Living", "devices": [1,2]}
+
+[remote_groups]
+kids = 192.168.3.22:8020
+
+[remote_devices]
+5 = 192.168.3.22:8020
+6 = 192.168.3.22:8020
+

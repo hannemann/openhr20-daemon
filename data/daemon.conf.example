@@ -1,0 +1,43 @@
+[openhr20]
+master = /dev/ttyUSB0
+baud = 38400
+timeout = 1
+device-db = /var/cache/openhr20/devices.db
+
+[httpd]
+host = 0.0.0.0
+port = 8020
+
+[ws]
+listen_address = 0.0.0.0
+scheme = ws
+host = 0.0.0.0
+port = 8021
+
+[mqtt]
+host = mqtt.example.com
+port = 1883
+qos = 0
+retain = False
+stats_topic = stat/openhr20/RESULT/
+cmnd_topic = cmnd/openhr20/
+availability_topic = 'stat/openhr20/AVAILABLE/
+
+[mqtt-modes-receive]
+dry = manu
+
+[mqtt-modes-publish]
+auto = auto
+- = auto
+manu = dry
+
+[mqtt-presets-receive]
+away = antifreeze
+home = comfort
+comfort = supercomfort
+
+[mqtt-presets-publish]
+antifreeze = away
+comfort = home
+supercomfort = comfort
+

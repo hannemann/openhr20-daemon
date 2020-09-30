@@ -2,7 +2,6 @@
 master = /dev/ttyUSB0
 baud = 38400
 timeout = 1
-device-db = /var/cache/openhr20/devices.db
 
 [httpd]
 host = 0.0.0.0

@@ -1,25 +1,29 @@
 import json
 import sys
+import os
 import paho.mqtt.client as mqttc
 import threading
 from Commands.CommandTemperature import CommandTemperature
 from Commands.CommandMode import CommandMode
 from Commands.CommandStatus import CommandStatus
 from Commands.CommandReboot import CommandReboot
-from Config import config, defaults
 from Devices import devices
+
+mqtt_qos = int(os.getenv("MQTT_QOS"))
+mqtt_retain = os.getenv("MQTT_RETAIN") == 'True'
 
 
 class MQTT(threading.Thread):
     daemon = True
     count = 0
     temp = 'temp'
-    cmnd_topic = config.get('mqtt', 'cmnd_topic', fallback=defaults['mqtt']['cmnd_topic'])
-    stats_topic = config.get('mqtt', 'stats_topic', fallback=defaults['mqtt']['stats_topic'])
-    host = config.get('mqtt', 'host', fallback=defaults['mqtt']['host'])
-    port = config.getint('mqtt', 'port', fallback=defaults['mqtt']['port'])
-    qos = config.getint('mqtt', 'qos', fallback=defaults['mqtt']['qos'])
-    retain = config.getboolean('mqtt', 'retain', fallback=defaults['mqtt']['retain'])
+    cmnd_topic = os.getenv("MQTT_CMND_TOPIC")
+    stats_topic = os.getenv("MQTT_STATS_TOPIC")
+    availability_topic = os.getenv("MQTT_AVAILABILITY_TOPIC")
+    host = os.getenv("MQTT_HOST")
+    port = int(os.getenv("MQTT_PORT"))
+    qos = mqtt_qos
+    retain = mqtt_retain
 
     def __init__(self):
         threading.Thread.__init__(self)
@@ -49,17 +53,20 @@ class MQTT(threading.Thread):
             payload = msg.payload.decode('utf_8').strip()
             device = devices.get_device(addr)
             if cmnd == CommandMode.abbr:
-                mapped_mode = config.get('mqtt-modes-receive', payload, fallback=False)
-                if mapped_mode is not False:
-                    payload = mapped_mode
+                try:
+                    payload = json.loads(os.getenv("MQTT_MODES_RECEIVE"))[payload]
+                except KeyError:
+                    pass
                 device.set_mode(payload)
-                for dev in device.group.devices:
-                    self.publish_availability(dev)
+                if device.group is not None:
+                    for dev in device.group.devices:
+                        self.publish_availability(dev)
 
             elif cmnd == CommandTemperature.abbr:
                 device.set_temperature(payload)
-                for dev in device.group.devices:
-                    self.publish_availability(dev)
+                if device.group is not None:
+                    for dev in device.group.devices:
+                        self.publish_availability(dev)
 
             elif cmnd == CommandStatus.abbr:
                 device.update_stats()
@@ -70,49 +77,40 @@ class MQTT(threading.Thread):
                 self.publish_availability(device)
 
             elif cmnd == 'preset':
-                mapped_preset = config.get('mqtt-presets-receive', payload, fallback=False)
-                if mapped_preset is not False:
-                    payload = mapped_preset
+                try:
+                    payload = json.loads(os.getenv("MQTT_PRESETS_RECEIVE"))[payload]
+                except KeyError:
+                    pass
                 device.set_preset(payload)
-                for dev in device.group.devices:
-                    self.publish_availability(dev)
-
+                if device.group is not None:
+                    for dev in device.group.devices:
+                        self.publish_availability(dev)
 
         except KeyError:
             pass
         except ValueError:
             pass
 
-    def publish(self,
-                topic,
-                payload,
-                qos=config.getint('mqtt', 'qos', fallback=defaults['mqtt']['qos']),
-                retain=config.getboolean('mqtt', 'retain', fallback=defaults['mqtt']['retain'])
-                ):
+    def publish(self, topic, payload, qos=mqtt_qos, retain=mqtt_retain):
         self.client.publish(topic, payload, qos, retain)
 
-    def publish_json(self,
-                     topic,
-                     payload,
-                     qos=config.getint('mqtt', 'qos', fallback=defaults['mqtt']['qos']),
-                     retain=config.getboolean('mqtt', 'retain', fallback=defaults['mqtt']['retain'])
-                     ):
+    def publish_json(self, topic, payload, qos=mqtt_qos, retain=mqtt_retain):
         self.publish(topic, json.dumps(payload), qos, retain)
 
     def publish_stats(self, device):
         stats = device.get_stats()
-        mapped_mode = config.get('mqtt-modes-publish', stats['mode'], fallback=False)
-        if mapped_mode is not False:
-            stats['mode'] = mapped_mode
-        mapped_preset = config.get('mqtt-presets-publish', stats['preset'], fallback=False)
-        if mapped_preset is not False:
-            stats['preset'] = mapped_preset
+        try:
+            stats['mode'] = json.loads(os.getenv("MQTT_MODES_PUBLISH"))[stats['mode']]
+        except KeyError:
+            pass
+        try:
+            stats['preset'] = json.loads(os.getenv("MQTT_PRESETS_PUBLISH"))[stats['preset']]
+        except KeyError:
+            pass
         self.publish(self.stats_topic.strip('/') + '/%d' % device.addr, json.dumps(stats))
 
-    @staticmethod
-    def publish_availability(device):
-        topic = config.get(
-            'mqtt', 'availability_topic', fallback='stat/openhr20/AVAILABLE/').strip('/') + '/%d' % device.addr
+    def publish_availability(self, device):
+        topic = self.availability_topic.strip('/') + '/%d' % device.addr
         payload = 'offline' if device.available == device.AVAILABLE_OFFLINE or device.synced is False else 'online'
         mqtt.publish(topic, payload)
 

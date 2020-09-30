@@ -5,14 +5,12 @@ import os
 import json
 from Device import Device
 from Group import Group
-from Config import config, defaults
-import copy
 
 
 class Devices:
 
     def __init__(self):
-        self.file = config.get('openhr20', 'device-db', fallback=defaults['openhr20']['device-db'])
+        self.file = os.getenv("DEVICES_FILE")
         self.buffer = configparser.ConfigParser()
         self.devices = {}
         self.groups = {}
@@ -37,11 +35,6 @@ class Devices:
 
     def init_devices(self):
         for addr in self.buffer['names']:
-            try:
-                groups = dict(self.buffer['groups'])
-                group = json.loads([group for group in groups.values() if int(addr) in json.loads(group)['devices']][0])
-            except IndexError:
-                group = None
             device = Device(
                 addr,
                 self.buffer.get('names', addr),

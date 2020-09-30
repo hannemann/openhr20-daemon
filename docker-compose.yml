@@ -10,8 +10,6 @@ services:
       - ${HTTP_PORT}:8020
       - ${WS_PORT}:8021
     volumes:
-      - ./data/devices.db:/var/cache/openhr20/devices.db
-      - ./data/daemon.conf:/etc/openhr20/daemon.conf
       - ./:/usr/src/app
     devices:
-      - ${master}:${master}
+      - ${OPENHR20_MASTER}:${OPENHR20_MASTER}

@@ -1,6 +1,6 @@
 import asyncio
 import websockets
-from Config import config, defaults
+import os
 import threading
 import json
 from collections import deque
@@ -14,8 +14,8 @@ class WebSocket(threading.Thread):
 
     def __init__(self):
         super().__init__()
-        self.listen_address = config.get('ws', 'listen_address', fallback=defaults['ws']['listen_address'])
-        self.port = config.getint('ws', 'port', fallback=defaults['ws']['port'])
+        self.listen_address = os.getenv("WS_LISTEN_ADDRESS")
+        self.port = int(os.getenv("WS_PORT"))
         self.loop = asyncio.get_event_loop()
         self.server = websockets.serve(self.connect, self.listen_address, self.port)
         self.loop.run_until_complete(self.server)

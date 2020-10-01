@@ -1,18 +1,16 @@
 from bottle import ServerAdapter
 import bottle
 import sys
+import os
 import pathlib
-from Config import config, defaults
 import threading
 from httpd.Controllers.PageController import PageController
 from httpd.Controllers.CommandsController import CommandsController
 from httpd.Controllers.RemoteController import RemoteController
 from httpd.Controllers.DeviceController import DeviceController
 
-debug = config.getboolean('openhr20', 'debug', fallback='no')
 httpd_path = '/' + str(pathlib.Path(__file__).parent.absolute()).strip('/') + '/httpd/'
 bottle.TEMPLATE_PATH.insert(0, httpd_path + 'views')
-bottle.debug(debug)
 
 
 class MyWSGIRefServer(ServerAdapter):
@@ -41,8 +39,8 @@ class Httpd(threading.Thread):
     server = None
 
     def run(self):
-        host = config.get('httpd', 'host', fallback=defaults['httpd']['host'])
-        port = config.getint('httpd', 'port', fallback=defaults['httpd']['port'])
+        host = os.getenv("HTTP_LISTEN_ADDRESS")
+        port = int(os.getenv("HTTP_PORT"))
         self.server = MyWSGIRefServer(port=port, host=host)
         bottle.run(server=self.server, reloader=False)
         print('HTTP Server stopped...')

@@ -2,7 +2,6 @@ import sys
 import serial
 import os
 from serial.serialutil import SerialException
-from Config import config, defaults
 from threading import Event
 
 

@@ -115,6 +115,7 @@ class MQTT(threading.Thread):
         mqtt.publish(topic, payload)
 
     def run(self):
+        print('MQTT: Connect to broker {}:{}'.format(self.host, self.port))
         self.client.connect(self.host, self.port, 60)
         self.client.loop_forever()
 

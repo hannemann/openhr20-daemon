@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import Config
 from OpenHR20 import openhr20
 from MQTT import mqtt
 import sys

@@ -36,19 +36,38 @@ class Devices:
             self.add_device(
                 addr,
                 self.buffer.get('names', addr),
-                json.loads(self.buffer.get('stats', addr, fallback='{"addr":%s}' % addr)),
-                json.loads(self.buffer.get('timers', addr, fallback=json.dumps([[''] * 8] * 8))),
+                json.loads(self.buffer.get('stats', addr, fallback=self.get_initial_stats(addr))),
+                json.loads(self.buffer.get('timers', addr, fallback=self.get_initial_timers())),
                 json.loads(self.buffer.get('settings', addr, fallback='{}')),
                 None
             )
 
+    @staticmethod
+    def get_initial_stats(addr):
+        return '{"addr":%s}' % addr
+
+    @staticmethod
+    def get_initial_timers():
+        return json.dumps([[''] * 8] * 8)
+
     def add_device(self, addr, name, stats, timers, settings, group):
-        self.devices[addr] = Device(addr, name, stats, timers, settings, group)
-        self.buffer.set('names', addr, name)
+        self.devices[str(addr)] = Device(addr, name, stats, timers, settings, group)
+        if group is not None:
+            group.devices.append(self.devices[str(addr)])
+            self.buffer.set('groups', group.key, json.dumps(group.dict()))
+        self.buffer.set('names', str(addr), name)
 
     def remove_device(self, addr):
-        del self.devices[addr]
-        self.buffer.remove_option('names', addr)
+        device = self.get_device(addr)
+        if device.group is not None:
+            group = device.group
+            group.remove(device)
+            self.buffer.set('groups', group.key, json.dumps(group.dict()))
+        del self.devices[str(addr)]
+        self.buffer.remove_option('names', str(addr))
+        self.buffer.remove_option('stats', str(addr))
+        self.buffer.remove_option('timers', str(addr))
+        self.buffer.remove_option('settings', str(addr))
 
     def add_remote_device(self, addr, host, port):
         self.buffer.set('remote_devices', str(addr), '{}:{}'.format(host, port))
@@ -66,7 +85,7 @@ class Devices:
                 device.group = self.groups[key]
 
     def add_group(self, key, name, devs):
-        self.groups[key] = Group(name, devs)
+        self.groups[key] = Group(key, name, devs)
         self.buffer.set('groups', key, json.dumps(self.groups[key].dict()))
 
     def remove_group(self, key):

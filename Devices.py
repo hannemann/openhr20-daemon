@@ -16,10 +16,7 @@ class Devices:
         self.groups = {}
 
         if not os.path.exists(self.file):
-            self.buffer['names'] = {
-                '10': 'Livingroom',
-                '11': 'Bathroom'
-            }
+            self.buffer['names'] = {}
             self.buffer['stats'] = {}
             self.buffer['timers'] = {}
             self.buffer['settings'] = {}
@@ -29,13 +26,14 @@ class Devices:
             self.flush()
         else:
             self.buffer.read(self.file)
-            self.init_devices()
-            self.init_groups()
-            print('Read devices from %s' % self.file)
+
+        self.init_devices()
+        self.init_groups()
+        print('Read devices from %s' % self.file)
 
     def init_devices(self):
         for addr in self.buffer['names']:
-            device = Device(
+            self.add_device(
                 addr,
                 self.buffer.get('names', addr),
                 json.loads(self.buffer.get('stats', addr, fallback='{"addr":%s}' % addr)),
@@ -43,26 +41,53 @@ class Devices:
                 json.loads(self.buffer.get('settings', addr, fallback='{}')),
                 None
             )
-            self.devices[addr] = device
+
+    def add_device(self, addr, name, stats, timers, settings, group):
+        self.devices[addr] = Device(addr, name, stats, timers, settings, group)
+        self.buffer.set('names', addr, name)
+
+    def remove_device(self, addr):
+        del self.devices[addr]
+        self.buffer.remove_option('names', addr)
+
+    def add_remote_device(self, addr, host, port):
+        self.buffer.set('remote_devices', str(addr), '{}:{}'.format(host, port))
+
+    def remove_remote_device(self, addr):
+        self.buffer.remove_option('remote_devices', addr)
 
     def init_groups(self):
         groups = dict(self.buffer['groups'])
         for key, group in groups.items():
             group = json.loads(group)
             devs = [d for d in self.devices.values() if d.addr in [d for d in group['devices']]]
-            self.groups[key] = Group(group['name'], devs)
+            self.add_group(key, group['name'], devs)
             for device in devs:
                 device.group = self.groups[key]
+
+    def add_group(self, key, name, devs):
+        self.groups[key] = Group(name, devs)
+        self.buffer.set('groups', key, json.dumps(self.groups[key].dict()))
+
+    def remove_group(self, key):
+        del self.groups[key]
+        self.buffer.remove_option('groups', key)
+
+    def add_remote_group(self, key, host, port):
+        self.buffer.set('remote_groups', key, '{}:{}'.format(host, port))
+
+    def remove_remote_group(self, key):
+        self.buffer.remove_option('remote_groups', key)
 
     def flush(self):
         try:
             self.check()
-            fd = open(self.file, 'w')
             for addr in self.buffer['names']:
                 device = self.get_device(addr)
                 self.buffer.set('stats', addr, str(device))
                 self.buffer.set('settings', addr, json.dumps(device.settings))
                 self.buffer.set('timers', addr, json.dumps(device.timers))
+            fd = open(self.file, 'w')
             self.buffer.write(fd)
             fd.close()
             print('Flushed devices to %s' % self.file)
@@ -70,7 +95,7 @@ class Devices:
             print('Refused to flush devices db. Devices empty...')
 
     def check(self):
-        if len(self.buffer['names'].values()) == 0:
+        if os.path.exists(self.file) and len(self.buffer['names'].values()) == 0:
             raise ValueError
 
     def get_device(self, addr):

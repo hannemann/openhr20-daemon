@@ -18,7 +18,7 @@ class DeviceController:
     def get_stats():
         response.content_type = 'application/json'
         devs = {}
-        for addr, device in devices.get_devices().items():
+        for addr, device in devices.get_devices(with_remote=True).items():
             devs[addr] = device.get_data()
         return json.dumps(devs)
 

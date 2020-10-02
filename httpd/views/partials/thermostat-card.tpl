@@ -5,7 +5,7 @@
 % supercomfort = int(device.settings[device.PRESET_SUPERCOMFORT_SETTING], 16) / 2 if device.PRESET_SUPERCOMFORT_SETTING in device.settings else 0
 <div class="thermostat--card"
      data-name="{{ device.name }}"
-     % for attr, value in device.get_stats().items():
+     % for attr, value in device.dict().items():
          data-{{attr}}="{{ str(value).lower() }}"
     % end
 >

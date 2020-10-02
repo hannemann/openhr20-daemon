@@ -65,7 +65,7 @@ class Device:
         self.group = group
 
     def __str__(self):
-        return json.dumps(self.get_stats())
+        return json.dumps(self.dict())
 
     def __index__(self):
         return self.addr
@@ -82,15 +82,16 @@ class Device:
 
         return {
             "name": self.name,
-            "stats": self.get_stats(),
+            "stats": self.dict(),
             "timers": self.timers,
             "settings": self.settings,
             "group": group
         }
 
-    def get_stats(self):
+    def dict(self):
         return {
             "addr": self.addr,
+            "name": self.name,
             "mode": self.mode,
             "valve": self.valve,
             "real": self.real,
@@ -102,7 +103,8 @@ class Device:
             "available": self.available,
             "pending-commands": self.pending_commands,
             "preset": self.get_current_preset(),
-            "ws": self.ws
+            "ws": self.ws,
+            "group": self.group.dict() if self.group is not None else self.group
         }
 
     def set_stats(self, stats):
@@ -149,7 +151,7 @@ class Device:
         CommandTemperature.validate(temperature)
         group = self.group
         if group is None:
-            group = Group('fake', [self])
+            group = Group('fake', 'fake', [self])
         for device in group.devices:
             commands.add(device, CommandTemperature(temperature))
 
@@ -157,7 +159,7 @@ class Device:
         CommandMode.validate(mode)
         group = self.group
         if group is None:
-            group = Group('fake', [self])
+            group = Group('fake', 'fake', [self])
         for device in group.devices:
             commands.add(device, CommandMode(mode))
 

@@ -11,6 +11,7 @@ from httpd.Controllers.DeviceController import DeviceController
 
 httpd_path = '/' + str(pathlib.Path(__file__).parent.absolute()).strip('/') + '/httpd/'
 bottle.TEMPLATE_PATH.insert(0, httpd_path + 'views')
+bottle.debug(os.getenv('HTTP_DEBUG') == 'True')
 
 
 class MyWSGIRefServer(ServerAdapter):

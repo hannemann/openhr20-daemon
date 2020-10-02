@@ -1,5 +1,6 @@
 class Group:
 
+    key = ''
     name = ''
     devices = []
 
@@ -11,6 +12,7 @@ class Group:
 
     def dict(self):
         d = {
+            'key': self.key,
             'name': self.name,
             'devices': [device.addr for device in self.devices]
         }

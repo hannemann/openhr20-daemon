@@ -98,7 +98,7 @@ class MQTT(threading.Thread):
         self.publish(topic, json.dumps(payload), qos, retain)
 
     def publish_stats(self, device):
-        stats = device.get_stats()
+        stats = device.dict()
         try:
             stats['mode'] = json.loads(os.getenv("MQTT_MODES_PUBLISH"))[stats['mode']]
         except KeyError:

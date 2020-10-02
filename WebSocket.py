@@ -52,7 +52,7 @@ class WebSocket(threading.Thread):
             await asyncio.sleep(0.1)
 
     def send_device_stats(self, device):
-        stats = device.get_stats()
+        stats = device.dict()
         message = {
             "type": "stats",
             "payload": stats

@@ -89,8 +89,27 @@ class Devices:
         self.buffer.set('groups', key, json.dumps(self.groups[key].dict()))
 
     def remove_group(self, key):
+        group = self.groups[key]
+        for dev in group.devices:
+            dev.group = None
         del self.groups[key]
         self.buffer.remove_option('groups', key)
+
+    def add_device_to_group(self, addr, key):
+        group = self.groups[key]
+        device = self.get_device(addr)
+        if device not in group.devices:
+            group.append(device)
+            device.group = self.groups[key]
+            self.buffer.set('groups', key, json.dumps(group.dict()))
+
+    def remove_device_from_group(self, addr, key):
+        group = self.groups[key]
+        device = self.get_device(addr)
+        if device in group.devices:
+            group.remove(device)
+            device.group = None
+            self.buffer.set('groups', key, json.dumps(group.dict()))
 
     def add_remote_group(self, key, host, port):
         self.buffer.set('remote_groups', key, '{}:{}'.format(host, port))

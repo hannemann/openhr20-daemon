@@ -29,6 +29,7 @@ ENV MQTT_PRESETS_PUBLISH='{"antifreeze": "antifreeze", "eco": "eco", "comfort": 
 
 ENV HTTP_LISTEN_ADDRESS=0.0.0.0
 ENV HTTP_PORT=8020
+ENV HTTP_DEBUG=False
 
 ENV WS_LISTEN_ADDRESS=0.0.0.0
 ENV WS_SCHEME=ws

@@ -76,6 +76,7 @@ class OpenHR20 (threading.Thread):
         print('')
         if line[2] != '!' and line[1] != ' ':
             commands.remove_from_buffer(self.device)
+            ws.send_device_stats(self.device)
         self.data = line[1:]
         if not commands.has_command(self.device) and self.data[0] in ['A', 'M']:
             self.update_device_stats(Stats.create(self.device, self.data))
@@ -87,13 +88,13 @@ class OpenHR20 (threading.Thread):
         for device in devices.devices.values():
             mqtt.publish_stats(device)
             mqtt.publish_availability(device)
+            ws.send_device_stats(device)
 
     def handle_data(self, line):
         if self.data[0] == '?' and self.device.is_available():
             self.device.request_missing_timers()
             self.device.request_missing_settings()
             commands.send(self.device)
-            ''' TODO: send stats if commands have been sent '''
         elif line[0] != '*' and (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
             self.update_device_stats(Stats.create(self.device, self.data))
         elif len(self.data) >= 5 and self.data[1] == '[' and self.data[4] == ']' and self.data[5] == '=':

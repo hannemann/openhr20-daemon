@@ -146,10 +146,11 @@ class Devices:
                 devs[addr] = self.get_device_from_remote(addr)
         return devs
 
-    def get_groups(self):
+    def get_groups(self, with_remote=False):
         grps = self.groups.copy()
-        for name, remote in dict(self.buffer['remote_groups']).items():
-            grps[name] = self.get_group_from_remote(name)
+        if with_remote:
+            for name, remote in dict(self.buffer['remote_groups']).items():
+                grps[name] = self.get_group_from_remote(name)
         return grps
 
     def get_remote(self, addr):
@@ -180,8 +181,11 @@ class Devices:
         else:
             raise KeyError
 
-    def __str__(self, with_remote=False):
-        return json.dumps([d.dict() for d in self.get_devices(with_remote).values()])
+    def __str__(self, with_remote=False, groups=False):
+        if groups:
+            return json.dumps([g.dict() for g in self.get_groups(with_remote).values()])
+        else:
+            return json.dumps([d.dict() for d in self.get_devices(with_remote).values()])
 
 
 devices = Devices()

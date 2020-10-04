@@ -39,6 +39,10 @@
 .group--name {
 }
 
+.groups-manager {
+  flex-basis: 100%;
+}
+
 .group--devices {
   padding-top: var(--grid-base);
   padding-left: var(--grid-base);
@@ -47,7 +51,12 @@
   .group--devices-header {
     margin-left: calc(-1 * var(--grid-base));
     margin-bottom: calc(var(--grid-base) / 2);
+    display: flex;
+    justify-content: space-between;
   }
 
-  .group-device {}
+  .group--device {
+    display: flex;
+    justify-content: space-between;
+  }
 }

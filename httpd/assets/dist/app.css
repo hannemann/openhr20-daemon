@@ -639,6 +639,10 @@ main > div:first-of-type,
   padding: calc(var(--grid-base) / 2);
 }
 
+.groups-manager {
+  flex-basis: 100%;
+}
+
 .group--devices {
   padding-top: var(--grid-base);
   padding-left: var(--grid-base);
@@ -648,5 +652,12 @@ main > div:first-of-type,
 .group--devices .group--devices-header {
   margin-left: calc(-1 * var(--grid-base));
   margin-bottom: calc(var(--grid-base) / 2);
+  display: flex;
+  justify-content: space-between;
+}
+
+.group--devices .group--device {
+  display: flex;
+  justify-content: space-between;
 }
 

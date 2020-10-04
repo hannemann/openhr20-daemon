@@ -14,7 +14,7 @@ class Commands:
 
             buffered_command = next((x for x in self.buffer[addr] if x.command == command.command), None)
             if buffered_command is not None:
-                print('Command %s already buffered. Discarding new command...' % buffered_command.command)
+                print('Command {} already buffered. Discarding new command...'.format(buffered_command.command))
                 sys.stdout.flush()
             else:
                 self.buffer[addr].append(command)
@@ -35,14 +35,14 @@ class Commands:
                     if ++bank > 7:
                         break
                     weight = cw
-                r = "(%02x-%x)%s" % (device.addr, bank, cmnd.command)
+                r = "({:02x}-{:x}){}".format(device.addr, bank, cmnd.command)
                 q.append(r)
                 cmnd.sent += 1
                 i += 1
                 if i > 25:
                     break
             serialIO.write('\n'.join(q), '')
-            print(' %s' % '(' + device.name + ')')
+            print(' ({})'.format(device.name))
 
     def remove_from_buffer(self, device):
         if self.has_command(device):
@@ -76,13 +76,13 @@ class Commands:
                 v = None
                 cmnds = self.buffer[addr]
                 if line == 'N1?' and len(cmnds) > 10:
-                    v = "O%02x%02x" % (addr, pr)
+                    v = "O{:02x}{:02x}".format(addr, pr)
                     pr = addr
                 else:
                     req[int(addr/8)] |= int(pow(2, addr % 8))
 
         if v is None:
-            v = "P%02x%02x%02x%02x" % (req[0], req[1], req[2], req[3])
+            v = "P{:02x}{:02x}{:02x}{:02x}".format(req[0], req[1], req[2], req[3])
 
         serialIO.write(v)
 

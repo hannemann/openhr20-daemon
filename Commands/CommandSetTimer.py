@@ -9,7 +9,7 @@ class CommandSetTimer(AbstractCommand):
     weight = 4
 
     def __init__(self, day, value):
-        self.command = '%s%s%s' % (self.command, day, value)
+        self.command = '{}{}{}'.format(self.command, day, value)
 
     @staticmethod
     def valid(day, value):

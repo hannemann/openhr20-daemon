@@ -9,7 +9,7 @@ class CommandTemperature(AbstractCommand):
     weight = 10
 
     def __init__(self, temperature):
-        self.command = 'A%02x' % int(float(temperature)*2)
+        self.command = 'A{:02x}'.format(int(float(temperature)*2))
 
     @staticmethod
     def validate(temperature):

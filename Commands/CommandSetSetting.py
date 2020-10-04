@@ -10,7 +10,7 @@ class CommandSetSetting(AbstractCommand):
     weight = 4
 
     def __init__(self, idx, value):
-        self.command = '%s%s%s' % (self.command, idx, value)
+        self.command = '{}{}{}'.format(self.command, idx, value)
 
     @staticmethod
     def valid(layout, idx, value):

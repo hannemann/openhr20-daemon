@@ -1,7 +1,7 @@
-import sys
+from Commands.AbstractCommand import AbstractCommand
 
 
-class CommandMode:
+class CommandMode(AbstractCommand):
 
     abbr = 'mode'
     sent = 0
@@ -19,7 +19,3 @@ class CommandMode:
     def validate(mode):
         if not mode.lower() in CommandMode.modes:
             raise ValueError
-
-    def __del__(self):
-        print('Command %s deleted' % self.command)
-        sys.stdout.flush()

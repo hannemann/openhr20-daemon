@@ -1,13 +1,9 @@
-import sys
+from Commands.AbstractCommand import AbstractCommand
 
 
-class CommandReboot:
+class CommandReboot(AbstractCommand):
 
     abbr = 'reboot'
     sent = 0
     command = 'B1324'
     weight = 10
-
-    def __del__(self):
-        print('Command %s deleted' % self.command)
-        sys.stdout.flush()

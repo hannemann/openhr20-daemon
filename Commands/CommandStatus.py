@@ -1,13 +1,9 @@
-import sys
+from Commands.AbstractCommand import AbstractCommand
 
 
-class CommandStatus:
+class CommandStatus(AbstractCommand):
 
     abbr = 'status'
     sent = 0
     command = 'D'
     weight = 10
-
-    def __del__(self):
-        print('Command %s deleted' % self.command)
-        sys.stdout.flush()

@@ -1,7 +1,7 @@
-import sys
+from Commands.AbstractCommand import AbstractCommand
 
 
-class CommandSetTimer:
+class CommandSetTimer(AbstractCommand):
 
     abbr = 'set_timer'
     sent = 0
@@ -17,7 +17,3 @@ class CommandSetTimer:
                and 0 <= int(day[1]) <= 7 \
                and 0 <= int(value[0]) <= 3 \
                and (0 <= int(value[1:], 16) <= 24 * 60 or int(value[1:], 16) == int('fff', 16))
-
-    def __del__(self):
-        print('Command %s deleted' % self.command)
-        sys.stdout.flush()

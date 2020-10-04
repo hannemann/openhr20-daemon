@@ -1,8 +1,8 @@
-import sys
+from Commands.AbstractCommand import AbstractCommand
 from Eeprom import get_eeprom_layout
 
 
-class CommandSetSetting:
+class CommandSetSetting(AbstractCommand):
 
     abbr = 'set_setting'
     sent = 0
@@ -17,7 +17,3 @@ class CommandSetSetting:
         fields = get_eeprom_layout(layout)
         field = next((x for x in fields if x['idx'] == idx), False)
         return field and field['range'][0] <= int(value, 16) <= field['range'][1]
-
-    def __del__(self):
-        print('Command %s deleted' % self.command)
-        sys.stdout.flush()

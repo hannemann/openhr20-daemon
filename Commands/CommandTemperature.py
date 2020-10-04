@@ -1,7 +1,7 @@
-import sys
+from Commands.AbstractCommand import AbstractCommand
 
 
-class CommandTemperature:
+class CommandTemperature(AbstractCommand):
 
     abbr = 'temp'
     sent = 0
@@ -15,7 +15,3 @@ class CommandTemperature:
     def validate(temperature):
         if not 5 <= float(temperature) <= 30:
             raise ValueError
-
-    def __del__(self):
-        print('Command %s deleted' % self.command)
-        sys.stdout.flush()

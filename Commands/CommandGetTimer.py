@@ -1,7 +1,7 @@
-import sys
+from Commands.AbstractCommand import AbstractCommand
 
 
-class CommandGetTimer:
+class CommandGetTimer(AbstractCommand):
 
     abbr = 'get_timer'
     sent = 0
@@ -14,7 +14,3 @@ class CommandGetTimer:
     @staticmethod
     def valid(day, slot):
         return 0 <= day <= 7 and 0 <= slot <= 7
-
-    def __del__(self):
-        print('Command {} deleted'.format(self.command))
-        sys.stdout.flush()

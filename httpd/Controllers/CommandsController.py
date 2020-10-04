@@ -1,3 +1,4 @@
+import sys
 from bottle import route, request
 from MQTT import mqtt
 from WebSocket import ws
@@ -39,7 +40,8 @@ class CommandsController:
             pass
         except ValueError:
             pass
-        print('HTTP: %d temp %f' % (addr, temp))
+        print(' < HTTP: {} temp {}'.format(addr, temp))
+        sys.stdout.flush()
 
     @staticmethod
     def set_mode(addr):
@@ -61,7 +63,8 @@ class CommandsController:
             pass
         except ValueError:
             pass
-        print('HTTP: %d mode %s' % (addr, mode))
+        print(' < HTTP: {} mode {}'.format(addr, mode))
+        sys.stdout.flush()
 
     @staticmethod
     def update_stats(addr):
@@ -77,7 +80,8 @@ class CommandsController:
             pass
         except ValueError:
             pass
-        print('HTTP: %d update_stats' % addr)
+        print(' < HTTP: {} update_stats'.format(addr))
+        sys.stdout.flush()
 
     @staticmethod
     def reboot(addr):
@@ -93,7 +97,8 @@ class CommandsController:
             pass
         except ValueError:
             pass
-        print('HTTP: %d reboot' % addr)
+        print(' < HTTP: {} reboot'.format(addr))
+        sys.stdout.flush()
 
     @staticmethod
     def request_settings(addr):
@@ -107,7 +112,8 @@ class CommandsController:
                 ws.send_device_stats(device)
         except KeyError:
             pass
-        print('HTTP: %d request_settings' % addr)
+        print(' < HTTP: {} request_settings'.format(addr))
+        sys.stdout.flush()
 
     @staticmethod
     def set_settings(addr):
@@ -124,7 +130,8 @@ class CommandsController:
                 ws.send_device_stats(device)
         except KeyError:
             pass
-        print('HTTP: %d set_settings' % addr)
+        print(' < HTTP: {} set_settings'.format(addr))
+        sys.stdout.flush()
 
     @staticmethod
     def request_timers(addr):
@@ -138,7 +145,8 @@ class CommandsController:
                 ws.send_device_stats(device)
         except KeyError:
             pass
-        print('HTTP: %d request_timers' % addr)
+        print(' < HTTP: {} request_timers'.format(addr))
+        sys.stdout.flush()
 
     @staticmethod
     def set_timers(addr):
@@ -153,12 +161,13 @@ class CommandsController:
                         device.send_timer(day, value)
                 new_mode = int(request.json['mode'])
                 if new_mode != (0 if int(device.settings['22'], 16) == 0 else 1):
-                    device.send_setting('22', '%0.2x' % new_mode)
+                    device.send_setting('22', '{:02x}'.format(new_mode))
                 mqtt.publish_availability(device)
                 ws.send_device_stats(device)
         except KeyError:
             pass
-        print('HTTP: %d set_timers' % addr)
+        print(' < HTTP: {} set_timers'.format(addr))
+        sys.stdout.flush()
 
     @staticmethod
     def cancel_commands(addr):
@@ -172,4 +181,5 @@ class CommandsController:
                 ws.send_device_stats(device)
         except KeyError:
             pass
-        print('HTTP: %d cancel_commands' % addr)
+        print(' < HTTP: {} cancel_commands'.format(addr))
+        sys.stdout.flush()

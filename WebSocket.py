@@ -3,6 +3,7 @@ import websockets
 import os
 import threading
 import json
+import sys
 from collections import deque
 from Devices import devices
 
@@ -21,7 +22,7 @@ class WebSocket(threading.Thread):
         self.loop.run_until_complete(self.server)
 
     def run(self):
-        print('Websocket: Start listening on %s:%s...' % (self.listen_address, str(self.port)))
+        print('Websocket: Start listening on {}:{}...'.format(self.listen_address, str(self.port)))
         self.loop.create_task(self.send())
         self.loop.run_forever()
         print('Websocket: Loop stopped')
@@ -31,7 +32,8 @@ class WebSocket(threading.Thread):
         try:
             while self.loop.is_running():
                 message = json.loads(await websocket.recv())
-                print(message)
+                print(' < WS {}: {}'.format(websocket.remote_address[0], message))
+                sys.stdout.flush()
                 if 'type' in message:
                     if message['type'] == 'update_stats':
                         self.queue_all_stats()
@@ -49,6 +51,8 @@ class WebSocket(threading.Thread):
                 message = self.queue.popleft()
                 for websocket in self.connected:
                     await websocket.send(message)
+                    print(' > WS {}: {}'.format(websocket.remote_address[0], message))
+                    sys.stdout.flush()
             await asyncio.sleep(0.1)
 
     def send_device_stats(self, device):

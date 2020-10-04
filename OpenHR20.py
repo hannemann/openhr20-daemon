@@ -65,11 +65,7 @@ class OpenHR20 (threading.Thread):
         try:
             self.device = devices.get_device(int(line[1:3], 16))
             self.data = line[4:]
-            print(
-                ' %s' %
-                '(' + self.device.name + ')' if self.device is not None else '',
-                end=''
-            )
+            print(' ({})'.format(self.device.name) if self.device is not None else '', end='')
             self.device.set_availability()
             if not self.device.is_available():
                 commands.discard_all(self.device)

@@ -29,7 +29,7 @@ class Devices:
 
         self.init_devices()
         self.init_groups()
-        print('Read devices from %s' % self.file)
+        print('Read devices from {}'.format(self.file))
 
     def init_devices(self):
         for addr in self.buffer['names']:
@@ -44,7 +44,7 @@ class Devices:
 
     @staticmethod
     def get_initial_stats(addr):
-        return '{"addr":%s}' % addr
+        return '{{"addr":{}}}'.format(addr)
 
     @staticmethod
     def get_initial_timers():
@@ -128,9 +128,9 @@ class Devices:
             fd = open(self.file, 'w')
             self.buffer.write(fd)
             fd.close()
-            print('Flushed devices to %s' % self.file)
+            print(' ! Flushed devices to {}'.format(self.file))
         except ValueError:
-            print('Refused to flush devices db. Devices empty...')
+            print(' ! Refused to flush devices db. Devices empty...')
 
     def check(self):
         if os.path.exists(self.file) and len(self.buffer['names'].values()) == 0:
@@ -162,7 +162,7 @@ class Devices:
         remote = self.get_remote(addr)
         if remote is not None:
             conn = http.client.HTTPConnection(remote)
-            conn.request('GET', '/device/serialized/%s' % addr)
+            conn.request('GET', '/device/serialized/{}'.format(addr))
             device = pickle.loads(conn.getresponse().read())
             conn.close()
             return device
@@ -173,7 +173,7 @@ class Devices:
         remote = self.buffer.get('remote_groups', name, fallback=None)
         if remote is not None:
             conn = http.client.HTTPConnection(remote)
-            conn.request('GET', '/group/serialized/%s' % name)
+            conn.request('GET', '/group/serialized/{}'.format(name))
             group = pickle.loads(conn.getresponse().read())
             conn.close()
             return group
@@ -182,5 +182,6 @@ class Devices:
 
     def __str__(self, with_remote=False):
         return json.dumps([d.dict() for d in self.get_devices(with_remote).values()])
+
 
 devices = Devices()

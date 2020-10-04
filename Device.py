@@ -165,7 +165,7 @@ class Device:
 
     def set_preset(self, preset):
         try:
-            setting = getattr(self, 'PRESET_%s_SETTING' % preset.upper())
+            setting = getattr(self, 'PRESET_{}_SETTING'.format(preset.upper()))
             temperature = int(self.settings[setting], 16) / 2
             self.set_temperature(temperature)
         except AttributeError:

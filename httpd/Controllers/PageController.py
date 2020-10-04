@@ -40,7 +40,7 @@ class PageController:
                 return template('settings', title='Settings', layout=layout, device_settings=settings)
         except KeyError:
             pass
-        print('HTTP: %d settings' % addr)
+        print(' < HTTP: {} settings'.format(addr))
 
     @staticmethod
     def timers(addr):
@@ -64,4 +64,4 @@ class PageController:
             return template('timers', title='Timers', mode=mode, timers=device.timers, presets=presets)
         except KeyError:
             pass
-        print('HTTP: %d timers' % addr)
+        print(' < HTTP: {} timers'.format(addr))

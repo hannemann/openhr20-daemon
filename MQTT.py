@@ -39,14 +39,14 @@ class MQTT(threading.Thread):
         # self.client.subscribe("$SYS/#")
         cmnd_topic = self.cmnd_topic.strip('/') + "/#"
         self.client.subscribe(cmnd_topic)
-        print('MQTT: Subscribed to topic %s' % cmnd_topic)
+        print('MQTT: Subscribed to topic {}'.format(cmnd_topic))
         sys.stdout.flush()
 
     def on_message(self, client, userdata, msg):
         topic = msg.topic.replace(self.cmnd_topic.strip('/') + '/', '').split('/')
         cmnd = topic[0]
         addr = int(topic[1], 10)
-        print("MQTT: %d %s %s" % (addr, cmnd, msg.payload.decode('utf_8').strip()))
+        print(" < MQTT: {} {} {}".format(addr, cmnd, msg.payload.decode('utf_8').strip()))
         sys.stdout.flush()
 
         try:
@@ -93,6 +93,8 @@ class MQTT(threading.Thread):
 
     def publish(self, topic, payload, qos=mqtt_qos, retain=mqtt_retain):
         self.client.publish(topic, payload, qos, retain)
+        print(" > MQTT: {} {} (QOS {}, Retain {})".format(topic, payload, qos, retain))
+        sys.stdout.flush()
 
     def publish_json(self, topic, payload, qos=mqtt_qos, retain=mqtt_retain):
         self.publish(topic, json.dumps(payload), qos, retain)
@@ -107,10 +109,10 @@ class MQTT(threading.Thread):
             stats['preset'] = json.loads(os.getenv("MQTT_PRESETS_PUBLISH"))[stats['preset']]
         except KeyError:
             pass
-        self.publish(self.stats_topic.strip('/') + '/%d' % device.addr, json.dumps(stats))
+        self.publish(self.stats_topic.strip('/') + '/{}'.format(device.addr), json.dumps(stats))
 
     def publish_availability(self, device):
-        topic = self.availability_topic.strip('/') + '/%d' % device.addr
+        topic = self.availability_topic.strip('/') + '/{}'.format(device.addr)
         payload = 'offline' if device.available == device.AVAILABLE_OFFLINE or device.synced is False else 'online'
         mqtt.publish(topic, payload)
 

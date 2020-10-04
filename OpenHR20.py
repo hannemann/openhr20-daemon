@@ -78,7 +78,7 @@ class OpenHR20 (threading.Thread):
             commands.remove_from_buffer(self.device)
             ws.send_device_stats(self.device)
         self.data = line[1:]
-        if not commands.has_command(self.device) and self.data[0] in ['A', 'M']:
+        if not commands.has_command(self.device) and self.data[0] in ['A', 'M', 'G', 'S', 'R', 'W']:
             self.update_device_stats(Stats.create(self.device, self.data))
 
     @staticmethod

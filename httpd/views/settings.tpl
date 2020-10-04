@@ -4,7 +4,7 @@
     % for setting in layout:
     <div class="setting--card">
         <label>
-            <span>({{ '0x%s' % setting['idx'] }})</span>
+            <span>({{ '0x{}'.format(setting['idx']) }})</span>
             {{ setting['name'] }}
         </label>
         <div class="field">

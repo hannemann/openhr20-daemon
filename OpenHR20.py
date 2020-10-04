@@ -93,6 +93,7 @@ class OpenHR20 (threading.Thread):
             self.device.request_missing_timers()
             self.device.request_missing_settings()
             commands.send(self.device)
+            ''' TODO: send stats if commands have been sent '''
         elif line[0] != '*' and (self.data[0] == 'D' or self.data[0] == 'A') and self.data[1] == ' ':
             self.update_device_stats(Stats.create(self.device, self.data))
         elif len(self.data) >= 5 and self.data[1] == '[' and self.data[4] == ']' and self.data[5] == '=':

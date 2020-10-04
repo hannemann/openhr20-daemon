@@ -9,12 +9,12 @@ class CommandGetTimer:
     weight = 2
 
     def __init__(self, day, slot):
-        self.command = '%s%d%d' % (self.command, day, slot)
+        self.command = '{}{}{}'.format(self.command, day, slot)
 
     @staticmethod
     def valid(day, slot):
         return 0 <= day <= 7 and 0 <= slot <= 7
 
     def __del__(self):
-        print('Command %s deleted' % self.command)
+        print('Command {} deleted'.format(self.command))
         sys.stdout.flush()

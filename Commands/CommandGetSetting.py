@@ -10,16 +10,16 @@ class CommandGetSetting:
     weight = 2
 
     def __init__(self, idx):
-        self.command = '%s%s' % (self.command, idx.lower())
+        self.command = '{}{}'.format(self.command, idx.lower())
 
     @staticmethod
     def valid(device, idx):
         settings = device.settings
         if 'ff' not in settings:
             return False
-        fields = get_eeprom_layout(int('0x%0.2x' % settings['ff'], 16))
+        fields = get_eeprom_layout(int('0x' + settings['ff'], 16))
         return next((x for x in fields if x['idx'] == idx), False)
 
     def __del__(self):
-        print('Command %s deleted' % self.command)
+        print('Command {} deleted'.format(self.command))
         sys.stdout.flush()

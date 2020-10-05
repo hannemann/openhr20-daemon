@@ -22,6 +22,7 @@ class MQTT(threading.Thread):
     availability_topic = os.getenv("MQTT_AVAILABILITY_TOPIC")
     host = os.getenv("MQTT_HOST")
     port = int(os.getenv("MQTT_PORT"))
+    debug = os.getenv('MQTT_DEBUG') == 'True'
     qos = mqtt_qos
     retain = mqtt_retain
 
@@ -46,8 +47,9 @@ class MQTT(threading.Thread):
         topic = msg.topic.replace(self.cmnd_topic.strip('/') + '/', '').split('/')
         cmnd = topic[0]
         addr = int(topic[1], 10)
-        print(" < MQTT: {} {} {}".format(addr, cmnd, msg.payload.decode('utf_8').strip()))
-        sys.stdout.flush()
+        if self.debug:
+            print(" < MQTT: {} {} {}".format(addr, cmnd, msg.payload.decode('utf_8').strip()))
+            sys.stdout.flush()
 
         try:
             payload = msg.payload.decode('utf_8').strip()
@@ -93,7 +95,10 @@ class MQTT(threading.Thread):
 
     def publish(self, topic, payload, qos=mqtt_qos, retain=mqtt_retain):
         self.client.publish(topic, payload, qos, retain)
-        print(" > MQTT: {} {} (QOS {}, Retain {})".format(topic, payload, qos, retain))
+        if self.debug:
+            print(" > MQTT: {} {} (QOS {}, Retain {})".format(topic, payload, qos, retain))
+        else:
+            print(" > MQTT: {}".format(topic))
         sys.stdout.flush()
 
     def publish_json(self, topic, payload, qos=mqtt_qos, retain=mqtt_retain):

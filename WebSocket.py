@@ -12,6 +12,7 @@ class WebSocket(threading.Thread):
 
     connected = set()
     queue = deque([])
+    debug = os.getenv('WS_DEBUG') == 'True'
 
     def __init__(self):
         super().__init__()
@@ -50,8 +51,12 @@ class WebSocket(threading.Thread):
             if len(self.queue) > 0:
                 message = self.queue.popleft()
                 for websocket in self.connected:
-                    await websocket.send(message)
-                    print(' > WS {}: {}'.format(websocket.remote_address[0], message))
+                    await websocket.send(json.dumps(message))
+                    if self.debug:
+                        print(' > WS {} {}/{}: {}'.format(
+                            websocket.remote_address[0], message['type'], message['addr'], message['payload']))
+                    else:
+                        print(' > WS {} {}/{}'.format(websocket.remote_address[0], message['type'], message['addr']))
                     sys.stdout.flush()
             await asyncio.sleep(0.1)
 
@@ -59,9 +64,10 @@ class WebSocket(threading.Thread):
         stats = device.dict()
         message = {
             "type": "stats",
+            "addr": device.addr,
             "payload": stats
         }
-        self.queue.append(json.dumps(message))
+        self.queue.append(message)
 
     def queue_all_stats(self):
         for device in devices.devices.values():

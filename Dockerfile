@@ -26,6 +26,7 @@ ENV MQTT_MODES_RECEIVE='{"auto": "auto", "manu": "manu"}'
 ENV MQTT_MODES_PUBLISH='{"auto": "auto", "-": "auto", "manu": "manu"}'
 ENV MQTT_PRESETS_RECEIVE='{"antifreeze": "antifreeze", "eco": "eco", "comfort": "comfort", "supercomfort": "supercomfort"}'
 ENV MQTT_PRESETS_PUBLISH='{"antifreeze": "antifreeze", "eco": "eco", "comfort": "comfort", "supercomfort": "supercomfort"}'
+ENV MQTT_DEBUG=False
 
 ENV HTTP_LISTEN_ADDRESS=0.0.0.0
 ENV HTTP_PORT=8020
@@ -35,5 +36,6 @@ ENV WS_LISTEN_ADDRESS=0.0.0.0
 ENV WS_SCHEME=ws
 ENV WS_HOST=0.0.0.0
 ENV WS_PORT=8021
+ENV WS_DEBUG=False
 
 CMD [ "python", "./openhr20-daemon.py" ]

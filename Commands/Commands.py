@@ -55,6 +55,8 @@ class Commands:
 
             if len(self.buffer[device.addr]) < 1:
                 del self.buffer[device.addr]
+                
+        return self.has_command(device)
 
     def discard_all(self, device):
         if self.has_command(device):

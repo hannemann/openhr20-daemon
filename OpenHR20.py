@@ -43,6 +43,7 @@ class OpenHR20 (threading.Thread):
                 self.parse_device_line(line)
             elif line[0] == '*':
                 ''' command success '''
+                self.data = line[1:]
                 self.handle_success(line)
             elif line[0] == '-':
                 self.data = line[1:]
@@ -75,11 +76,14 @@ class OpenHR20 (threading.Thread):
     def handle_success(self, line):
         print('')
         if line[2] != '!' and line[1] != ' ':
-            commands.remove_from_buffer(self.device)
-            ws.send_device_stats(self.device)
-        self.data = line[1:]
-        if not commands.has_command(self.device) and self.data[0] in ['A', 'M', 'G', 'S', 'R', 'W']:
-            self.update_device_stats(Stats.create(self.device, self.data))
+            pending = commands.remove_from_buffer(self.device)
+            if pending == 0 and self.data[0] in ['A', 'M']:
+                self.update_device_stats(Stats.create(self.device, self.data))
+            else:
+                if pending == 0:
+                    mqtt.publish_stats(self.device)
+                ws.send_device_stats(self.device)
+
 
     @staticmethod
     def handle_n_line(line):

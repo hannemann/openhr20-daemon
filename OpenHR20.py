@@ -77,7 +77,7 @@ class OpenHR20 (threading.Thread):
         print('')
         if line[2] != '!' and line[1] != ' ':
             pending = commands.remove_from_buffer(self.device)
-            if pending == 0 and self.data[0] in ['A', 'M']:
+            if pending == 0 and self.data[0] in ['A', 'M', 'D']:
                 self.update_device_stats(Stats.create(self.device, self.data))
             else:
                 if pending == 0:

@@ -16,33 +16,42 @@ nav {
             opacity: 0;
         }
     }
-    .nav-list {
-        padding: var(--grid-base) 0;
-        display: block;
-        position: fixed;
+
+    .click-trap {
         left: -100vw;
-        top: calc((var(--grid-base) * 4) + var(--font-size-big) + (var(--font-size-big) / 4));
+        top: 0;
+        display: block;
         width: 100vw;
-        max-width: 280px;
-        height: calc(100vh - (var(--grid-base) * 2) - var(--font-size-big));
-        background: var(--lighter-bg-color);
+        height: 100vh;
+        position: fixed;
         transition: left 150ms ease-out;
 
-        & > span {
+        .nav-list {
+            position: absolute;
+            padding: var(--grid-base) 0;
             display: block;
+            top: calc((var(--grid-base) * 4) + var(--font-size-big) + (var(--font-size-big) / 4));
+            width: 100vw;
+            max-width: 280px;
+            height: calc(100vh - (var(--grid-base) * 2) - var(--font-size-big));
+            background: var(--lighter-bg-color);
 
-            &.active {
-                background: var(--main-bg-color);
-            }
+            & > span {
+                display: block;
 
-            a, span {
-                display: inherit;
-                color: var(--light-fg-color);
-                text-decoration: none;
-                padding: calc(var(--grid-base) / 2) calc(var(--grid-base) * 2);
+                &.active {
+                    background: var(--main-bg-color);
+                }
 
-                &:hover {
-                    background: var(--light-bg-color);
+                a, span {
+                    display: inherit;
+                    color: var(--light-fg-color);
+                    text-decoration: none;
+                    padding: calc(var(--grid-base) / 2) calc(var(--grid-base) * 2);
+
+                    &:hover {
+                        background: var(--light-bg-color);
+                    }
                 }
             }
         }
@@ -54,7 +63,7 @@ nav {
         & ~ [data-icon="mdi-close"] {
             opacity: 1;
         }
-        & ~ .nav-list {
+        & ~ .click-trap {
             left: 0;
         }
     }

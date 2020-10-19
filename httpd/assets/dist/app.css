@@ -66,6 +66,7 @@ div.header--card {
   position: sticky;
   top: 62px;
   z-index: 1;
+  box-shadow: 0px calc(var(--grid-base) * -1) 0 var(--grid-base) var(--main-bg-color);
 }
 
 @-webkit-keyframes spin {

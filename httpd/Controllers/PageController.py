@@ -9,7 +9,7 @@ class PageController:
         self.httpd_path = httpd_path
         route('/static/<filepath:path>')(self.server_static)
         route('/')(self.index)
-        route('/groups')(self.groups)
+        route('/device-manager')(self.manage)
         route('/settings/<addr:int>', method='GET')(self.settings)
         route('/timers/<addr:int>', method='GET')(self.timers)
 
@@ -24,9 +24,9 @@ class PageController:
         return template('index', title='OpenHR20', ungrouped_devices=ungrouped, groups=groups)
 
     @staticmethod
-    def groups():
+    def manage():
         ungrouped = [d for d in devices.devices.values() if d.group is None]
-        return template('groups', title='Groups', ungrouped_devices=ungrouped, groups=devices.groups.values())
+        return template('device-manager', title='Groups', ungrouped_devices=ungrouped, groups=devices.groups.values())
 
     @staticmethod
     def settings(addr):

@@ -150,14 +150,20 @@ nav .nav-list > span {
   display: block;
 }
 
-nav .nav-list > span a {
+nav .nav-list > span.active {
+  background: var(--main-bg-color);
+}
+
+nav .nav-list > span a,
+nav .nav-list > span span {
   display: inherit;
   color: var(--light-fg-color);
   text-decoration: none;
   padding: calc(var(--grid-base) / 2) calc(var(--grid-base) * 2);
 }
 
-nav .nav-list > span a:hover {
+nav .nav-list > span a:hover,
+nav .nav-list > span span:hover {
   background: var(--light-bg-color);
 }
 

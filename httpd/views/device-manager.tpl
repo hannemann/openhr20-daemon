@@ -2,7 +2,7 @@
     % from Group import Group
     % from Device import Device
     % from Devices import devices
-    % rebase('layout/default', title=title)
+    % rebase('layout/default', title=title, page='device-manager')
     <div class="flex-wrap">
         <div class="header--group header--card">
             <span>Groups</span>

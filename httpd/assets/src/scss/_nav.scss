@@ -31,7 +31,11 @@ nav {
         & > span {
             display: block;
 
-            a {
+            &.active {
+                background: var(--main-bg-color);
+            }
+
+            a, span {
                 display: inherit;
                 color: var(--light-fg-color);
                 text-decoration: none;

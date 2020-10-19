@@ -4,11 +4,15 @@
         <span class="iconify" data-icon="mdi-menu"></span>
         <span class="iconify" data-icon="mdi-close"></span>
         <span class="nav-list">
-            <span>
-                <a href="/">Devices</a>
+            <span {{ !' class="active"' if 'index' == page else '' }}>
+                {{ !'<a href="/">' if 'index' != page else '<span>' }}
+                  Home
+                {{ !'</a>' if 'index' != page else '</span>'}}
             </span>
-            <span>
-                <a href="/groups">Groups</a>
+            <span {{ !' class="active"' if 'device-manager' == page else '' }}>
+                {{ !'<a href="/device-manager">' if 'device-manager' != page else '<span>' }}
+                  Device Manager
+                {{ !'</a>' if 'groups' != page else '</span>'}}
             </span>
         </span>
     </label>

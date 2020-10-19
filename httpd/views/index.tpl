@@ -1,5 +1,5 @@
     % import json
-    % rebase('layout/default', title=title)
+    % rebase('layout/default', title=title, page='index')
     <div class="flex-wrap thermostats">
         % for group in groups:
             <div class="header--group header--card">
@@ -22,4 +22,3 @@
         end
         %>
     </div>
-

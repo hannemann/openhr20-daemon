@@ -2,6 +2,8 @@ main {
   background: var(--main-bg-color);
   min-height: calc(100vh - (var(--grid-base) * 4) - var(--font-size-big) - (var(--font-size-big) / 4));
   padding: var(--grid-base);
+  position: relative;
+  z-index: 0;
 }
 
 .flex-wrap {

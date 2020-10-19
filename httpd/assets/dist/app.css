@@ -62,6 +62,10 @@ div.header--card {
   justify-content: space-between;
   align-items: center;
   flex-basis: calc(100% - 2 * var(--grid-base));
+  position: -webkit-sticky;
+  position: sticky;
+  top: 62px;
+  z-index: 1;
 }
 
 @-webkit-keyframes spin {
@@ -191,6 +195,8 @@ main {
   background: var(--main-bg-color);
   min-height: calc(100vh - (var(--grid-base) * 4) - var(--font-size-big) - (var(--font-size-big) / 4));
   padding: var(--grid-base);
+  position: relative;
+  z-index: 0;
 }
 
 .flex-wrap {

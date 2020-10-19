@@ -1,7 +1,7 @@
-class GroupsManager {
+class DeviceManager {
 
     constructor() {
-        this.el = document.querySelector('.groups-manager')
+        this.el = document.querySelector('.device-manager')
         if (this.el) {
             this.initData()
                 .initTemplates()
@@ -52,4 +52,4 @@ class GroupsManager {
 
 }
 
-export {GroupsManager}
+export {DeviceManager}

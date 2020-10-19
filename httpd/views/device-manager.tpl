@@ -22,7 +22,7 @@
                 </label>
             </span>
         </div>
-        <div class="groups-manager" data-devices="{{ str(devices) }}" data-groups="{{ devices.__str__(with_remote=False, groups=True) }}">
+        <div class="device-manager" data-devices="{{ str(devices) }}" data-groups="{{ devices.__str__(with_remote=False, groups=True) }}">
             <div class="groups">
             </div>
             <div class="header--card">

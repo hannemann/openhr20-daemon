@@ -645,7 +645,7 @@ main > div:first-of-type,
   padding: calc(var(--grid-base) / 2);
 }
 
-.groups-manager {
+.device-manager {
   flex-basis: 100%;
 }
 

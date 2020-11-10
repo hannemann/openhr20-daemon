@@ -1,5 +1,5 @@
 % import json
-% rebase('layout/default', title=title)
+% rebase('layout/default', title=title, page='settings')
 <div class="thermostat-settings">
     % for setting in layout:
     <div class="setting--card">

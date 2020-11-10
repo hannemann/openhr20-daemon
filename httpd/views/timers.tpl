@@ -1,5 +1,5 @@
 % import json
-% rebase('layout/default', title=title)
+% rebase('layout/default', title=title, page='timers')
 % header = ['Weekly', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 <div class="thermostat-timers" data-mode="{{ mode }}">
     <div class="presets--card">

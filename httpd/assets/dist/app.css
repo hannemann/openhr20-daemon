@@ -1,2 +1,683 @@
-*{margin:0;padding:0;box-sizing:border-box}:root{--dark-color:hsl(235deg 46% 10%);--dark-bg-color:var(--dark-color);--main-bg-color:hsl(235deg 16% 18%);--lighter-bg-color:hsl(235deg 15% 25%);--light-bg-color:hsl(235deg 9% 52%);--card-bg-color:hsl(235deg 12% 39%);--light-fg-color:hsl(0deg 0% 82%);--color-warn:#ff0;--color-alert:hsl(15deg 100% 45%);--grid-base:8px;--font-size-big:1.5rem;--border-radius:4px;--buttons-border-radius:2px;--opacity-enabled:1;--opacity-disabled:.5}body{font-family:Arial,sans-serif;padding-top:calc(var(--grid-base)*4 + var(--font-size-big) + var(--font-size-big)/4);font-size:16px;line-height:1.25}body,button{color:var(--light-fg-color)}button{padding:var(--grid-base);border-color:currentcolor;border-color:var(--light-bg-color) var(--main-bg-color) var(--main-bg-color) var(--light-bg-color);border-style:solid;border-width:1px;background:var(--card-bg-color);border-radius:var(--buttons-border-radius)}.action-icon{font-size:var(--font-size-big);line-height:var(--font-size-big)}div[class$="--card"]{background-color:var(--card-bg-color);padding:var(--grid-base);margin-bottom:var(--grid-base);margin-right:var(--grid-base);border-radius:var(--border-radius);flex:1 0 calc(360px - 2*var(--grid-base));position:relative}div.header--card{margin-top:calc(var(--grid-base)*2);background:var(--lighter-bg-color);font-weight:700;display:flex;justify-content:space-between;align-items:center;flex-basis:calc(100% - 2*var(--grid-base));position:sticky;top:62px;z-index:1;box-shadow:0 -1px 0 1px var(--main-bg-color)}@-webkit-keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}.spin{-webkit-animation-name:spin;animation-name:spin;-webkit-animation-duration:4s;animation-duration:4s;-webkit-animation-iteration-count:infinite;animation-iteration-count:infinite;-webkit-animation-timing-function:linear;animation-timing-function:linear}header{position:fixed;z-index:1;top:0;left:0;width:100vw;background:var(--dark-bg-color);color:var(--light-fg-color);padding:calc(var(--grid-base)*2);font-size:var(--font-size-big);font-weight:700;display:flex;justify-content:space-between}nav{width:1em}nav label{position:relative;display:block;width:100%}nav label [data-icon]{position:absolute;transition:opacity .15s ease-out;opacity:1;top:0;left:0}nav label [data-icon=mdi-close],nav label input[type=checkbox]{opacity:0}nav .click-trap{left:-100vw;top:0;display:block;width:100vw;height:100vh;position:fixed;transition:left .15s ease-out}nav .click-trap .nav-list{position:absolute;padding:var(--grid-base) 0;display:block;top:calc(var(--grid-base)*4 + var(--font-size-big) + var(--font-size-big)/4);width:100vw;max-width:280px;height:calc(100vh - var(--grid-base)*2 - var(--font-size-big));background:var(--lighter-bg-color)}nav .click-trap .nav-list>span{display:block}nav .click-trap .nav-list>span.active{background:var(--main-bg-color)}nav .click-trap .nav-list>span a,nav .click-trap .nav-list>span span{display:inherit;color:var(--light-fg-color);text-decoration:none;padding:calc(var(--grid-base)/2) calc(var(--grid-base)*2)}nav .click-trap .nav-list>span a:hover,nav .click-trap .nav-list>span span:hover{background:var(--light-bg-color)}nav label input[type=checkbox]:checked~[data-icon=mdi-menu]{opacity:0}nav label input[type=checkbox]:checked~[data-icon=mdi-close]{opacity:1}nav label input[type=checkbox]:checked~.click-trap{left:0}main{background:var(--main-bg-color);min-height:calc(100vh - var(--grid-base)*4 - var(--font-size-big) - var(--font-size-big)/4);padding:var(--grid-base);position:relative;z-index:0}.flex-wrap{display:flex;margin-right:calc(-1*var(--grid-base));flex-wrap:wrap}.flex-wrap>div:first-of-type,main>div:first-of-type{margin-top:0}.thermostat--card [class*=-button]{cursor:pointer}.thermostat--card[data-available=warn] h3>svg:first-of-type.iconify path{fill:var(--color-warn)}.thermostat--card[data-available=offline] h3>svg:first-of-type.iconify path{fill:var(--color-alert)}.thermostat--card h3{display:flex;align-items:center;font-size:1.1em;font-weight:400;margin-bottom:var(--grid-base)}.thermostat--card h3>*{margin-right:var(--grid-base)}.thermostat--card h3 [data-item=time]{margin-left:auto;margin-right:0;font-size:.6em;font-weight:400;text-align:right}.thermostat--card .data{display:flex;justify-content:space-between}.thermostat--card .data .thermostat--card--item{flex-direction:column;align-items:center}.thermostat--card .data .thermostat--card--item .value-display{flex-basis:auto}.thermostat--card--item{display:flex;justify-content:flex-end}.thermostat--card--item>.label,.thermostat--card--item>label{font-size:.8em}.thermostat--card--item .value-display{text-align:right;flex-basis:70px}.thermostat--card--item[data-item=mode]{justify-content:flex-start}.thermostat--card--item[data-item=mode] .label{display:none}.thermostat--card--item[data-item=mode] .value-display{text-align:initial;flex-basis:auto}.thermostat--card--item[data-item=wanted]{flex-direction:column;align-items:center}.thermostat--card--item[data-item=wanted] label{display:none}.thermostat--card--item[data-item=wanted] span.wanted-control{position:relative;width:60%;max-width:350px;order:2}.thermostat--card--item[data-item=wanted] span.wanted-control input{width:100%}.thermostat--card--item[data-item=wanted] .value-display{order:1;flex-basis:auto;margin:0;font-size:2em}.thermostat--card--item[data-item=wanted] .value-display[data-is-current]{font-weight:700}.thermostat--card--item[data-item=presets]{justify-content:flex-start}.thermostat--card--item[data-item=presets] .label{display:none}.thermostat--card--item[data-item=presets] .value-display{flex:1 0 auto;display:flex;justify-content:center}.thermostat--card--item[data-item=presets] .value-display span{margin:calc(var(--grid-base)/2);padding:var(--grid-base);background:var(--light-bg-color);border-radius:var(--border-radius);line-height:1}.thermostat--card--item[data-item=synced]{display:none}.thermostat--card--item[data-item=actions]{display:none;justify-content:flex-start}.thermostat--card--item[data-item=actions] a{margin-right:var(--grid-base);color:var(--light-fg-color);text-decoration:none}.thermostat--card[data-preset=antifreeze] [data-preset=antifreeze],.thermostat--card[data-preset=comfort] [data-preset=comfort],.thermostat--card[data-preset=eco] [data-preset=eco],.thermostat--card[data-preset=supercomfort] [data-preset=supercomfort]{font-weight:700}.thermostat--card[data-available=online][data-synced=true] [data-item=actions]{display:initial}.thermostat--card[data-synced=false] .value-display span.synced{display:none}.thermostat--card[data-synced=false] .value-display span.not-synced,.thermostat--card[data-synced=true] .value-display span.synced{display:initial}.thermostat--card[data-synced=true] .value-display span.not-synced{display:none}.thermostat--card[data-mode="-"] .value-display span.mode--,.thermostat--card[data-mode="-"] .value-display span.mode-manu,.thermostat--card[data-mode=auto] .value-display span.mode--,.thermostat--card[data-mode=auto] .value-display span.mode-manu{opacity:var(--opacity-disabled)}.thermostat--card[data-mode="-"] .value-display span.mode-auto,.thermostat--card[data-mode=auto] .value-display span.mode-auto{opacity:var(--opacity-enabled)}.thermostat--card[data-mode=manu] .value-display span.mode--,.thermostat--card[data-mode=manu] .value-display span.mode-auto{opacity:var(--opacity-disabled)}.thermostat--card[data-mode=manu] .value-display span.mode-manu{opacity:var(--opacity-enabled)}.thermostat--card .value-display span.mode--{display:none}.thermostat--card span.loading{position:absolute;top:0;left:0;right:0;bottom:0;display:none;justify-content:center;align-items:center;font-size:4em}.thermostat--card span.loading:after{content:attr(data-pending-commands);color:var(--dark-color);font-size:.25em;margin:var(--grid-base);padding:var(--grid-base);right:0;bottom:0;line-height:1}.thermostat--card span.loading .cancel,.thermostat--card span.loading:after{border-radius:var(--border-radius);position:absolute;background:hsla(0,0%,100%,.5)}.thermostat--card span.loading .cancel{top:calc(var(--grid-base)*2);right:calc(var(--grid-base)*2);font-size:1rem;line-height:1rem}.thermostat--card span.loading .cancel svg[data-icon=mdi-close]{display:block}.thermostat--card span.loading .cancel svg[data-icon=mdi-close] path{fill:var(--dark-color)}.thermostat--card[data-synced=false] span.loading{display:flex;background:hsla(0,0%,100%,.5)}.thermostat--card[data-synced=false] span.loading svg[data-icon=mdi-loading]{-webkit-animation-name:spin;animation-name:spin;-webkit-animation-duration:4s;animation-duration:4s;-webkit-animation-iteration-count:infinite;animation-iteration-count:infinite;-webkit-animation-timing-function:linear;animation-timing-function:linear}.thermostat--card[data-synced=false] span.loading svg[data-icon=mdi-loading] path{fill:var(--dark-color)}.thermostat--card[data-error="0"] [data-item=error]{display:none}.thermostat--card [data-item=error]{justify-content:space-between}.thermostat--card [data-item=error]>span{margin-right:0;flex-basis:auto}.thermostat--card [data-item=error] .error-icon{color:var(--color-alert)}.thermostat--card [data-item=error] .error-icon:before{content:attr(data-descr)}.thermostat--card[data-error="4"] [data-item=error] [data-error]{display:none}.thermostat--card[data-error="4"] [data-item=error] [data-error="4"]{display:block}.thermostat--card[data-error="8"] [data-item=error] [data-error]{display:none}.thermostat--card[data-error="8"] [data-item=error] [data-error="8"]{display:block}.thermostat--card[data-error="16"] [data-item=error] [data-error]{display:none}.thermostat--card[data-error="16"] [data-item=error] [data-error="16"]{display:block}.thermostat--card[data-error="64"] [data-item=error] [data-error]{display:none}.thermostat--card[data-error="64"] [data-item=error] [data-error="64"]{display:block}.thermostat--card[data-error="128"] [data-item=error] [data-error]{display:none}.thermostat--card[data-error="128"] [data-item=error] [data-error="128"]{display:block}.thermostat--card[data-error="256"] [data-item=error] [data-error]{display:none}.thermostat--card[data-error="256"] [data-item=error] [data-error="256"]{display:block}.thermostat-settings{width:calc(100vw - 2*var(--grid-base));margin-right:calc(-1*var(--grid-base))}.thermostat-settings div.setting--card .field{display:flex;justify-content:space-between}.thermostat-settings div.setting--card .field div{flex:0 1 100%;margin-right:var(--grid-base)}.thermostat-settings div.setting--card .field div input{width:100%}.thermostat-settings div.setting--card .field span{flex:0 0 9.5ch;text-align:right;font-family:monospace}.thermostat-settings div.setting--card .field span:before{content:attr(data-int);margin-right:.5ch;width:3ch}.thermostat-settings div.setting--card .field span:after{content:attr(data-hex);display:inline-block;width:6ch}.thermostat-settings div.setting--card .description{font-size:.8em}.thermostat-settings div.setting--card[data-item=actions]{text-align:right}.thermostat-timers{width:calc(100vw - 2*var(--grid-base));margin-right:calc(-1*var(--grid-base))}.thermostat-timers .presets--card div,.thermostat-timers .timer-mode--card label,.thermostat-timers .timer-slot{display:flex;justify-content:space-between}.thermostat-timers .timer-slot{padding:var(--grid-base) 0;border-bottom:1px solid var(--light-bg-color)}.thermostat-timers .timer-slot--preset{display:flex;align-items:center}.thermostat-timers .timer-slot--preset output{margin-left:var(--grid-base);font-family:monospace;text-align:right;width:5ch}.thermostat-timers .timer-slot--time input{max-width:100px}.thermostat-timers .timer-slot:last-of-type{border:unset}.thermostat-timers[data-mode="0"] [data-type=week_timers],.thermostat-timers[data-mode="1"] [data-type=daily_timers]{display:none}.header--group .action-icon label{position:relative}.header--group .action-icon label [type=checkbox]{display:none}.header--group .action-icon label .add-input{display:none;position:absolute;right:calc(-1*var(--grid-base));background:#0ff;top:calc(-1*var(--grid-base)/2);bottom:calc(-1*var(--grid-base)/2);padding:0 var(--grid-base);border-radius:var(--border-radius);background:var(--light-bg-color)}.header--group .action-icon label [type=checkbox]:checked~.add-input{display:flex;justify-content:flex-end;align-items:center}.header--group .action-icon label [type=checkbox]:checked~.add-input input{margin-right:var(--grid-base);background:var(--light-bg-color);border:1px solid var(--dark-bg-color);border-radius:var(--buttons-border-radius);padding:calc(var(--grid-base)/2)}.device-manager{flex-basis:100%}.group--devices{padding-top:var(--grid-base);padding-left:var(--grid-base);list-style-type:none}.group--devices .group--devices-header{margin-left:calc(-1*var(--grid-base));margin-bottom:calc(var(--grid-base)/2)}.group--devices .group--device,.group--devices .group--devices-header{display:flex;justify-content:space-between}
-/*# sourceMappingURL=app.css.map*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --dark-color: hsl(235deg 46% 10%);
+  --dark-bg-color: var(--dark-color);
+  --main-bg-color: hsl(235deg 16% 18%);
+  --lighter-bg-color: hsl(235deg 15% 25%);
+  --light-bg-color: hsl(235deg 9% 52%);
+  --card-bg-color: hsl(235deg 12% 39%);
+  --light-fg-color: hsl(0deg 0% 82%);
+  --color-warn: yellow;
+  --color-alert: hsl(15deg 100% 45%);
+  --grid-base: 8px;
+  --font-size-big: 1.5rem;
+  --border-radius: 4px;
+  --buttons-border-radius: 2px;
+  --opacity-enabled: 1;
+  --opacity-disabled: .5;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  padding-top: calc((var(--grid-base) * 4) + var(--font-size-big) + (var(--font-size-big) / 4));
+  color: var(--light-fg-color);
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+button {
+  padding: var(--grid-base);
+  border: 1px solid;
+  border-color: var(--light-bg-color) var(--main-bg-color) var(--main-bg-color) var(--light-bg-color);
+  background: var(--card-bg-color);
+  color: var(--light-fg-color);
+  border-radius: var(--buttons-border-radius);
+}
+
+.action-icon {
+  font-size: var(--font-size-big);
+  line-height: var(--font-size-big);
+}
+
+div[class$="--card"] {
+  background-color: var(--card-bg-color);
+  padding: var(--grid-base);
+  margin-bottom: var(--grid-base);
+  margin-right: var(--grid-base);
+  border-radius: var(--border-radius);
+  flex: 1 0 calc(360px - (2 * var(--grid-base)));
+  position: relative;
+}
+
+div.header--card {
+  margin-top: calc(var(--grid-base) * 2);
+  background: var(--lighter-bg-color);
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-basis: calc(100% - 2 * var(--grid-base));
+  position: sticky;
+  top: 62px;
+  z-index: 1;
+  box-shadow: 0px -1px 0 1px var(--main-bg-color);
+}
+
+@-webkit-keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  -webkit-animation-name: spin;
+          animation-name: spin;
+  -webkit-animation-duration: 4000ms;
+          animation-duration: 4000ms;
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+}
+
+header {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  background: var(--dark-bg-color);
+  color: var(--light-fg-color);
+  padding: calc(var(--grid-base) * 2);
+  font-size: var(--font-size-big);
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+}
+
+nav {
+  width: 1em;
+}
+
+nav label {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+nav label [data-icon] {
+  position: absolute;
+  transition: opacity 150ms ease-out;
+  opacity: 1;
+  top: 0;
+  left: 0;
+}
+
+nav label input[type=checkbox],
+nav label [data-icon=mdi-close] {
+  opacity: 0;
+}
+
+nav .click-trap {
+  left: -100vw;
+  top: 0;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  transition: left 150ms ease-out;
+}
+
+nav .click-trap .nav-list {
+  position: absolute;
+  padding: var(--grid-base) 0;
+  display: block;
+  top: calc((var(--grid-base) * 4) + var(--font-size-big) + (var(--font-size-big) / 4));
+  width: 100vw;
+  max-width: 280px;
+  height: calc(100vh - (var(--grid-base) * 2) - var(--font-size-big));
+  background: var(--lighter-bg-color);
+}
+
+nav .click-trap .nav-list > span {
+  display: block;
+}
+
+nav .click-trap .nav-list > span.active {
+  background: var(--main-bg-color);
+}
+
+nav .click-trap .nav-list > span a,
+nav .click-trap .nav-list > span span {
+  display: inherit;
+  color: var(--light-fg-color);
+  text-decoration: none;
+  padding: calc(var(--grid-base) / 2) calc(var(--grid-base) * 2);
+}
+
+nav .click-trap .nav-list > span a:hover,
+nav .click-trap .nav-list > span span:hover {
+  background: var(--light-bg-color);
+}
+
+nav label input[type=checkbox]:checked ~ [data-icon=mdi-menu] {
+  opacity: 0;
+}
+
+nav label input[type=checkbox]:checked ~ [data-icon=mdi-close] {
+  opacity: 1;
+}
+
+nav label input[type=checkbox]:checked ~ .click-trap {
+  left: 0;
+}
+
+main {
+  background: var(--main-bg-color);
+  min-height: calc(100vh - (var(--grid-base) * 4) - var(--font-size-big) - (var(--font-size-big) / 4));
+  padding: var(--grid-base);
+  position: relative;
+  z-index: 0;
+}
+
+.flex-wrap {
+  display: flex;
+  margin-right: calc(-1 * var(--grid-base));
+  flex-wrap: wrap;
+}
+
+main > div:first-of-type,
+.flex-wrap > div:first-of-type {
+  margin-top: 0;
+}
+
+.thermostat--card [class*=-button] {
+  cursor: pointer;
+}
+
+.thermostat--card[data-available=warn] h3 > svg:first-of-type.iconify path {
+  fill: var(--color-warn);
+}
+
+.thermostat--card[data-available=offline] h3 > svg:first-of-type.iconify path {
+  fill: var(--color-alert);
+}
+
+.thermostat--card h3 {
+  display: flex;
+  align-items: center;
+  font-size: 1.1em;
+  font-weight: normal;
+  margin-bottom: var(--grid-base);
+}
+
+.thermostat--card h3 > * {
+  margin-right: var(--grid-base);
+}
+
+.thermostat--card h3 [data-item=time] {
+  margin-left: auto;
+  margin-right: 0;
+  font-size: 0.6em;
+  font-weight: normal;
+  text-align: right;
+}
+
+.thermostat--card .data {
+  display: flex;
+  justify-content: space-between;
+}
+
+.thermostat--card .data .thermostat--card--item {
+  flex-direction: column;
+  align-items: center;
+}
+
+.thermostat--card .data .thermostat--card--item .value-display {
+  flex-basis: auto;
+}
+
+.thermostat--card--item {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.thermostat--card--item > label,
+.thermostat--card--item > .label {
+  font-size: 0.8em;
+}
+
+.thermostat--card--item .value-display {
+  text-align: right;
+  flex-basis: 70px;
+}
+
+.thermostat--card--item[data-item=mode] {
+  justify-content: flex-start;
+}
+
+.thermostat--card--item[data-item=mode] .label {
+  display: none;
+}
+
+.thermostat--card--item[data-item=mode] .value-display {
+  text-align: initial;
+  flex-basis: auto;
+}
+
+.thermostat--card--item[data-item=wanted] {
+  flex-direction: column;
+  align-items: center;
+}
+
+.thermostat--card--item[data-item=wanted] label {
+  display: none;
+}
+
+.thermostat--card--item[data-item=wanted] span.wanted-control {
+  position: relative;
+  width: 60%;
+  max-width: 350px;
+  order: 2;
+}
+
+.thermostat--card--item[data-item=wanted] span.wanted-control input {
+  width: 100%;
+}
+
+.thermostat--card--item[data-item=wanted] .value-display {
+  order: 1;
+  flex-basis: auto;
+  margin: 0;
+  font-size: 2em;
+}
+
+.thermostat--card--item[data-item=wanted] .value-display[data-is-current] {
+  font-weight: bold;
+}
+
+.thermostat--card--item[data-item=presets] {
+  justify-content: flex-start;
+}
+
+.thermostat--card--item[data-item=presets] .label {
+  display: none;
+}
+
+.thermostat--card--item[data-item=presets] .value-display {
+  flex: 1 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.thermostat--card--item[data-item=presets] .value-display span {
+  margin: calc(var(--grid-base) / 2);
+  padding: var(--grid-base);
+  background: var(--light-bg-color);
+  border-radius: var(--border-radius);
+  line-height: 1;
+}
+
+.thermostat--card--item[data-item=synced] {
+  display: none;
+}
+
+.thermostat--card--item[data-item=actions] {
+  display: none;
+  justify-content: flex-start;
+}
+
+.thermostat--card--item[data-item=actions] a {
+  margin-right: var(--grid-base);
+  color: var(--light-fg-color);
+  text-decoration: none;
+}
+
+.thermostat--card[data-preset=antifreeze] [data-preset=antifreeze],
+.thermostat--card[data-preset=eco] [data-preset=eco],
+.thermostat--card[data-preset=comfort] [data-preset=comfort],
+.thermostat--card[data-preset=supercomfort] [data-preset=supercomfort] {
+  font-weight: bold;
+}
+
+.thermostat--card[data-available=online][data-synced=true] [data-item=actions] {
+  display: initial;
+}
+
+.thermostat--card[data-synced=false] .value-display span.synced {
+  display: none;
+}
+
+.thermostat--card[data-synced=false] .value-display span.not-synced {
+  display: initial;
+}
+
+.thermostat--card[data-synced=true] .value-display span.synced {
+  display: initial;
+}
+
+.thermostat--card[data-synced=true] .value-display span.not-synced {
+  display: none;
+}
+
+.thermostat--card[data-mode=auto] .value-display span.mode-manu,
+.thermostat--card[data-mode=auto] .value-display span.mode--,
+.thermostat--card[data-mode="-"] .value-display span.mode-manu,
+.thermostat--card[data-mode="-"] .value-display span.mode-- {
+  opacity: var(--opacity-disabled);
+}
+
+.thermostat--card[data-mode=auto] .value-display span.mode-auto,
+.thermostat--card[data-mode="-"] .value-display span.mode-auto {
+  opacity: var(--opacity-enabled);
+}
+
+.thermostat--card[data-mode=manu] .value-display span.mode-auto,
+.thermostat--card[data-mode=manu] .value-display span.mode-- {
+  opacity: var(--opacity-disabled);
+}
+
+.thermostat--card[data-mode=manu] .value-display span.mode-manu {
+  opacity: var(--opacity-enabled);
+}
+
+.thermostat--card .value-display span.mode-- {
+  display: none;
+}
+
+.thermostat--card span.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  font-size: 4em;
+}
+
+.thermostat--card span.loading:after {
+  content: attr(data-pending-commands);
+  color: var(--dark-color);
+  font-size: 0.25em;
+  margin: var(--grid-base);
+  padding: var(--grid-base);
+  border-radius: var(--border-radius);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.5);
+  line-height: 1;
+}
+
+.thermostat--card span.loading .cancel {
+  position: absolute;
+  top: calc(var(--grid-base) * 2);
+  right: calc(var(--grid-base) * 2);
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--border-radius);
+  line-height: 1rem;
+}
+
+.thermostat--card span.loading .cancel svg[data-icon=mdi-close] {
+  display: block;
+}
+
+.thermostat--card span.loading .cancel svg[data-icon=mdi-close] path {
+  fill: var(--dark-color);
+}
+
+.thermostat--card[data-synced=false] span.loading {
+  display: flex;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.thermostat--card[data-synced=false] span.loading svg[data-icon=mdi-loading] {
+  -webkit-animation-name: spin;
+          animation-name: spin;
+  -webkit-animation-duration: 4000ms;
+          animation-duration: 4000ms;
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+}
+
+.thermostat--card[data-synced=false] span.loading svg[data-icon=mdi-loading] path {
+  fill: var(--dark-color);
+}
+
+.thermostat--card[data-error="0"] [data-item=error] {
+  display: none;
+}
+
+.thermostat--card [data-item=error] {
+  justify-content: space-between;
+}
+
+.thermostat--card [data-item=error] > span {
+  margin-right: 0;
+  flex-basis: auto;
+}
+
+.thermostat--card [data-item=error] .error-icon {
+  color: var(--color-alert);
+}
+
+.thermostat--card [data-item=error] .error-icon:before {
+  content: attr(data-descr);
+}
+
+.thermostat--card[data-error*="4|"] [data-item=error] [data-error] {
+  display: none;
+}
+
+.thermostat--card[data-error*="4|"] [data-item=error] .error-icon[data-error="4"] {
+  display: inline-block;
+}
+
+.thermostat--card[data-error*="8|"] [data-item=error] [data-error] {
+  display: none;
+}
+
+.thermostat--card[data-error*="8|"] [data-item=error] .error-icon[data-error="8"] {
+  display: inline-block;
+}
+
+.thermostat--card[data-error*="16|"] [data-item=error] [data-error] {
+  display: none;
+}
+
+.thermostat--card[data-error*="16|"] [data-item=error] .error-icon[data-error="16"] {
+  display: inline-block;
+}
+
+.thermostat--card[data-error*="64|"] [data-item=error] [data-error] {
+  display: none;
+}
+
+.thermostat--card[data-error*="64|"] [data-item=error] .error-icon[data-error="64"] {
+  display: inline-block;
+}
+
+.thermostat--card[data-error*="128|"] [data-item=error] [data-error] {
+  display: none;
+}
+
+.thermostat--card[data-error*="128|"] [data-item=error] .error-icon[data-error="128"] {
+  display: inline-block;
+}
+
+.thermostat--card[data-error*="256|"] [data-item=error] [data-error] {
+  display: none;
+}
+
+.thermostat--card[data-error*="256|"] [data-item=error] .error-icon[data-error="256"] {
+  display: inline-block;
+}
+
+.thermostat-settings {
+  width: calc(100vw - (2 * var(--grid-base)));
+  margin-right: calc(-1 * var(--grid-base));
+}
+
+.thermostat-settings div.setting--card .field {
+  display: flex;
+  justify-content: space-between;
+}
+
+.thermostat-settings div.setting--card .field div {
+  flex: 0 1 100%;
+  margin-right: var(--grid-base);
+}
+
+.thermostat-settings div.setting--card .field div input {
+  width: 100%;
+}
+
+.thermostat-settings div.setting--card .field span {
+  flex: 0 0 9.5ch;
+  text-align: right;
+  font-family: monospace;
+}
+
+.thermostat-settings div.setting--card .field span:before {
+  content: attr(data-int);
+  margin-right: 0.5ch;
+  width: 3ch;
+}
+
+.thermostat-settings div.setting--card .field span:after {
+  content: attr(data-hex);
+  display: inline-block;
+  width: 6ch;
+}
+
+.thermostat-settings div.setting--card .description {
+  font-size: 0.8em;
+}
+
+.thermostat-settings div.setting--card[data-item=actions] {
+  text-align: right;
+}
+
+.thermostat-timers {
+  width: calc(100vw - (2 * var(--grid-base)));
+  margin-right: calc(-1 * var(--grid-base));
+}
+
+.thermostat-timers .presets--card div,
+.thermostat-timers .timer-mode--card label {
+  display: flex;
+  justify-content: space-between;
+}
+
+.thermostat-timers .timer-slot {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--grid-base) 0;
+  border-bottom: 1px solid var(--light-bg-color);
+}
+
+.thermostat-timers .timer-slot--preset {
+  display: flex;
+  align-items: center;
+}
+
+.thermostat-timers .timer-slot--preset output {
+  margin-left: var(--grid-base);
+  font-family: monospace;
+  text-align: right;
+  width: 5ch;
+}
+
+.thermostat-timers .timer-slot--time input {
+  max-width: 100px;
+}
+
+.thermostat-timers .timer-slot:last-of-type {
+  border: unset;
+}
+
+.thermostat-timers[data-mode="0"] [data-type=week_timers],
+.thermostat-timers[data-mode="1"] [data-type=daily_timers] {
+  display: none;
+}
+
+.header--group .action-icon label {
+  position: relative;
+}
+
+.header--group .action-icon label [type=checkbox] {
+  display: none;
+}
+
+.header--group .action-icon label .add-input {
+  display: none;
+  position: absolute;
+  right: calc(-1 * var(--grid-base));
+  background: cyan;
+  top: calc(-1 * (var(--grid-base) / 2));
+  bottom: calc(-1 * (var(--grid-base) / 2));
+  padding: 0 var(--grid-base);
+  border-radius: var(--border-radius);
+  background: var(--light-bg-color);
+}
+
+.header--group .action-icon label [type=checkbox]:checked ~ .add-input {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.header--group .action-icon label [type=checkbox]:checked ~ .add-input input {
+  margin-right: var(--grid-base);
+  background: var(--light-bg-color);
+  border: 1px solid var(--dark-bg-color);
+  border-radius: var(--buttons-border-radius);
+  padding: calc(var(--grid-base) / 2);
+}
+
+.device-manager {
+  flex-basis: 100%;
+}
+
+.group--devices {
+  padding-top: var(--grid-base);
+  padding-left: var(--grid-base);
+  list-style-type: none;
+}
+
+.group--devices .group--devices-header {
+  margin-left: calc(-1 * var(--grid-base));
+  margin-bottom: calc(var(--grid-base) / 2);
+  display: flex;
+  justify-content: space-between;
+}
+
+.group--devices .group--device {
+  display: flex;
+  justify-content: space-between;
+}
+

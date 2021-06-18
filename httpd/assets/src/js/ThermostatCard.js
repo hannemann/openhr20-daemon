@@ -197,4 +197,4 @@ class ThermostatCard {
     }
 }
 
-export {ThermostatCard}
+export {errorIconMap, ThermostatCard}

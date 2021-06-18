@@ -1,3 +1,5 @@
+import {errorIconMap} from './ThermostatCard.js';
+
 class ThermostatsUpdater {
 
     constructor() {
@@ -69,12 +71,24 @@ class ThermostatsUpdater {
 
     updateHandler(stats) {
         Object.keys(stats).forEach(k => {
-            let keys = k.split('-')
+            let keys = k.split('-'), value
 
             let key = keys.shift();
             key += keys.map(k => k.charAt(0).toUpperCase() + k.slice(1)).join('');
 
-            this.cards[stats.addr].dataset[key] = stats[k];
+            if ('error' === key) {
+                let values = [];
+                Object.keys(errorIconMap).forEach(e => {
+                    if ((stats[k] & e) === parseInt(e, 10)) {
+                        values.push(e);
+                    }
+                })
+                value = values.join('|') + '|';
+            } else {
+                value = stats[k];
+            }
+
+            this.cards[stats.addr].dataset[key] = value;
         })
     }
 

@@ -8,6 +8,7 @@ from Commands.CommandMode import CommandMode
 from Commands.CommandStatus import CommandStatus
 from Commands.CommandReboot import CommandReboot
 from Devices import devices
+from WebSocket import ws
 
 mqtt_qos = int(os.getenv("MQTT_QOS"))
 mqtt_retain = os.getenv("MQTT_RETAIN") == 'True'
@@ -63,12 +64,16 @@ class MQTT(threading.Thread):
                 if device.group is not None:
                     for dev in device.group.devices:
                         self.publish_availability(dev)
+                else:
+                    self.publish_availability(device)
 
             elif cmnd == CommandTemperature.abbr:
                 device.set_temperature(payload)
                 if device.group is not None:
                     for dev in device.group.devices:
                         self.publish_availability(dev)
+                else:
+                    self.publish_availability(device)
 
             elif cmnd == CommandStatus.abbr:
                 device.update_stats()
@@ -120,6 +125,7 @@ class MQTT(threading.Thread):
         topic = self.availability_topic.strip('/') + '/{}'.format(device.addr)
         payload = 'offline' if device.available == device.AVAILABLE_OFFLINE or device.synced is False else 'online'
         mqtt.publish(topic, payload)
+        ws.send_device_stats(device)
 
     def run(self):
         print('MQTT: Connect to broker {}:{}'.format(self.host, self.port))

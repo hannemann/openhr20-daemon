@@ -278,16 +278,12 @@
   }
 
   $errors: 4, 8, 16, 64, 128, 256;
+  [data-item="error"] [data-error] {
+    display: none
+  }
   @each $error in $errors {
-    &[data-error*="#{$error}|"] {
-      [data-item="error"] {
-        [data-error] {
-          display: none
-        }
-        .error-icon[data-error="#{$error}"] {
-          display: inline-block
-        }
-      }
+    &[data-error*="#{$error}|"] [data-item="error"] .error-icon[data-error="#{$error}"] {
+      display: inline-block
     }
   }
 }

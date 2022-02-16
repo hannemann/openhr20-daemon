@@ -1,0 +1,35 @@
+.thermostat-timers {
+  width: calc(100vw - 2 * var(--grid-base));
+  margin-right: calc(-1 * var(--grid-base));
+}
+.thermostat-timers .presets--card div,
+.thermostat-timers .timer-mode--card label {
+  display: flex;
+  justify-content: space-between;
+}
+.thermostat-timers .timer-slot {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--grid-base) 0;
+  border-bottom: 1px solid var(--light-bg-color);
+}
+.thermostat-timers .timer-slot--preset {
+  display: flex;
+  align-items: center;
+}
+.thermostat-timers .timer-slot--preset output {
+  margin-left: var(--grid-base);
+  font-family: monospace;
+  text-align: right;
+  width: 5ch;
+}
+.thermostat-timers .timer-slot--time input {
+  max-width: 100px;
+}
+.thermostat-timers .timer-slot:last-of-type {
+  border: unset;
+}
+.thermostat-timers[data-mode="0"] [data-type="week_timers"],
+.thermostat-timers[data-mode="1"] [data-type="daily_timers"] {
+  display: none;
+}

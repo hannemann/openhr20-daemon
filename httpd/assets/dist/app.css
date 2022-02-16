@@ -19,12 +19,14 @@
   --border-radius: 4px;
   --buttons-border-radius: 2px;
   --opacity-enabled: 1;
-  --opacity-disabled: .5;
+  --opacity-disabled: 0.5;
 }
 
 body {
   font-family: "Arial", sans-serif;
-  padding-top: calc(var(--grid-base) * 4 + var(--font-size-big) + var(--font-size-big) / 4);
+  padding-top: calc(
+    (var(--grid-base) * 4) + var(--font-size-big) + (var(--font-size-big) / 4)
+  );
   color: var(--light-fg-color);
   font-size: 16px;
   line-height: 1.25;
@@ -43,14 +45,13 @@ button {
   font-size: var(--font-size-big);
   line-height: var(--font-size-big);
 }
-
 div[class$="--card"] {
   background-color: var(--card-bg-color);
   padding: var(--grid-base);
   margin-bottom: var(--grid-base);
   margin-right: var(--grid-base);
   border-radius: var(--border-radius);
-  flex: 1 0 calc(360px - 2 * var(--grid-base));
+  flex: 1 0 calc(360px - (2 * var(--grid-base)));
   position: relative;
 }
 
@@ -62,7 +63,6 @@ div.header--card {
   justify-content: space-between;
   align-items: center;
   flex-basis: calc(100% - 2 * var(--grid-base));
-  position: -webkit-sticky;
   position: sticky;
   top: 62px;
   z-index: 1;
@@ -88,30 +88,29 @@ div.header--card {
 }
 .spin {
   -webkit-animation-name: spin;
-          animation-name: spin;
+  animation-name: spin;
   -webkit-animation-duration: 4000ms;
-          animation-duration: 4000ms;
+  animation-duration: 4000ms;
   -webkit-animation-iteration-count: infinite;
-          animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
-          animation-timing-function: linear;
+  animation-timing-function: linear;
 }
 
 header {
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  background: var(--dark-bg-color);
-  color: var(--light-fg-color);
-  padding: calc(var(--grid-base) * 2);
-  font-size: var(--font-size-big);
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    background: var(--dark-bg-color);
+    color: var(--light-fg-color);
+    padding: calc(var(--grid-base) * 2);
+    font-size: var(--font-size-big);
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
 }
-
 nav {
   width: 1em;
 }
@@ -127,8 +126,8 @@ nav label [data-icon] {
   top: 0;
   left: 0;
 }
-nav label input[type=checkbox],
-nav label [data-icon=mdi-close] {
+nav label input[type="checkbox"],
+nav label [data-icon="mdi-close"] {
   opacity: 0;
 }
 nav .click-trap {
@@ -144,7 +143,9 @@ nav .click-trap .nav-list {
   position: absolute;
   padding: var(--grid-base) 0;
   display: block;
-  top: calc(var(--grid-base) * 4 + var(--font-size-big) + var(--font-size-big) / 4);
+  top: calc(
+    var(--grid-base) * 4 + var(--font-size-big) + var(--font-size-big) / 4
+  );
   width: 100vw;
   max-width: 280px;
   height: calc(100vh - var(--grid-base) * 2 - var(--font-size-big));
@@ -156,28 +157,33 @@ nav .click-trap .nav-list > span {
 nav .click-trap .nav-list > span.active {
   background: var(--main-bg-color);
 }
-nav .click-trap .nav-list > span a, nav .click-trap .nav-list > span span {
+nav .click-trap .nav-list > span a,
+nav .click-trap .nav-list > span span {
   display: inherit;
   color: var(--light-fg-color);
   text-decoration: none;
   padding: calc(var(--grid-base) / 2) calc(var(--grid-base) * 2);
 }
-nav .click-trap .nav-list > span a:hover, nav .click-trap .nav-list > span span:hover {
+nav .click-trap .nav-list > span a:hover,
+nav .click-trap .nav-list > span span:hover {
   background: var(--light-bg-color);
 }
-nav label input[type=checkbox]:checked ~ [data-icon=mdi-menu] {
+nav label input[type="checkbox"]:checked ~ [data-icon="mdi-menu"] {
   opacity: 0;
 }
-nav label input[type=checkbox]:checked ~ [data-icon=mdi-close] {
+nav label input[type="checkbox"]:checked ~ [data-icon="mdi-close"] {
   opacity: 1;
 }
-nav label input[type=checkbox]:checked ~ .click-trap {
+nav label input[type="checkbox"]:checked ~ .click-trap {
   left: 0;
 }
 
 main {
   background: var(--main-bg-color);
-  min-height: calc(100vh - var(--grid-base) * 4 - var(--font-size-big) - var(--font-size-big) / 4);
+  min-height: calc(
+    100vh - var(--grid-base) * 4 - var(--font-size-big) - var(--font-size-big) /
+      4
+  );
   padding: var(--grid-base);
   position: relative;
   z-index: 0;
@@ -189,17 +195,21 @@ main {
   flex-wrap: wrap;
 }
 
-main > div:first-of-type, .flex-wrap > div:first-of-type {
+main > div:first-of-type,
+.flex-wrap > div:first-of-type {
   margin-top: 0;
 }
 
-.thermostat--card [class*=-button] {
+.thermostat--card [class*="-button"] {
   cursor: pointer;
 }
-.thermostat--card[data-available=warn] h3 > svg:first-of-type.iconify path {
+.thermostat--card[data-available="warn"] h3 > svg:first-of-type.iconify path {
   fill: var(--color-warn);
 }
-.thermostat--card[data-available=offline] h3 > svg:first-of-type.iconify path {
+.thermostat--card[data-available="offline"]
+  h3
+  > svg:first-of-type.iconify
+  path {
   fill: var(--color-alert);
 }
 .thermostat--card h3 {
@@ -212,7 +222,7 @@ main > div:first-of-type, .flex-wrap > div:first-of-type {
 .thermostat--card h3 > * {
   margin-right: var(--grid-base);
 }
-.thermostat--card h3 [data-item=time] {
+.thermostat--card h3 [data-item="time"] {
   margin-left: auto;
   margin-right: 0;
   font-size: 0.6em;
@@ -234,109 +244,116 @@ main > div:first-of-type, .flex-wrap > div:first-of-type {
   display: flex;
   justify-content: flex-end;
 }
-.thermostat--card--item > label, .thermostat--card--item > .label {
+.thermostat--card--item > label,
+.thermostat--card--item > .label {
   font-size: 0.8em;
 }
 .thermostat--card--item .value-display {
   text-align: right;
   flex-basis: 70px;
 }
-.thermostat--card--item[data-item=mode] {
+.thermostat--card--item[data-item="mode"] {
   justify-content: flex-start;
 }
-.thermostat--card--item[data-item=mode] .label {
+.thermostat--card--item[data-item="mode"] .label {
   display: none;
 }
-.thermostat--card--item[data-item=mode] .value-display {
+.thermostat--card--item[data-item="mode"] .value-display {
   text-align: initial;
   flex-basis: auto;
 }
-.thermostat--card--item[data-item=wanted] {
+.thermostat--card--item[data-item="wanted"] {
   flex-direction: column;
   align-items: center;
 }
-.thermostat--card--item[data-item=wanted] label {
+.thermostat--card--item[data-item="wanted"] label {
   display: none;
 }
-.thermostat--card--item[data-item=wanted] span.wanted-control {
+.thermostat--card--item[data-item="wanted"] span.wanted-control {
   position: relative;
   width: 60%;
   max-width: 350px;
   order: 2;
 }
-.thermostat--card--item[data-item=wanted] span.wanted-control input {
+.thermostat--card--item[data-item="wanted"] span.wanted-control input {
   width: 100%;
 }
-.thermostat--card--item[data-item=wanted] .value-display {
+.thermostat--card--item[data-item="wanted"] .value-display {
   order: 1;
   flex-basis: auto;
   margin: 0;
   font-size: 2em;
 }
-.thermostat--card--item[data-item=wanted] .value-display[data-is-current] {
+.thermostat--card--item[data-item="wanted"] .value-display[data-is-current] {
   font-weight: bold;
 }
-.thermostat--card--item[data-item=presets] {
+.thermostat--card--item[data-item="presets"] {
   justify-content: flex-start;
 }
-.thermostat--card--item[data-item=presets] .label {
+.thermostat--card--item[data-item="presets"] .label {
   display: none;
 }
-.thermostat--card--item[data-item=presets] .value-display {
+.thermostat--card--item[data-item="presets"] .value-display {
   flex: 1 0 auto;
   display: flex;
   justify-content: center;
 }
-.thermostat--card--item[data-item=presets] .value-display span {
+.thermostat--card--item[data-item="presets"] .value-display span {
   margin: calc(var(--grid-base) / 2);
   padding: var(--grid-base);
   background: var(--light-bg-color);
   border-radius: var(--border-radius);
   line-height: 1;
 }
-.thermostat--card--item[data-item=synced] {
+.thermostat--card--item[data-item="synced"] {
   display: none;
 }
-.thermostat--card--item[data-item=actions] {
+.thermostat--card--item[data-item="actions"] {
   display: none;
   justify-content: flex-start;
 }
-.thermostat--card--item[data-item=actions] a {
+.thermostat--card--item[data-item="actions"] a {
   margin-right: var(--grid-base);
   color: var(--light-fg-color);
   text-decoration: none;
 }
-.thermostat--card[data-preset=antifreeze] [data-preset=antifreeze], .thermostat--card[data-preset=eco] [data-preset=eco], .thermostat--card[data-preset=comfort] [data-preset=comfort], .thermostat--card[data-preset=supercomfort] [data-preset=supercomfort] {
+.thermostat--card[data-preset="antifreeze"] [data-preset="antifreeze"],
+.thermostat--card[data-preset="eco"] [data-preset="eco"],
+.thermostat--card[data-preset="comfort"] [data-preset="comfort"],
+.thermostat--card[data-preset="supercomfort"] [data-preset="supercomfort"] {
   font-weight: bold;
 }
-.thermostat--card[data-available=online][data-synced=true] [data-item=actions] {
+.thermostat--card[data-available="online"][data-synced="true"]
+  [data-item="actions"] {
   display: initial;
 }
-.thermostat--card[data-synced=false] .value-display span.synced {
+.thermostat--card[data-synced="false"] .value-display span.synced {
   display: none;
 }
-.thermostat--card[data-synced=false] .value-display span.not-synced {
+.thermostat--card[data-synced="false"] .value-display span.not-synced {
   display: initial;
 }
-.thermostat--card[data-synced=true] .value-display span.synced {
+.thermostat--card[data-synced="true"] .value-display span.synced {
   display: initial;
 }
-.thermostat--card[data-synced=true] .value-display span.not-synced {
+.thermostat--card[data-synced="true"] .value-display span.not-synced {
   display: none;
 }
-.thermostat--card[data-mode=auto] .value-display span.mode-manu,
-.thermostat--card[data-mode=auto] .value-display span.mode--, .thermostat--card[data-mode="-"] .value-display span.mode-manu,
+.thermostat--card[data-mode="auto"] .value-display span.mode-manu,
+.thermostat--card[data-mode="auto"] .value-display span.mode--,
+.thermostat--card[data-mode="-"] .value-display span.mode-manu,
 .thermostat--card[data-mode="-"] .value-display span.mode-- {
   opacity: var(--opacity-disabled);
 }
-.thermostat--card[data-mode=auto] .value-display span.mode-auto, .thermostat--card[data-mode="-"] .value-display span.mode-auto {
+.thermostat--card[data-mode="auto"] .value-display span.mode-auto,
+.thermostat--card[data-mode="-"] .value-display span.mode-auto {
   opacity: var(--opacity-enabled);
 }
-.thermostat--card[data-mode=manu] .value-display span.mode-auto,
-.thermostat--card[data-mode=manu] .value-display span.mode-- {
+.thermostat--card[data-mode="manu"] .value-display span.mode-auto,
+.thermostat--card[data-mode="manu"] .value-display span.mode-- {
   opacity: var(--opacity-disabled);
 }
-.thermostat--card[data-mode=manu] .value-display span.mode-manu {
+.thermostat--card[data-mode="manu"] .value-display span.mode-manu {
   opacity: var(--opacity-enabled);
 }
 .thermostat--card .value-display span.mode-- {
@@ -375,64 +392,82 @@ main > div:first-of-type, .flex-wrap > div:first-of-type {
   border-radius: var(--border-radius);
   line-height: 1rem;
 }
-.thermostat--card span.loading .cancel svg[data-icon=mdi-close] {
+.thermostat--card span.loading .cancel svg[data-icon="mdi-close"] {
   display: block;
 }
-.thermostat--card span.loading .cancel svg[data-icon=mdi-close] path {
+.thermostat--card span.loading .cancel svg[data-icon="mdi-close"] path {
   fill: var(--dark-color);
 }
-.thermostat--card[data-synced=false] span.loading {
+.thermostat--card[data-synced="false"] span.loading {
   display: flex;
   background: rgba(255, 255, 255, 0.5);
 }
-.thermostat--card[data-synced=false] span.loading svg[data-icon=mdi-loading] {
+.thermostat--card[data-synced="false"]
+  span.loading
+  svg[data-icon="mdi-loading"] {
   -webkit-animation-name: spin;
-          animation-name: spin;
+  animation-name: spin;
   -webkit-animation-duration: 4000ms;
-          animation-duration: 4000ms;
+  animation-duration: 4000ms;
   -webkit-animation-iteration-count: infinite;
-          animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
   -webkit-animation-timing-function: linear;
-          animation-timing-function: linear;
+  animation-timing-function: linear;
 }
-.thermostat--card[data-synced=false] span.loading svg[data-icon=mdi-loading] path {
+.thermostat--card[data-synced="false"]
+  span.loading
+  svg[data-icon="mdi-loading"]
+  path {
   fill: var(--dark-color);
 }
-.thermostat--card[data-error="0"] [data-item=error] {
+.thermostat--card[data-error="0"] [data-item="error"] {
   display: none;
 }
-.thermostat--card [data-item=error] {
+.thermostat--card [data-item="error"] {
   justify-content: space-between;
 }
-.thermostat--card [data-item=error] > span {
+.thermostat--card [data-item="error"] > span {
   margin-right: 0;
   flex-basis: auto;
 }
-.thermostat--card [data-item=error] .error-icon {
+.thermostat--card [data-item="error"] .error-icon {
   color: var(--color-alert);
 }
-.thermostat--card [data-item=error] .error-icon:before {
+.thermostat--card [data-item="error"] .error-icon:before {
   content: attr(data-descr);
 }
-.thermostat--card [data-item=error] [data-error] {
+.thermostat--card [data-item="error"] [data-error] {
   display: none;
 }
-.thermostat--card[data-error*="4|"] [data-item=error] .error-icon[data-error="4"] {
+.thermostat--card[data-error*="4|"]
+  [data-item="error"]
+  .error-icon[data-error="4"] {
   display: inline-block;
 }
-.thermostat--card[data-error*="8|"] [data-item=error] .error-icon[data-error="8"] {
+
+.thermostat--card[data-error*="8|"]
+  [data-item="error"]
+  .error-icon[data-error="8"] {
   display: inline-block;
 }
-.thermostat--card[data-error*="16|"] [data-item=error] .error-icon[data-error="16"] {
+.thermostat--card[data-error*="16|"]
+  [data-item="error"]
+  .error-icon[data-error="16"] {
   display: inline-block;
 }
-.thermostat--card[data-error*="64|"] [data-item=error] .error-icon[data-error="64"] {
+.thermostat--card[data-error*="64|"]
+  [data-item="error"]
+  .error-icon[data-error="64"] {
   display: inline-block;
 }
-.thermostat--card[data-error*="128|"] [data-item=error] .error-icon[data-error="128"] {
+.thermostat--card[data-error*="128|"]
+  [data-item="error"]
+  .error-icon[data-error="128"] {
   display: inline-block;
 }
-.thermostat--card[data-error*="256|"] [data-item=error] .error-icon[data-error="256"] {
+.thermostat--card[data-error*="256|"]
+  [data-item="error"]
+  .error-icon[data-error="256"] {
   display: inline-block;
 }
 
@@ -469,7 +504,7 @@ main > div:first-of-type, .flex-wrap > div:first-of-type {
 .thermostat-settings div.setting--card .description {
   font-size: 0.8em;
 }
-.thermostat-settings div.setting--card[data-item=actions] {
+.thermostat-settings div.setting--card[data-item="actions"] {
   text-align: right;
 }
 
@@ -504,14 +539,15 @@ main > div:first-of-type, .flex-wrap > div:first-of-type {
 .thermostat-timers .timer-slot:last-of-type {
   border: unset;
 }
-.thermostat-timers[data-mode="0"] [data-type=week_timers], .thermostat-timers[data-mode="1"] [data-type=daily_timers] {
+.thermostat-timers[data-mode="0"] [data-type="week_timers"],
+.thermostat-timers[data-mode="1"] [data-type="daily_timers"] {
   display: none;
 }
 
 .header--group .action-icon label {
   position: relative;
 }
-.header--group .action-icon label [type=checkbox] {
+.header--group .action-icon label [type="checkbox"] {
   display: none;
 }
 .header--group .action-icon label .add-input {
@@ -525,12 +561,12 @@ main > div:first-of-type, .flex-wrap > div:first-of-type {
   border-radius: var(--border-radius);
   background: var(--light-bg-color);
 }
-.header--group .action-icon label [type=checkbox]:checked ~ .add-input {
+.header--group .action-icon label [type="checkbox"]:checked ~ .add-input {
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
-.header--group .action-icon label [type=checkbox]:checked ~ .add-input input {
+.header--group .action-icon label [type="checkbox"]:checked ~ .add-input input {
   margin-right: var(--grid-base);
   background: var(--light-bg-color);
   border: 1px solid var(--dark-bg-color);

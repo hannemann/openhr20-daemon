@@ -1,0 +1,36 @@
+.thermostat-settings {
+  width: calc(100vw - 2 * var(--grid-base));
+  margin-right: calc(-1 * var(--grid-base));
+}
+.thermostat-settings div.setting--card .field {
+  display: flex;
+  justify-content: space-between;
+}
+.thermostat-settings div.setting--card .field div {
+  flex: 0 1 100%;
+  margin-right: var(--grid-base);
+}
+.thermostat-settings div.setting--card .field div input {
+  width: 100%;
+}
+.thermostat-settings div.setting--card .field span {
+  flex: 0 0 9.5ch;
+  text-align: right;
+  font-family: monospace;
+}
+.thermostat-settings div.setting--card .field span:before {
+  content: attr(data-int);
+  margin-right: 0.5ch;
+  width: 3ch;
+}
+.thermostat-settings div.setting--card .field span:after {
+  content: attr(data-hex);
+  display: inline-block;
+  width: 6ch;
+}
+.thermostat-settings div.setting--card .description {
+  font-size: 0.8em;
+}
+.thermostat-settings div.setting--card[data-item="actions"] {
+  text-align: right;
+}

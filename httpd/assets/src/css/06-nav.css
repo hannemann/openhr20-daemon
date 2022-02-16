@@ -1,0 +1,66 @@
+nav {
+  width: 1em;
+}
+nav label {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+nav label [data-icon] {
+  position: absolute;
+  transition: opacity 150ms ease-out;
+  opacity: 1;
+  top: 0;
+  left: 0;
+}
+nav label input[type="checkbox"],
+nav label [data-icon="mdi-close"] {
+  opacity: 0;
+}
+nav .click-trap {
+  left: -100vw;
+  top: 0;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  transition: left 150ms ease-out;
+}
+nav .click-trap .nav-list {
+  position: absolute;
+  padding: var(--grid-base) 0;
+  display: block;
+  top: calc(
+    var(--grid-base) * 4 + var(--font-size-big) + var(--font-size-big) / 4
+  );
+  width: 100vw;
+  max-width: 280px;
+  height: calc(100vh - var(--grid-base) * 2 - var(--font-size-big));
+  background: var(--lighter-bg-color);
+}
+nav .click-trap .nav-list > span {
+  display: block;
+}
+nav .click-trap .nav-list > span.active {
+  background: var(--main-bg-color);
+}
+nav .click-trap .nav-list > span a,
+nav .click-trap .nav-list > span span {
+  display: inherit;
+  color: var(--light-fg-color);
+  text-decoration: none;
+  padding: calc(var(--grid-base) / 2) calc(var(--grid-base) * 2);
+}
+nav .click-trap .nav-list > span a:hover,
+nav .click-trap .nav-list > span span:hover {
+  background: var(--light-bg-color);
+}
+nav label input[type="checkbox"]:checked ~ [data-icon="mdi-menu"] {
+  opacity: 0;
+}
+nav label input[type="checkbox"]:checked ~ [data-icon="mdi-close"] {
+  opacity: 1;
+}
+nav label input[type="checkbox"]:checked ~ .click-trap {
+  left: 0;
+}

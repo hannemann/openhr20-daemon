@@ -19,24 +19,15 @@
   --border-radius: 4px;
   --buttons-border-radius: 2px;
   --opacity-enabled: 1;
-  --opacity-disabled: .5;
+  --opacity-disabled: 0.5;
 }
 
 body {
   font-family: "Arial", sans-serif;
-  padding-top: calc((var(--grid-base) * 4) + var(--font-size-big) + (var(--font-size-big) / 4));
+  padding-top: calc(
+    (var(--grid-base) * 4) + var(--font-size-big) + (var(--font-size-big) / 4)
+  );
   color: var(--light-fg-color);
   font-size: 16px;
   line-height: 1.25;
 }
-
-@import 'scss/buttons';
-@import 'scss/cards';
-@import 'scss/animation';
-@import 'scss/header';
-@import 'scss/nav';
-@import 'scss/main';
-@import 'scss/thermostat';
-@import 'scss/settings';
-@import 'scss/timers';
-@import 'scss/groups';

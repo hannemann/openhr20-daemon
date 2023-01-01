@@ -23,6 +23,8 @@ class MQTT(threading.Thread):
     availability_topic = os.getenv("MQTT_AVAILABILITY_TOPIC")
     host = os.getenv("MQTT_HOST")
     port = int(os.getenv("MQTT_PORT"))
+    user = os.getenv("MQTT_USER")
+    password = os.getenv("MQTT_PASS")
     debug = os.getenv('MQTT_DEBUG') == 'True'
     qos = mqtt_qos
     retain = mqtt_retain
@@ -129,6 +131,9 @@ class MQTT(threading.Thread):
 
     def run(self):
         print('MQTT: Connect to broker {}:{}'.format(self.host, self.port))
+        if self.user is not None and self.password is not None:
+            print('MQTT: using credentials for user {}'.format(self.user))
+            self.client.username_pw_set(self.user, self.password)
         self.client.connect(self.host, self.port, 60)
         self.client.loop_forever()
 

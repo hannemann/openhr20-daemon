@@ -30,7 +30,6 @@ options:
   MQTT_STATS_TOPIC: stat/openhr20/RESULT/
   MQTT_CMND_TOPIC: cmnd/openhr20/
   MQTT_AVAILABILITY_TOPIC: stat/openhr20/AVAILABLE/
-  MQTT_PRESETS_PUBLISH: '{"antifreeze": "antifreeze", "eco": "eco", "comfort": "comfort", "supercomfort": "supercomfort"}'
   MQTT_MODES_RECEIVE: '{"dry": "manu"}'
   MQTT_MODES_PUBLISH: '{"-": "auto", "manu": "dry"}'
   MQTT_PRESETS_RECEIVE: '{"away": "antifreeze", "home": "comfort", "comfort": "supercomfort"}'
@@ -60,7 +59,6 @@ schema:
   MQTT_STATS_TOPIC: str
   MQTT_CMND_TOPIC: str
   MQTT_AVAILABILITY_TOPIC: str
-  MQTT_PRESETS_PUBLISH: str
   MQTT_MODES_RECEIVE: str
   MQTT_MODES_PUBLISH: str
   MQTT_PRESETS_RECEIVE: str

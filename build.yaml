@@ -3,4 +3,3 @@ build_from:
 squash: false
 args:
   TZ: Europe/Berlin
-  IMG: ghcr.io/hassio-addons/base-python:stable

@@ -1,6 +1,8 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
+ENV VERSION=1.0.10
+
 
 ARG TZ
 RUN apk add tzdata git && \

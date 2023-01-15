@@ -1,6 +1,6 @@
 name: "Openhr20 Python Daemon"
 description: "Implementation of the OpenHR20 Daemon in Python"
-version: "1.0.2"
+version: "1.0.10"
 slug: "openhr20_daemon"
 init: false
 arch:
@@ -12,9 +12,16 @@ services:
 map:
   - config:rw
   - share:rw
+panel_icon: mdi:thermostat
+panel_title: OpenHR20
+ingress: false
+ingress_port: 8020
 ports:
   8020/tcp: 8020
   8021/tcp: 8021
+ports_description:
+  8020/tcp: Web Interface
+  8021/tcp: Websocket
 options:
   DEVICE_DB: null
   RESET_DEVICES: false

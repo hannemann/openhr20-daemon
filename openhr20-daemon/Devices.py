@@ -33,6 +33,7 @@ class Devices:
 
     def init_devices(self):
         for addr in self.buffer['names']:
+            print('Init device {} {}'.format(addr, self.buffer.get('names', addr)))
             self.add_device(
                 addr,
                 self.buffer.get('names', addr),

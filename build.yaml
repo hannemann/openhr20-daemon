@@ -1,0 +1,6 @@
+build_from:
+  amd64: ghcr.io/hassio-addons/base-python:stable
+squash: false
+args:
+  TZ: Europe/Berlin
+  IMG: ghcr.io/hassio-addons/base-python:stable

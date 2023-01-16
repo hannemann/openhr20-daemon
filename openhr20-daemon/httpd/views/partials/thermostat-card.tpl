@@ -103,10 +103,10 @@
         </span>
     </div>
     <div class="thermostat--card--item" data-item="actions">
-        <a href="/settings/{{ device.addr}}">
+        <a href="settings/{{ device.addr}}">
             <span class="iconify" data-icon="mdi-cog-outline"></span>
         </a>
-        <a href="/timers/{{ device.addr}}">
+        <a href="timers/{{ device.addr}}">
             <span class="iconify" data-icon="mdi-calendar"></span>
         </a>
     </div>

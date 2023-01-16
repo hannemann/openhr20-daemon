@@ -6,12 +6,12 @@
         <span class="click-trap">
             <span class="nav-list">
                 <span {{ !' class="active"' if 'index' == page else '' }}>
-                    {{ !'<a href="/">' if 'index' != page else '<span>' }}
+                    {{ !'<a href="javascript:history.back()">' if 'index' != page else '<span>' }}
                       Home
                     {{ !'</a>' if 'index' != page else '</span>'}}
                 </span>
                 <span {{ !' class="active"' if 'device-manager' == page else '' }}>
-                    {{ !'<a href="/device-manager">' if 'device-manager' != page else '<span>' }}
+                    {{ !'<a href="device-manager">' if 'device-manager' != page else '<span>' }}
                       Device Manager
                     {{ !'</a>' if 'groups' != page else '</span>'}}
                 </span>

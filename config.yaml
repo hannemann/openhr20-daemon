@@ -1,6 +1,6 @@
 name: "Openhr20 Python Daemon"
 description: "Implementation of the OpenHR20 Daemon in Python"
-version: "1.0.13"
+version: "1.0.13-b13"
 slug: "openhr20_daemon"
 init: false
 arch:
@@ -14,8 +14,8 @@ map:
   - share:rw
 panel_icon: mdi:thermostat
 panel_title: OpenHR20
-ingress: false
-ingress_port: 0
+ingress: true
+ingress_port: 8020
 ports:
   8020/tcp: 8020
   8021/tcp: 8021

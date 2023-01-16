@@ -32,6 +32,9 @@ export DEVICES_FILE=/data/devices.db
 
 echo ============ Config ================
 
+export INGRESS_URL=$(bashio::addon.ingress_url)
+bashio::log.info $INGRESS_URL
+
 RESET_DEVICES="$(bashio::config 'RESET_DEVICES')"
 DEVICE_DB="$(bashio::config 'DEVICE_DB')"
 

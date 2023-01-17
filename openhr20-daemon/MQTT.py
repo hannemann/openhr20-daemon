@@ -11,7 +11,7 @@ from Devices import devices
 from WebSocket import ws
 
 mqtt_qos = int(os.getenv("MQTT_QOS"))
-mqtt_retain = os.getenv("MQTT_RETAIN") == 'True'
+mqtt_retain = os.getenv("MQTT_RETAIN") == 'true'
 
 
 class MQTT(threading.Thread):
@@ -25,7 +25,7 @@ class MQTT(threading.Thread):
     port = int(os.getenv("MQTT_PORT"))
     user = os.getenv("MQTT_USER")
     password = os.getenv("MQTT_PASS")
-    debug = os.getenv('MQTT_DEBUG') == 'True'
+    debug = os.getenv('MQTT_DEBUG') == 'true'
     qos = mqtt_qos
     retain = mqtt_retain
 
@@ -35,6 +35,8 @@ class MQTT(threading.Thread):
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         print('MQTT initialized')
+        if self.debug:
+            print('MQTT Debug enabled')
         sys.stdout.flush()
 
     def on_connect(self, client, userdata, flags, rc):
@@ -104,9 +106,7 @@ class MQTT(threading.Thread):
         self.client.publish(topic, payload, qos, retain)
         if self.debug:
             print(" > MQTT: {} {} (QOS {}, Retain {})".format(topic, payload, qos, retain))
-        else:
-            print(" > MQTT: {}".format(topic))
-        sys.stdout.flush()
+            sys.stdout.flush()
 
     def publish_json(self, topic, payload, qos=mqtt_qos, retain=mqtt_retain):
         self.publish(topic, json.dumps(payload), qos, retain)

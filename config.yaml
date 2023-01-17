@@ -1,6 +1,6 @@
 name: "Openhr20 Python Daemon"
 description: "Implementation of the OpenHR20 Daemon in Python"
-version: "1.0.14-b10"
+version: "1.0.14-b16"
 slug: "openhr20_daemon"
 init: false
 arch:
@@ -28,13 +28,12 @@ options:
   OPENHR20_MASTER: null
   OPENHR20_BAUD: 38400
   OPENHR20_TIMEOUT: 1
-  OPENHR20_DEBUG: true
   MQTT_HOST: homeassistant
   MQTT_PORT: 1883
   MQTT_USER: mqtt
   MQTT_PASS: ""
   MQTT_QOS: 0
-  MQTT_RETAIN: "False"
+  MQTT_RETAIN: false
   MQTT_STATS_TOPIC: stat/openhr20/RESULT/
   MQTT_CMND_TOPIC: cmnd/openhr20/
   MQTT_AVAILABILITY_TOPIC: stat/openhr20/AVAILABLE/
@@ -42,16 +41,17 @@ options:
   MQTT_MODES_PUBLISH: '{"-": "auto", "manu": "dry"}'
   MQTT_PRESETS_RECEIVE: '{"away": "antifreeze", "home": "comfort", "comfort": "supercomfort"}'
   MQTT_PRESETS_PUBLISH: '{"antifreeze": "away", "comfort": "home", "supercomfort": "comfort"}'
-  MQTT_DEBUG: "False"
   HTTP_LISTEN_ADDRESS: "0.0.0.0"
   HTTP_PORT: "8020"
-  HTTP_DEBUG: "True"
   WS_LISTEN_ADDRESS: "0.0.0.0"
   WS_SCHEME: ws
   WS_HOST: homeassistant
   WS_PORT: "8021"
-  WS_DEBUG: "False"
   TZ: Europe/Berlin
+  OPENHR20_DEBUG: false
+  MQTT_DEBUG: false
+  HTTP_DEBUG: false
+  WS_DEBUG: false
 schema:
   DEVICE_DB: str
   RESET_DEVICES: bool
@@ -64,7 +64,7 @@ schema:
   MQTT_USER: str
   MQTT_PASS: str
   MQTT_QOS: int
-  MQTT_RETAIN: str
+  MQTT_RETAIN: bool
   MQTT_STATS_TOPIC: str
   MQTT_CMND_TOPIC: str
   MQTT_AVAILABILITY_TOPIC: str
@@ -72,13 +72,13 @@ schema:
   MQTT_MODES_PUBLISH: str
   MQTT_PRESETS_RECEIVE: str
   MQTT_PRESETS_PUBLISH: str
-  MQTT_DEBUG: str
+  MQTT_DEBUG: bool
   HTTP_LISTEN_ADDRESS: str
   HTTP_PORT: int
-  HTTP_DEBUG: str
+  HTTP_DEBUG: bool
   WS_LISTEN_ADDRESS: str
   WS_SCHEME: str
   WS_HOST: str
   WS_PORT: int
-  WS_DEBUG: str
+  WS_DEBUG: bool
   TZ: str

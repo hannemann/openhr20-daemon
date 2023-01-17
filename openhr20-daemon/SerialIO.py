@@ -14,14 +14,16 @@ class SerialIO:
     master = os.getenv("OPENHR20_MASTER")
     baud = int(os.getenv("OPENHR20_BAUD"))
     timeout = int(os.getenv("OPENHR20_TIMEOUT"))
+    debug = os.getenv('OPENHR20_DEBUG') == 'true'
 
     def __init__(self):
         self.connect()
         self.connected.set()
 
     def write(self, payload, end='\n'):
-        print(' > ' + payload, end=end)
-        sys.stdout.flush()
+        if self.debug:
+            print(' > ' + payload, end=end)
+            sys.stdout.flush()
         self.ser.write((payload + '\n').encode('utf_8'))
 
     def read(self, end='\n'):
@@ -29,8 +31,9 @@ class SerialIO:
             if not self.connecting:
                 line = self.ser.readline(256).decode('utf_8').strip()
                 if line != '' and line is not None and len(line) > 0:
-                    print(' < ' + line, end=end)
-                    sys.stdout.flush()
+                    if self.debug:
+                        print(' < ' + line, end=end)
+                        sys.stdout.flush()
                     return line
         except SerialException as error:
             print('SerialIO: {}'.format(error))

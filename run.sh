@@ -32,8 +32,6 @@ export  TZ="$(bashio::config 'TZ')"
 export DEVICES_FILE=/data/devices.db
 
 export BASE_URL=$(bashio::addon.ingress_url)
-bashio::log.info $BASE_URL
-bashio::log.info $OPENHR20_DEBUG
 
 RESET_DEVICES="$(bashio::config 'RESET_DEVICES')"
 DEVICE_DB="$(bashio::config 'DEVICE_DB')"

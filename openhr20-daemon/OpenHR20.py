@@ -1,4 +1,5 @@
 import sys
+import os
 from MQTT import mqtt
 from SerialIO import serialIO
 from RTC import write as write_rtc
@@ -17,10 +18,13 @@ class OpenHR20 (threading.Thread):
     data = ''
     stopped = threading.Event()
     device = None
+    debug = os.getenv('OPENHR20_DEBUG') == 'true'
 
     def __init__(self):
         threading.Thread.__init__(self)
         print('OpenHR20 Thread Initialized')
+        if self.debug:
+            print('OpenHR20 Debug enabled')
         sys.stdout.flush()
 
     def run(self):
@@ -51,7 +55,8 @@ class OpenHR20 (threading.Thread):
                 self.data = ''
                 self.device = None
 
-            print('')
+            if self.debug:
+                print('')
 
             if line == 'RTC?':
                 write_rtc()
@@ -66,7 +71,8 @@ class OpenHR20 (threading.Thread):
         try:
             self.device = devices.get_device(int(line[1:3], 16))
             self.data = line[4:]
-            print(' ({})'.format(self.device.name) if self.device is not None else '', end='')
+            if self.debug:
+                print(' ({})'.format(self.device.name) if self.device is not None else '', end='')
             self.device.set_availability()
             if not self.device.is_available():
                 commands.discard_all(self.device)
@@ -74,7 +80,8 @@ class OpenHR20 (threading.Thread):
             pass
 
     def handle_success(self, line):
-        print('')
+        if self.debug:
+            print('')
         if line[2] != '!' and line[1] != ' ':
             pending = commands.remove_from_buffer(self.device)
             if pending == 0 and self.data[0] in ['A', 'M', 'D']:

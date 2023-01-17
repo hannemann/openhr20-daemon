@@ -12,9 +12,12 @@ class WebSocket(threading.Thread):
 
     connected = set()
     queue = deque([])
-    debug = os.getenv('WS_DEBUG') == 'True'
+    debug = os.getenv('WS_DEBUG') == 'true'
 
     def __init__(self):
+        if self.debug:
+            print('Websockets Debug enabled')
+            sys.stdout.flush()
         super().__init__()
         self.listen_address = os.getenv("WS_LISTEN_ADDRESS")
         self.port = int(os.getenv("WS_PORT"))
@@ -33,8 +36,9 @@ class WebSocket(threading.Thread):
         try:
             while self.loop.is_running():
                 message = json.loads(await websocket.recv())
-                print(' < WS {}: {}'.format(websocket.remote_address[0], message))
-                sys.stdout.flush()
+                if self.debug:
+                    print(' < WS {}: {}'.format(websocket.remote_address[0], message))
+                    sys.stdout.flush()
                 if 'type' in message:
                     if message['type'] == 'update_stats':
                         self.queue_all_stats()
@@ -55,9 +59,7 @@ class WebSocket(threading.Thread):
                     if self.debug:
                         print(' > WS {} {}/{}: {}'.format(
                             websocket.remote_address[0], message['type'], message['addr'], message['payload']))
-                    else:
-                        print(' > WS {} {}/{}'.format(websocket.remote_address[0], message['type'], message['addr']))
-                    sys.stdout.flush()
+                        sys.stdout.flush()
             await asyncio.sleep(0.1)
 
     def send_device_stats(self, device):

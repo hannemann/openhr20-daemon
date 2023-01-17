@@ -11,7 +11,7 @@ from httpd.Controllers.DeviceController import DeviceController
 
 httpd_path = '/' + str(pathlib.Path(__file__).parent.absolute()).strip('/') + '/httpd/'
 bottle.TEMPLATE_PATH.insert(0, httpd_path + 'views')
-bottle.debug(os.getenv('HTTP_DEBUG') == 'True')
+bottle.debug(os.getenv('HTTP_DEBUG') == 'true')
 
 
 class MyWSGIRefServer(ServerAdapter):
@@ -22,6 +22,9 @@ class MyWSGIRefServer(ServerAdapter):
     server = None
 
     def run(self, handler):
+        if os.getenv('HTTP_DEBUG') == 'true':
+            print('HTTP Debug enabled')
+            sys.stdout.flush()
         from wsgiref.simple_server import make_server, WSGIRequestHandler
         if self.quiet:
             class QuietHandler(WSGIRequestHandler):
@@ -43,7 +46,7 @@ class Httpd(threading.Thread):
         host = os.getenv("HTTP_LISTEN_ADDRESS")
         port = int(os.getenv("HTTP_PORT"))
         self.server = MyWSGIRefServer(port=port, host=host)
-        bottle.run(server=self.server, reloader=False)
+        bottle.run(server=self.server, reloader=False, quiet=os.getenv('HTTP_DEBUG') == 'false')
         print('HTTP Server stopped...')
         sys.stdout.flush()
 

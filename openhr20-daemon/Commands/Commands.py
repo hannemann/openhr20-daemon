@@ -1,10 +1,12 @@
 import sys
+import os
 from SerialIO import serialIO
 
 
 class Commands:
 
     buffer = {}
+    debug = os.getenv('OPENHR20_DEBUG') == 'true'
 
     def add(self, device, command):
         if device.is_available():
@@ -42,7 +44,8 @@ class Commands:
                 if i > 25:
                     break
             serialIO.write('\n'.join(q), '')
-            print(' ({})'.format(device.name))
+            if self.debug:
+                print(' ({})'.format(device.name))
 
     def remove_from_buffer(self, device):
         if self.has_command(device):

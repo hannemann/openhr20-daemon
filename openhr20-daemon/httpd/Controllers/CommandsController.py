@@ -1,4 +1,5 @@
 import sys
+import os
 from bottle import route, request
 from MQTT import mqtt
 from WebSocket import ws
@@ -40,8 +41,9 @@ class CommandsController:
             pass
         except ValueError:
             pass
-        print(' < HTTP: {} temp {}'.format(addr, temp))
-        sys.stdout.flush()
+        if os.getenv('HTTP_DEBUG') == 'true':
+            print(' < HTTP: {} temp {}'.format(addr, temp))
+            sys.stdout.flush()
 
     @staticmethod
     def set_mode(addr):
@@ -63,8 +65,9 @@ class CommandsController:
             pass
         except ValueError:
             pass
-        print(' < HTTP: {} mode {}'.format(addr, mode))
-        sys.stdout.flush()
+        if os.getenv('HTTP_DEBUG') == 'true':
+            print(' < HTTP: {} mode {}'.format(addr, mode))
+            sys.stdout.flush()
 
     @staticmethod
     def update_stats(addr):
@@ -80,8 +83,9 @@ class CommandsController:
             pass
         except ValueError:
             pass
-        print(' < HTTP: {} update_stats'.format(addr))
-        sys.stdout.flush()
+        if os.getenv('HTTP_DEBUG') == 'true':
+            print(' < HTTP: {} update_stats'.format(addr))
+            sys.stdout.flush()
 
     @staticmethod
     def reboot(addr):
@@ -97,8 +101,9 @@ class CommandsController:
             pass
         except ValueError:
             pass
-        print(' < HTTP: {} reboot'.format(addr))
-        sys.stdout.flush()
+        if os.getenv('HTTP_DEBUG') == 'true':
+            print(' < HTTP: {} reboot'.format(addr))
+            sys.stdout.flush()
 
     @staticmethod
     def request_settings(addr):
@@ -112,8 +117,9 @@ class CommandsController:
                 ws.send_device_stats(device)
         except KeyError:
             pass
-        print(' < HTTP: {} request_settings'.format(addr))
-        sys.stdout.flush()
+        if os.getenv('HTTP_DEBUG') == 'true':
+            print(' < HTTP: {} request_settings'.format(addr))
+            sys.stdout.flush()
 
     @staticmethod
     def set_settings(addr):
@@ -130,8 +136,9 @@ class CommandsController:
                 ws.send_device_stats(device)
         except KeyError:
             pass
-        print(' < HTTP: {} set_settings'.format(addr))
-        sys.stdout.flush()
+        if os.getenv('HTTP_DEBUG') == 'true':
+            print(' < HTTP: {} set_settings'.format(addr))
+            sys.stdout.flush()
 
     @staticmethod
     def request_timers(addr):
@@ -145,8 +152,9 @@ class CommandsController:
                 ws.send_device_stats(device)
         except KeyError:
             pass
-        print(' < HTTP: {} request_timers'.format(addr))
-        sys.stdout.flush()
+        if os.getenv('HTTP_DEBUG') == 'true':
+            print(' < HTTP: {} request_timers'.format(addr))
+            sys.stdout.flush()
 
     @staticmethod
     def set_timers(addr):
@@ -166,8 +174,9 @@ class CommandsController:
                 ws.send_device_stats(device)
         except KeyError:
             pass
-        print(' < HTTP: {} set_timers'.format(addr))
-        sys.stdout.flush()
+        if os.getenv('HTTP_DEBUG') == 'true':
+            print(' < HTTP: {} set_timers'.format(addr))
+            sys.stdout.flush()
 
     @staticmethod
     def cancel_commands(addr):
@@ -181,5 +190,6 @@ class CommandsController:
                 ws.send_device_stats(device)
         except KeyError:
             pass
-        print(' < HTTP: {} cancel_commands'.format(addr))
-        sys.stdout.flush()
+        if os.getenv('HTTP_DEBUG') == 'true':
+            print(' < HTTP: {} cancel_commands'.format(addr))
+            sys.stdout.flush()

@@ -9,6 +9,8 @@ from Group import Group
 
 class Devices:
 
+    debug = os.getenv('OPENHR20_DEBUG') == 'true'
+
     def __init__(self):
         self.file = os.getenv("DEVICES_FILE")
         self.buffer = configparser.ConfigParser()
@@ -33,7 +35,8 @@ class Devices:
 
     def init_devices(self):
         for addr in self.buffer['names']:
-            print('Init device {} {}'.format(addr, self.buffer.get('names', addr)))
+            if self.debug:
+                print('Init device {} {}'.format(addr, self.buffer.get('names', addr)))
             self.add_device(
                 addr,
                 self.buffer.get('names', addr),
@@ -129,7 +132,8 @@ class Devices:
             fd = open(self.file, 'w')
             self.buffer.write(fd)
             fd.close()
-            print(' ! Flushed devices to {}'.format(self.file))
+            if self.debug:
+                print(' ! Flushed devices to {}'.format(self.file))
         except ValueError:
             print(' ! Refused to flush devices db. Devices empty...')
 

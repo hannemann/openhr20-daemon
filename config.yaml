@@ -1,6 +1,6 @@
 name: "Openhr20 Python Daemon"
 description: "Implementation of the OpenHR20 Daemon in Python"
-version: "1.0.13-b13"
+version: "1.0.14-b10"
 slug: "openhr20_daemon"
 init: false
 arch:
@@ -28,6 +28,7 @@ options:
   OPENHR20_MASTER: null
   OPENHR20_BAUD: 38400
   OPENHR20_TIMEOUT: 1
+  OPENHR20_DEBUG: true
   MQTT_HOST: homeassistant
   MQTT_PORT: 1883
   MQTT_USER: mqtt
@@ -57,6 +58,7 @@ schema:
   OPENHR20_MASTER: device(subsystem=tty)
   OPENHR20_BAUD: int
   OPENHR20_TIMEOUT: int(1,5)
+  OPENHR20_DEBUG: bool
   MQTT_HOST: str
   MQTT_PORT: int
   MQTT_USER: str

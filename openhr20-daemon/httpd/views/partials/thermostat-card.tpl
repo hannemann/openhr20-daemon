@@ -1,4 +1,6 @@
 %from datetime import datetime
+% import os
+% base_url = os.getenv("BASE_URL", default='/')
 % antifreeze = int(device.settings[device.PRESET_ANTIFREEZE_SETTING], 16) / 2 if device.PRESET_ANTIFREEZE_SETTING in device.settings else 0
 % eco = int(device.settings[device.PRESET_ECO_SETTING], 16) / 2 if device.PRESET_ECO_SETTING in device.settings else 0
 % comfort = int(device.settings[device.PRESET_COMFORT_SETTING], 16) / 2 if device.PRESET_COMFORT_SETTING in device.settings else 0
@@ -103,10 +105,10 @@
         </span>
     </div>
     <div class="thermostat--card--item" data-item="actions">
-        <a href="/settings/{{ device.addr}}">
+        <a href="{{ base_url }}settings/{{ device.addr}}">
             <span class="iconify" data-icon="mdi-cog-outline"></span>
         </a>
-        <a href="/timers/{{ device.addr}}">
+        <a href="{{ base_url }}timers/{{ device.addr}}">
             <span class="iconify" data-icon="mdi-calendar"></span>
         </a>
     </div>

@@ -1,6 +1,7 @@
 from Devices import devices
 from bottle import template, static_file, route
 from Eeprom import get_eeprom_layout
+import os
 
 
 class PageController:

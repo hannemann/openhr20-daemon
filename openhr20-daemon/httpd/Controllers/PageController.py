@@ -15,7 +15,7 @@ class PageController:
         route('/timers/<addr:int>', method='GET')(self.timers)
 
     def server_static(self, filepath):
-        return static_file(filepath, root=self.httpd_path + 'assets/dist')
+        return static_file(filepath, root=self.httpd_path + 'assets')
 
     @staticmethod
     def index():

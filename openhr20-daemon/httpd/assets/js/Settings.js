@@ -27,9 +27,15 @@ class Settings {
         this.settings.map((s) => {
           data[s.name] = s.valueAsNumber.toString(16).padStart(2, "0");
         });
-        await axios.post(
-          `${document.baseURI}/settings/${location.pathname.split("/").pop()}`,
-          data
+        await fetch(
+          `${document.baseURI}settings/${location.pathname.split("/").pop()}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
         );
         location.href = document.baseURI;
       });
@@ -37,8 +43,9 @@ class Settings {
     document
       .querySelector('.thermostat-settings button[data-action="reboot"]')
       .addEventListener("click", async () => {
-        await axios.post(
-          `${document.baseURI}/reboot/${location.pathname.split("/").pop()}`
+        await fetch(
+          `${document.baseURI}reboot/${location.pathname.split("/").pop()}`,
+          { method: "POST" }
         );
         location.href = document.baseURI;
       });
@@ -46,10 +53,11 @@ class Settings {
     document
       .querySelector('.thermostat-settings button[data-action="refresh"]')
       .addEventListener("click", async () => {
-        await axios.post(
-          `${document.baseURI}/request_settings/${location.pathname
+        await fetch(
+          `${document.baseURI}request_settings/${location.pathname
             .split("/")
-            .pop()}`
+            .pop()}`,
+          { method: "POST" }
         );
         location.href = document.baseURI;
       });

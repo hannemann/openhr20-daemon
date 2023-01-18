@@ -1,13 +1,10 @@
 .thermostat--card [class*="-button"] {
   cursor: pointer;
 }
-.thermostat--card[data-available="warn"] h3 > svg:first-of-type.iconify path {
+.thermostat--card[data-available="warn"] h3 > svg:first-of-type path {
   fill: var(--color-warn);
 }
-.thermostat--card[data-available="offline"]
-  h3
-  > svg:first-of-type.iconify
-  path {
+.thermostat--card[data-available="offline"] h3 > svg:first-of-type path {
   fill: var(--color-alert);
 }
 .thermostat--card h3 {

@@ -54,11 +54,17 @@ class Timers {
           ].join("");
         });
 
-        await axios.post(
+        await fetch(
           `${document.baseURI}/set_timers/${location.pathname
             .split("/")
             .pop()}`,
-          data
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
         );
         location.href = document.baseURI;
       });
@@ -66,10 +72,11 @@ class Timers {
     document
       .querySelector('.thermostat-timers button[data-action="refresh"]')
       .addEventListener("click", async () => {
-        await axios.post(
+        await fetch(
           `${document.baseURI}/request_timers/${location.pathname
             .split("/")
-            .pop()}`
+            .pop()}`,
+          { method: "POST" }
         );
         location.href = document.baseURI;
       });

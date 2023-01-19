@@ -8,7 +8,7 @@
       "name": "Python: OpenHR20 Daemon",
       "type": "python",
       "request": "launch",
-      "program": "${workspaceFolder}/openhr20-daemon.py",
+      "program": "${workspaceFolder}/openhr20-daemon/openhr20-daemon.py",
       "console": "integratedTerminal"
     }
   ]

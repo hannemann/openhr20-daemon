@@ -1,0 +1,84 @@
+name: "Openhr20 Python Daemon"
+description: "Implementation of the OpenHR20 Daemon in Python"
+version: "1.0.14-b32"
+slug: "openhr20_daemon"
+init: false
+arch:
+  - amd64
+startup: application
+webui: http://[HOST]:[PORT:8020]
+services:
+  - mqtt:need
+map:
+  - config:rw
+  - share:rw
+panel_icon: mdi:thermostat
+panel_title: OpenHR20
+ingress: true
+ingress_port: 8020
+ports:
+  8020/tcp: 8020
+  8021/tcp: 8021
+ports_description:
+  8020/tcp: Web Interface
+  8021/tcp: Websocket
+options:
+  DEVICE_DB: null
+  RESET_DEVICES: false
+  OPENHR20_MASTER: null
+  OPENHR20_BAUD: 38400
+  OPENHR20_TIMEOUT: 1
+  MQTT_HOST: homeassistant
+  MQTT_PORT: 1883
+  MQTT_USER: mqtt
+  MQTT_PASS: ""
+  MQTT_QOS: 0
+  MQTT_RETAIN: false
+  MQTT_STATS_TOPIC: stat/openhr20/RESULT/
+  MQTT_CMND_TOPIC: cmnd/openhr20/
+  MQTT_AVAILABILITY_TOPIC: stat/openhr20/AVAILABLE/
+  MQTT_MODES_RECEIVE: '{"dry": "manu"}'
+  MQTT_MODES_PUBLISH: '{"-": "auto", "manu": "dry"}'
+  MQTT_PRESETS_RECEIVE: '{"away": "antifreeze", "home": "comfort", "comfort": "supercomfort"}'
+  MQTT_PRESETS_PUBLISH: '{"antifreeze": "away", "comfort": "home", "supercomfort": "comfort"}'
+  HTTP_LISTEN_ADDRESS: "0.0.0.0"
+  HTTP_PORT: "8020"
+  WS_LISTEN_ADDRESS: "0.0.0.0"
+  WS_SCHEME: ws
+  WS_HOST: homeassistant
+  WS_PORT: "8021"
+  TZ: Europe/Berlin
+  OPENHR20_DEBUG: false
+  MQTT_DEBUG: false
+  HTTP_DEBUG: false
+  WS_DEBUG: false
+schema:
+  DEVICE_DB: str
+  RESET_DEVICES: bool
+  OPENHR20_MASTER: device(subsystem=tty)
+  OPENHR20_BAUD: int
+  OPENHR20_TIMEOUT: int(1,5)
+  OPENHR20_DEBUG: bool
+  MQTT_HOST: str
+  MQTT_PORT: int
+  MQTT_USER: str
+  MQTT_PASS: str
+  MQTT_QOS: int
+  MQTT_RETAIN: bool
+  MQTT_STATS_TOPIC: str
+  MQTT_CMND_TOPIC: str
+  MQTT_AVAILABILITY_TOPIC: str
+  MQTT_MODES_RECEIVE: str
+  MQTT_MODES_PUBLISH: str
+  MQTT_PRESETS_RECEIVE: str
+  MQTT_PRESETS_PUBLISH: str
+  MQTT_DEBUG: bool
+  HTTP_LISTEN_ADDRESS: str
+  HTTP_PORT: int
+  HTTP_DEBUG: bool
+  WS_LISTEN_ADDRESS: str
+  WS_SCHEME: str
+  WS_HOST: str
+  WS_PORT: int
+  WS_DEBUG: bool
+  TZ: str

@@ -6,11 +6,14 @@ services:
       context: ./
       args:
         - "TZ=${TZ}"
-        - "IMG=${IMG}"
+        - "BUILD_FROM=python:3.10-alpine"
+        - "RUNFILE=run.sh"
+    env_file:
+      - .env
     ports:
       - ${HTTP_PORT}:${HTTP_PORT}
       - ${WS_PORT}:${WS_PORT}
     volumes:
-      - ./:/usr/src/app
+      - ./data:/data
     devices:
       - ${OPENHR20_MASTER}:${OPENHR20_MASTER}

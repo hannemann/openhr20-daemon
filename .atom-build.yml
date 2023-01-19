@@ -1,2 +1,0 @@
-cmd: yarn run watch
-cwd: "{PROJECT_PATH}/httpd/assets"

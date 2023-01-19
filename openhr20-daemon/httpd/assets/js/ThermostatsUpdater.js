@@ -26,10 +26,6 @@ class ThermostatsUpdater {
     console.info("Init websocket connections");
     for (let card of Object.values(this.cards)) {
       if (!this.ws.hasOwnProperty(card.dataset.ws)) {
-        card.dataset.ws = card.dataset.ws.replace(
-          /^ws:/,
-          location.protocol == "https:" ? "wss:" : "ws:"
-        );
         this.ws[card.dataset.ws] = new WebSocket(card.dataset.ws);
         this.ws[card.dataset.ws].onmessage = (e) => {
           try {

@@ -1,7 +1,7 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-ENV VERSION=1.0.14-b32
+ENV VERSION=1.0.15
 
 
 ARG TZ
@@ -16,7 +16,7 @@ RUN git config --global init.defaultBranch main && \
 	git remote add -f origin https://github.com/hannemann/openhr20-daemon.git && \
 	git config core.sparseCheckout true && \
 	echo "openhr20-daemon/" >> .git/info/sparse-checkout && \
-	git pull origin homeassistant_ingress && \
+	git pull origin main && \
 	cd /openhr20-daemon/openhr20-daemon && \
 	pip install --no-cache-dir -r requirements.txt && \
 	cd -

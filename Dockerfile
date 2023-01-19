@@ -1,7 +1,7 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-ENV VERSION=1.0.14-b29
+ENV VERSION=1.0.14-b30
 
 
 ARG TZ
@@ -19,8 +19,8 @@ RUN git config --global init.defaultBranch main && \
 	git pull origin homeassistant_ingress && \
 	git status
 
-COPY ./run.sh /run.sh
-#RUN chmod +x /run.sh
+ARG RUNFILE=run.homeassistant.sh
+COPY ./${RUNFILE} /run.sh
 RUN chmod +x /run.sh && cd /openhr20-daemon/openhr20-daemon && pip install --no-cache-dir -r requirements.txt
 
 CMD [ "/run.sh" ]

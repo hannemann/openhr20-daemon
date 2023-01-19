@@ -1,0 +1,19 @@
+version: "2"
+services:
+  openhr20-daemon:
+    restart: unless-stopped
+    build:
+      context: ./
+      args:
+        - "TZ=${TZ}"
+        - "BUILD_FROM=${BUILD_FROM}"
+        - "RUNFILE=run.sh"
+    env_file:
+      - .env
+    ports:
+      - ${HTTP_PORT}:${HTTP_PORT}
+      - ${WS_PORT}:${WS_PORT}
+    volumes:
+      - ./data:/data
+    devices:
+      - ${OPENHR20_MASTER}:${OPENHR20_MASTER}

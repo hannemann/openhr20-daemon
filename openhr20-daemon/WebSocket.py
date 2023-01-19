@@ -55,11 +55,18 @@ class WebSocket(threading.Thread):
             if len(self.queue) > 0:
                 message = self.queue.popleft()
                 for websocket in self.connected:
-                    await websocket.send(json.dumps(message))
-                    if self.debug:
-                        print(' > WS {} {}/{}: {}'.format(
-                            websocket.remote_address[0], message['type'], message['addr'], message['payload']))
-                        sys.stdout.flush()
+                    try:
+                        await websocket.send(json.dumps(message))
+                        if self.debug:
+                            print(' > WS {} {}/{}: {}'.format(
+                                websocket.remote_address[0], message['type'], message['addr'], message['payload']))
+                            sys.stdout.flush()
+
+                    except websockets.exceptions.ConnectionClosedError:
+                        self.connected.remove(websocket)
+                    except websockets.exceptions.ConnectionClosedOK:
+                        self.connected.remove(websocket)
+
             await asyncio.sleep(0.1)
 
     def send_device_stats(self, device):

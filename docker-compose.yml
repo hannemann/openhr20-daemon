@@ -6,7 +6,7 @@ services:
       context: ./
       args:
         - "TZ=${TZ}"
-        - "BUILD_FROM=${BUILD_FROM}"
+        - "BUILD_FROM=python:3.10-alpine"
         - "RUNFILE=run.sh"
     env_file:
       - .env

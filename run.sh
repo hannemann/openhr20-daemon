@@ -31,6 +31,4 @@ export TZ=${TZ}
 export DEVICES_FILE=/data/devices.db
 export BASE_URL=${BASE_URL}
 
-echo ${MQTT_USER}:${MQTT_PASS}@${MQTT_HOST}:${MQTT_PORT}
-
 python /openhr20-daemon/openhr20-daemon/openhr20-daemon.py

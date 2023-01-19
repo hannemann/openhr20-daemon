@@ -17,10 +17,12 @@ RUN git config --global init.defaultBranch main && \
 	git config core.sparseCheckout true && \
 	echo "openhr20-daemon/" >> .git/info/sparse-checkout && \
 	git pull origin homeassistant_ingress && \
-	git status
+	cd /openhr20-daemon/openhr20-daemon && \
+	pip install --no-cache-dir -r requirements.txt && \
+	cd -
 
 ARG RUNFILE=run.homeassistant.sh
 COPY ./${RUNFILE} /run.sh
-RUN chmod +x /run.sh && cd /openhr20-daemon/openhr20-daemon && pip install --no-cache-dir -r requirements.txt
+RUN chmod +x /run.sh
 
 CMD [ "/run.sh" ]

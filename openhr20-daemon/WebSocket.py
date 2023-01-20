@@ -63,9 +63,9 @@ class WebSocket(threading.Thread):
                             sys.stdout.flush()
 
                     except websockets.exceptions.ConnectionClosedError:
-                        self.connected.remove(websocket)
+                        pass
                     except websockets.exceptions.ConnectionClosedOK:
-                        self.connected.remove(websocket)
+                        pass
 
             await asyncio.sleep(0.1)
 

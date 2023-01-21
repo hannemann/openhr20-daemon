@@ -24,32 +24,32 @@ class ThermostatsUpdater {
   }
 
   initWebsockets() {
-    console.info("Init websocket connections");
-    for (let card of Object.values(this.cards)) {
-      if (!ws.hasOwnProperty(card.dataset.ws)) {
-        console.log(card.dataset.ws);
-        ws[card.dataset.ws] = new WebSocket(card.dataset.ws);
-        ws[card.dataset.ws].onmessage = (e) => {
-          try {
-            let data = JSON.parse(e.data);
-            if ("stats" === data.type) {
-              this.updateHandler(data.payload);
-            }
-          } catch (e) {}
-        };
-        ws[card.dataset.ws].addEventListener("open", this.handleSocketOpen);
-      }
+    const proto = location.protocol.replace("http", "ws");
+    const port = document.querySelector(":root head base").dataset.wsPort;
+    const url = `${proto}//${location.hostname}:${port}`;
+    console.info("Init websocket connections to %s", url);
+    if (!ws.connection) {
+      ws.connection = new WebSocket(url);
+      ws.connection.onmessage = (e) => {
+        try {
+          let data = JSON.parse(e.data);
+          if ("stats" === data.type) {
+            this.updateHandler(data.payload);
+          }
+        } catch (e) {}
+      };
+      ws.connection.addEventListener("open", this.handleSocketOpen);
     }
     return this;
   }
 
   closeWebsockets() {
     console.info("Closing websocket connections");
-    Object.keys(ws).forEach((s) => {
-      ws[s].removeEventListener("open", this.handleSocketOpen);
-      ws[s].close();
-      delete ws[s];
-    });
+    if (ws.connection) {
+      ws.connection.removeEventListener("open", this.handleSocketOpen);
+      ws.connection.close();
+      delete ws.connection;
+    }
     return this;
   }
 

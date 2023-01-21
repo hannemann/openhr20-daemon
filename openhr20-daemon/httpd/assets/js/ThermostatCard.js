@@ -119,7 +119,7 @@ class ThermostatCard {
       if (this.card.dataset.wanted !== this.wanted.value) {
         this.card.dataset.synced = "false";
 
-        ws[this.card.dataset.ws].send(
+        ws.connection.send(
           JSON.stringify({
             type: "temp",
             addr: `${this.addr}`,
@@ -143,7 +143,7 @@ class ThermostatCard {
       const mode = this.card.dataset.mode === "manu" ? "auto" : "manu";
       this.card.dataset.synced = "false";
 
-      ws[this.card.dataset.ws].send(
+      ws.connection.send(
         JSON.stringify({
           type: "mode",
           addr: `${this.addr}`,
@@ -161,7 +161,7 @@ class ThermostatCard {
     try {
       this.card.dataset.synced = "false";
 
-      ws[this.card.dataset.ws].send(
+      ws.connection.send(
         JSON.stringify({
           type: "update",
           addr: `${this.addr}`,
@@ -176,7 +176,7 @@ class ThermostatCard {
 
   async cancelHandler() {
     try {
-      ws[this.card.dataset.ws].send(
+      ws.connection.send(
         JSON.stringify({
           type: "cancel_commands",
           addr: `${this.addr}`,

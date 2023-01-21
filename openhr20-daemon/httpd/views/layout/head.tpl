@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <head>
-    <base href="{{ base_url }}">
+    % import os
+    <base href="{{ base_url }}" data-ws-port="{{ os.getenv("WS_PORT", default='8021') }}">
     <title>{{ title }}</title>
     <link rel="stylesheet" href="static/app.css">
     <script type="module" src="static/app.js"></script>

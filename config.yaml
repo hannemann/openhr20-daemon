@@ -1,6 +1,6 @@
 name: "Openhr20 Python Daemon"
 description: "Implementation of the OpenHR20 Daemon in Python"
-version: "1.0.15-dev1"
+version: "1.0.15-dev5"
 slug: "openhr20_daemon"
 init: false
 arch:

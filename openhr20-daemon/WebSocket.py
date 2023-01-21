@@ -6,6 +6,7 @@ import json
 import sys
 from collections import deque
 from Devices import devices
+#import WebsocketCommands
 
 
 class WebSocket(threading.Thread):
@@ -39,9 +40,12 @@ class WebSocket(threading.Thread):
                 if self.debug:
                     print(' < WS {}: {}'.format(websocket.remote_address[0], message))
                     sys.stdout.flush()
+
                 if 'type' in message:
                     if message['type'] == 'update_stats':
                         self.queue_all_stats()
+                    #if message['type'] == 'cancel_commands' and 'addr' in message:
+                    #    WebsocketCommands.cancel_commands(str(message['addr']))
 
         except websockets.exceptions.ConnectionClosedOK:
             pass

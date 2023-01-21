@@ -1,3 +1,5 @@
+import { ws } from "./ThermostatsUpdater.js";
+
 const errorIconMap = {
   4: "mdi-cog-refresh-outline",
   8: "mdi-cog-off-outline",
@@ -164,6 +166,14 @@ class ThermostatCard {
   async cancelHandler() {
     try {
       await this.post(`${document.baseURI}cancel/${this.addr}`);
+
+      // ws[this.addr].send(
+      //   JSON.stringify({
+      //     type: "cancel_commands",
+      //     addr: `${this.addr}`,
+      //   })
+      // );
+
       console.info(
         "Cancel of all commands for device '%s' requested",
         this.name

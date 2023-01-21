@@ -1,9 +1,10 @@
 import { errorIconMap } from "./ThermostatCard.js";
 
+export const ws = {};
+
 class ThermostatsUpdater {
   constructor() {
     this.cards = {};
-    this.ws = {};
     document.querySelectorAll(".thermostats .thermostat--card").forEach((c) => {
       this.cards[c.dataset.addr] = c;
     });
@@ -25,9 +26,9 @@ class ThermostatsUpdater {
   initWebsockets() {
     console.info("Init websocket connections");
     for (let card of Object.values(this.cards)) {
-      if (!this.ws.hasOwnProperty(card.dataset.ws)) {
-        this.ws[card.dataset.ws] = new WebSocket(card.dataset.ws);
-        this.ws[card.dataset.ws].onmessage = (e) => {
+      if (!ws.hasOwnProperty(card.dataset.ws)) {
+        ws[card.dataset.ws] = new WebSocket(card.dataset.ws);
+        ws[card.dataset.ws].onmessage = (e) => {
           try {
             let data = JSON.parse(e.data);
             if ("stats" === data.type) {
@@ -35,10 +36,7 @@ class ThermostatsUpdater {
             }
           } catch (e) {}
         };
-        this.ws[card.dataset.ws].addEventListener(
-          "open",
-          this.handleSocketOpen
-        );
+        ws[card.dataset.ws].addEventListener("open", this.handleSocketOpen);
       }
     }
     return this;
@@ -46,10 +44,10 @@ class ThermostatsUpdater {
 
   closeWebsockets() {
     console.info("Closing websocket connections");
-    Object.keys(this.ws).forEach((s) => {
-      this.ws[s].removeEventListener("open", this.handleSocketOpen);
-      this.ws[s].close();
-      delete this.ws[s];
+    Object.keys(ws).forEach((s) => {
+      ws[s].removeEventListener("open", this.handleSocketOpen);
+      ws[s].close();
+      delete ws[s];
     });
     return this;
   }

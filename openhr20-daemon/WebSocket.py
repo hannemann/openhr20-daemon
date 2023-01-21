@@ -5,8 +5,7 @@ import threading
 import json
 import sys
 from collections import deque
-from Devices import devices
-#import WebsocketCommands
+import __init__ as daemon
 
 
 class WebSocket(threading.Thread):
@@ -33,6 +32,9 @@ class WebSocket(threading.Thread):
         print('Websocket: Loop stopped')
 
     async def connect(self, websocket, path):
+        if self.debug:
+            print(' < WS incoming connection from {}'.format(websocket.remote_address[0]))
+            sys.stdout.flush()
         self.connected.add(websocket)
         try:
             while self.loop.is_running():
@@ -44,8 +46,8 @@ class WebSocket(threading.Thread):
                 if 'type' in message:
                     if message['type'] == 'update_stats':
                         self.queue_all_stats()
-                    #if message['type'] == 'cancel_commands' and 'addr' in message:
-                    #    WebsocketCommands.cancel_commands(str(message['addr']))
+                    if message['type'] == 'cancel_commands' and 'addr' in message:
+                        daemon.WebsocketCommands.cancel_commands(str(message['addr']), websocket)
 
         except websockets.exceptions.ConnectionClosedOK:
             pass
@@ -66,9 +68,13 @@ class WebSocket(threading.Thread):
                                 websocket.remote_address[0], message['type'], message['addr'], message['payload']))
                             sys.stdout.flush()
 
-                    except websockets.exceptions.ConnectionClosedError:
+                    except websockets.exceptions.ConnectionClosedError as e:
+                        if self.debug:
+                            print(e)
                         pass
-                    except websockets.exceptions.ConnectionClosedOK:
+                    except websockets.exceptions.ConnectionClosedOK as e:
+                        if self.debug:
+                            print(e)
                         pass
 
             await asyncio.sleep(0.1)
@@ -83,11 +89,11 @@ class WebSocket(threading.Thread):
         self.queue.append(message)
 
     def queue_all_stats(self):
-        for device in devices.devices.values():
+        for device in daemon.devices.devices.values():
             self.send_device_stats(device)
 
     def shutdown(self):
+        if self.debug:
+            print('WS shutting down')
+            sys.stdout.flush()
         self.loop.call_soon_threadsafe(self.loop.stop)
-
-
-ws = WebSocket()

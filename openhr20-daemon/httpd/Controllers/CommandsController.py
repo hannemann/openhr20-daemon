@@ -1,10 +1,7 @@
 import sys
 import os
 from bottle import route, request
-from MQTT import mqtt
-from WebSocket import ws
-from Devices import devices
-from httpd.Controllers.RemoteController import RemoteController
+import __init__ as daemon
 
 
 class CommandsController:
@@ -24,18 +21,18 @@ class CommandsController:
     def set_temp(addr):
         temp = float(request.json.get('temp'))
         try:
-            if devices.is_remote_device(addr):
-                RemoteController.redirect_command(request, addr)
+            if daemon.devices.is_remote_device(addr):
+                daemon.RemoteController.redirect_command(request, addr)
             else:
-                device = devices.get_device(addr)
+                device = daemon.devices.get_device(addr)
                 device.set_temperature(temp)
                 if device.group is not None:
                     for dev in device.group.devices:
-                        mqtt.publish_availability(dev)
-                        ws.send_device_stats(dev)
+                        daemon.mqtt.publish_availability(dev)
+                        daemon.ws.send_device_stats(dev)
                 else:
-                    mqtt.publish_availability(device)
-                    ws.send_device_stats(device)
+                    daemon.mqtt.publish_availability(device)
+                    daemon.ws.send_device_stats(device)
 
         except KeyError:
             pass
@@ -49,18 +46,18 @@ class CommandsController:
     def set_mode(addr):
         mode = request.json.get('mode')
         try:
-            if devices.is_remote_device(addr):
-                RemoteController.redirect_command(request, addr)
+            if daemon.devices.is_remote_device(addr):
+                daemon.RemoteController.redirect_command(request, addr)
             else:
-                device = devices.get_device(addr)
+                device = daemon.devices.get_device(addr)
                 device.set_mode(mode)
                 if device.group is not None:
                     for dev in device.group.devices:
-                        mqtt.publish_availability(dev)
-                        ws.send_device_stats(dev)
+                        daemon.mqtt.publish_availability(dev)
+                        daemon.ws.send_device_stats(dev)
                 else:
-                    mqtt.publish_availability(device)
-                    ws.send_device_stats(device)
+                    daemon.mqtt.publish_availability(device)
+                    daemon.ws.send_device_stats(device)
         except KeyError:
             pass
         except ValueError:
@@ -72,13 +69,13 @@ class CommandsController:
     @staticmethod
     def update_stats(addr):
         try:
-            if devices.is_remote_device(addr):
-                RemoteController.redirect_command(request, addr)
+            if daemon.devices.is_remote_device(addr):
+                daemon.RemoteController.redirect_command(request, addr)
             else:
-                device = devices.get_device(addr)
+                device = daemon.devices.get_device(addr)
                 device.update_stats()
-                mqtt.publish_availability(device)
-                ws.send_device_stats(device)
+                daemon.mqtt.publish_availability(device)
+                daemon.ws.send_device_stats(device)
         except KeyError:
             pass
         except ValueError:
@@ -90,13 +87,13 @@ class CommandsController:
     @staticmethod
     def reboot(addr):
         try:
-            if devices.is_remote_device(addr):
-                RemoteController.redirect_command(request, addr)
+            if daemon.devices.is_remote_device(addr):
+                daemon.RemoteController.redirect_command(request, addr)
             else:
-                device = devices.get_device(addr)
+                device = daemon.devices.get_device(addr)
                 device.reboot_device()
-                mqtt.publish_availability(device)
-                ws.send_device_stats(device)
+                daemon.mqtt.publish_availability(device)
+                daemon.ws.send_device_stats(device)
         except KeyError:
             pass
         except ValueError:
@@ -108,13 +105,13 @@ class CommandsController:
     @staticmethod
     def request_settings(addr):
         try:
-            if devices.is_remote_device(addr):
-                RemoteController.redirect_command(request, addr)
+            if daemon.devices.is_remote_device(addr):
+                daemon.RemoteController.redirect_command(request, addr)
             else:
-                device = devices.get_device(addr)
+                device = daemon.devices.get_device(addr)
                 device.request_settings()
-                mqtt.publish_availability(device)
-                ws.send_device_stats(device)
+                daemon.mqtt.publish_availability(device)
+                daemon.ws.send_device_stats(device)
         except KeyError:
             pass
         if os.getenv('HTTP_DEBUG') == 'true':
@@ -124,16 +121,16 @@ class CommandsController:
     @staticmethod
     def set_settings(addr):
         try:
-            if devices.is_remote_device(addr):
-                RemoteController.redirect_command(request, addr)
+            if daemon.devices.is_remote_device(addr):
+                daemon.RemoteController.redirect_command(request, addr)
             else:
-                device = devices.get_device(addr)
+                device = daemon.devices.get_device(addr)
                 for idx, value in device.settings.items():
                     new = request.json.get(idx)
                     if new != value:
                         device.send_setting(idx, new)
-                mqtt.publish_availability(device)
-                ws.send_device_stats(device)
+                daemon.mqtt.publish_availability(device)
+                daemon.ws.send_device_stats(device)
         except KeyError:
             pass
         if os.getenv('HTTP_DEBUG') == 'true':
@@ -143,13 +140,13 @@ class CommandsController:
     @staticmethod
     def request_timers(addr):
         try:
-            if devices.is_remote_device(addr):
-                RemoteController.redirect_command(request, addr)
+            if daemon.devices.is_remote_device(addr):
+                daemon.RemoteController.redirect_command(request, addr)
             else:
-                device = devices.get_device(addr)
+                device = daemon.devices.get_device(addr)
                 device.request_timers()
-                mqtt.publish_availability(device)
-                ws.send_device_stats(device)
+                daemon.mqtt.publish_availability(device)
+                daemon.ws.send_device_stats(device)
         except KeyError:
             pass
         if os.getenv('HTTP_DEBUG') == 'true':
@@ -159,10 +156,10 @@ class CommandsController:
     @staticmethod
     def set_timers(addr):
         try:
-            if devices.is_remote_device(addr):
-                RemoteController.redirect_command(request, addr)
+            if daemon.devices.is_remote_device(addr):
+                daemon.RemoteController.redirect_command(request, addr)
             else:
-                device = devices.get_device(addr)
+                device = daemon.devices.get_device(addr)
                 timers = device.timers
                 for day, value in request.json['timers'].items():
                     if timers[int(day[0])][int(day[1])] != value:
@@ -170,8 +167,8 @@ class CommandsController:
                 new_mode = int(request.json['mode'])
                 if new_mode != (0 if int(device.settings['22'], 16) == 0 else 1):
                     device.send_setting('22', '{:02x}'.format(new_mode))
-                mqtt.publish_availability(device)
-                ws.send_device_stats(device)
+                daemon.mqtt.publish_availability(device)
+                daemon.ws.send_device_stats(device)
         except KeyError:
             pass
         if os.getenv('HTTP_DEBUG') == 'true':
@@ -181,13 +178,13 @@ class CommandsController:
     @staticmethod
     def cancel_commands(addr):
         try:
-            if devices.is_remote_device(addr):
-                RemoteController.redirect_command(request, addr)
+            if daemon.devices.is_remote_device(addr):
+                daemon.RemoteController.redirect_command(request, addr)
             else:
-                device = devices.get_device(addr)
+                device = daemon.devices.get_device(addr)
                 device.cancel_commands()
-                mqtt.publish_availability(device)
-                ws.send_device_stats(device)
+                daemon.mqtt.publish_availability(device)
+                daemon.ws.send_device_stats(device)
         except KeyError:
             pass
         if os.getenv('HTTP_DEBUG') == 'true':

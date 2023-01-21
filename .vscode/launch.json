@@ -9,7 +9,8 @@
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/openhr20-daemon/openhr20-daemon.py",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

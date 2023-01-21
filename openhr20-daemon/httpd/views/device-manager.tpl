@@ -1,7 +1,5 @@
     % import json
-    % from Group import Group
-    % from Device import Device
-    % from Devices import devices
+    % import __init__ as daemon
     % rebase('layout/default', title=title, page='device-manager')
     <div class="flex-wrap">
         <div class="header--group header--card">
@@ -22,7 +20,7 @@
                 </label>
             </span>
         </div>
-        <div class="device-manager" data-devices="{{ str(devices) }}" data-groups="{{ devices.__str__(with_remote=False, groups=True) }}">
+        <div class="device-manager" data-devices="{{ str(daemon.devices) }}" data-groups="{{ daemon.devices.__str__(with_remote=False, groups=True) }}">
             <div class="groups">
             </div>
             <div class="header--card">
@@ -33,11 +31,11 @@
         </div>
     </div>
     <template id="group-template">
-        % include('./partials/group-card', group=Group('', '', []))
+        % include('./partials/group-card', group=daemon.Group('', '', []))
     </template>
     <template id="group-device-template">
-        % include('./partials/group-card/device', device=Device(None, '', {}, None, None, None))
+        % include('./partials/group-card/device', device=daemon.Device(None, '', {}, None, None, None))
     </template>
     <template id="ungrouped-device-template">
-        % include('./partials/thermostat-simple', device=Device(None, '', {}, None, None, None))
+        % include('./partials/thermostat-simple', device=daemon.Device(None, '', {}, None, None, None))
     </template>

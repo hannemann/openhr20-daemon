@@ -7,8 +7,8 @@ from Commands.CommandTemperature import CommandTemperature
 from Commands.CommandMode import CommandMode
 from Commands.CommandStatus import CommandStatus
 from Commands.CommandReboot import CommandReboot
-from Devices import devices
-from WebSocket import ws
+
+import __init__ as daemon
 
 mqtt_qos = int(os.getenv("MQTT_QOS"))
 mqtt_retain = os.getenv("MQTT_RETAIN") == 'true'
@@ -58,7 +58,7 @@ class MQTT(threading.Thread):
 
         try:
             payload = msg.payload.decode('utf_8').strip()
-            device = devices.get_device(addr)
+            device = daemon.devices.get_device(addr)
             if cmnd == CommandMode.abbr:
                 try:
                     payload = json.loads(os.getenv("MQTT_MODES_RECEIVE"))[payload]
@@ -126,8 +126,8 @@ class MQTT(threading.Thread):
     def publish_availability(self, device):
         topic = self.availability_topic.strip('/') + '/{}'.format(device.addr)
         payload = 'offline' if device.available == device.AVAILABLE_OFFLINE or device.synced is False else 'online'
-        mqtt.publish(topic, payload)
-        ws.send_device_stats(device)
+        daemon.mqtt.publish(topic, payload)
+        daemon.ws.send_device_stats(device)
 
     def run(self):
         print('MQTT: Connect to broker {}:{}'.format(self.host, self.port))
@@ -142,6 +142,3 @@ class MQTT(threading.Thread):
         self.client.disconnect()
         print('MQTT connection closed')
         sys.stdout.flush()
-
-
-mqtt = MQTT()

@@ -1,6 +1,6 @@
 import sys
 import os
-from SerialIO import serialIO
+import __init__ as daemon
 
 
 class Commands:
@@ -43,7 +43,7 @@ class Commands:
                 i += 1
                 if i > 25:
                     break
-            serialIO.write('\n'.join(q), '')
+            daemon.serialIO.write('\n'.join(q), '')
             if self.debug:
                 print(' ({})'.format(device.name))
 
@@ -89,7 +89,7 @@ class Commands:
         if v is None:
             v = "P{:02x}{:02x}{:02x}{:02x}".format(req[0], req[1], req[2], req[3])
 
-        serialIO.write(v)
+        daemon.serialIO.write(v)
 
 
 commands = Commands()

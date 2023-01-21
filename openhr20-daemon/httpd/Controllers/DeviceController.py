@@ -1,6 +1,6 @@
 from bottle import route, response, request
 import json
-from Devices import devices
+import __init__ as daemon
 
 
 class DeviceController:
@@ -18,22 +18,22 @@ class DeviceController:
     def get_stats():
         response.content_type = 'application/json'
         devs = {}
-        for addr, device in devices.get_devices(with_remote=True).items():
+        for addr, device in daemon.devices.get_devices(with_remote=True).items():
             devs[addr] = device.get_data()
         return json.dumps(devs)
 
     @staticmethod
     def add_device(addr):
         try:
-            group = devices.groups[request.json.get('group')] if 'group' in request.json else None
+            group = daemon.devices.groups[request.json.get('group')] if 'group' in request.json else None
         except KeyError:
             group = None
         try:
             name = request.json.get('name')
-            devices.add_device(
+            daemon.devices.add_device(
                 addr, name,
-                json.loads(devices.get_initial_stats(addr)),
-                json.loads(devices.get_initial_timers()),
+                json.loads(daemon.devices.get_initial_stats(addr)),
+                json.loads(daemon.devices.get_initial_timers()),
                 {}, group
             )
         except KeyError:
@@ -42,7 +42,7 @@ class DeviceController:
     @staticmethod
     def remove_device(addr):
         try:
-            devices.remove_device(addr)
+            daemon.devices.remove_device(addr)
         except KeyError:
             pass
 
@@ -50,7 +50,7 @@ class DeviceController:
     def add_group():
         try:
             name = request.json.get('name')
-            devices.add_group(name.lower(), name, [])
+            daemon.devices.add_group(name.lower(), name, [])
         except KeyError:
             pass
 
@@ -58,7 +58,7 @@ class DeviceController:
     def remove_group():
         try:
             key = request.json.get('key')
-            devices.remove_group(key)
+            daemon.devices.remove_group(key)
         except KeyError:
             pass
 
@@ -66,7 +66,7 @@ class DeviceController:
     def add_device_to_group(addr):
         try:
             key = request.json.get('key')
-            devices.add_device_to_group(addr, key)
+            daemon.devices.add_device_to_group(addr, key)
         except KeyError:
             pass
 
@@ -74,6 +74,6 @@ class DeviceController:
     def remove_device_from_group(addr):
         try:
             key = request.json.get('key')
-            devices.remove_device_from_group(addr, key)
+            daemon.devices.remove_device_from_group(addr, key)
         except KeyError:
             pass

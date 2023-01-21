@@ -8,5 +8,6 @@
   },
   "files.associations": {
     "*.yaml": "home-assistant"
-  }
+  },
+  "cSpell.words": ["mqtt", "openhr", "websockets"]
 }

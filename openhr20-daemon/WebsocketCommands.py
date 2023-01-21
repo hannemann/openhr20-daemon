@@ -1,18 +1,16 @@
-from Devices import devices
-from WebSocket import ws
-from MQTT import mqtt
+import __init__ as daemon
 
-class WebSocketCommands:
+class WebsocketCommands:
 
     @staticmethod
-    def cancel_commands(addr):
+    def cancel_commands(addr, websocket):
         try:
-            if devices.is_remote_device(addr):
+            if daemon.devices.is_remote_device(addr):
               print('TODO: send command to remote device')
             else:
-                device = devices.get_device(addr)
+                device = daemon.devices.get_device(addr)
                 device.cancel_commands()
-                mqtt.publish_availability(device)
-                ws.send_device_stats(device)
+                daemon.mqtt.publish_availability(device)
+                websocket.send_device_stats(device)
         except KeyError:
             pass

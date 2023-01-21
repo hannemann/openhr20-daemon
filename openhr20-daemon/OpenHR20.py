@@ -1,13 +1,10 @@
 import sys
 import os
-from MQTT import mqtt
-from SerialIO import serialIO
 from RTC import write as write_rtc
 import threading
 from Commands.Commands import commands
 from Stats import Stats
-from Devices import devices
-from WebSocket import ws
+import __init__ as daemon
 
 
 class OpenHR20 (threading.Thread):
@@ -33,7 +30,7 @@ class OpenHR20 (threading.Thread):
         print('OpenHR20: Starting main loop...')
         sys.stdout.flush()
         while self.alive:
-            self.action(serialIO.read(''))
+            self.action(daemon.serialIO.read(''))
 
         print('OpenHR20: Main loop stopped')
         sys.stdout.flush()
@@ -69,7 +66,7 @@ class OpenHR20 (threading.Thread):
 
     def parse_device_line(self, line):
         try:
-            self.device = devices.get_device(int(line[1:3], 16))
+            self.device = daemon.devices.get_device(int(line[1:3], 16))
             self.data = line[4:]
             if self.debug:
                 print(' ({})'.format(self.device.name) if self.device is not None else '', end='')
@@ -88,18 +85,18 @@ class OpenHR20 (threading.Thread):
                 self.update_device_stats(Stats.create(self.device, self.data))
             else:
                 if pending == 0:
-                    mqtt.publish_stats(self.device)
-                ws.send_device_stats(self.device)
+                    daemon.mqtt.publish_stats(self.device)
+                daemon.ws.send_device_stats(self.device)
 
 
     @staticmethod
     def handle_n_line(line):
-        devices.flush()
+        daemon.devices.flush()
         commands.send_sync_package(line)
-        for device in devices.devices.values():
-            mqtt.publish_stats(device)
-            mqtt.publish_availability(device)
-            ws.send_device_stats(device)
+        for device in daemon.devices.devices.values():
+            daemon.mqtt.publish_stats(device)
+            daemon.mqtt.publish_availability(device)
+            daemon.ws.send_device_stats(device)
 
     def handle_data(self, line):
         if self.data[0] == '?' and self.device.is_available():
@@ -116,14 +113,11 @@ class OpenHR20 (threading.Thread):
 
     def update_device_stats(self, stats):
         self.device.set_stats(stats)
-        mqtt.publish_stats(self.device)
-        mqtt.publish_availability(self.device)
-        ws.send_device_stats(self.device)
+        daemon.mqtt.publish_stats(self.device)
+        daemon.mqtt.publish_availability(self.device)
+        daemon.ws.send_device_stats(self.device)
 
     def shutdown(self):
         self.alive = False
         ''' wait for loop to be stopped '''
         self.stopped.wait(2)
-
-
-openhr20 = OpenHR20()

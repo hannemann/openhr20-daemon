@@ -1,7 +1,7 @@
 from datetime import datetime
 import pytz
 import os
-from SerialIO import serialIO
+import __init__ as daemon
 
 tz = pytz.timezone(os.getenv('TZ'))
 
@@ -17,5 +17,5 @@ def hex_date():
 
 
 def write():
-    serialIO.write(hex_date())
-    serialIO.write(hex_time())
+    daemon.serialIO.write(hex_date())
+    daemon.serialIO.write(hex_time())

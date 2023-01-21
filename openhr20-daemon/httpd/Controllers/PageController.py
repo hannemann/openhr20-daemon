@@ -1,7 +1,7 @@
-from Devices import devices
 from bottle import template, static_file, route
 from Eeprom import get_eeprom_layout
 import os
+import __init__ as daemon
 
 
 class PageController:
@@ -19,23 +19,23 @@ class PageController:
 
     @staticmethod
     def index():
-        groups = sorted(devices.get_groups(with_remote=True).values(), key=lambda g: g.name)
-        ungrouped = sorted([d for d in devices.get_devices(with_remote=True).values() if d.group is None], key=lambda d: d.name)
+        groups = sorted(daemon.devices.get_groups(with_remote=True).values(), key=lambda g: g.name)
+        ungrouped = sorted([d for d in daemon.devices.get_devices(with_remote=True).values() if d.group is None], key=lambda d: d.name)
 
         return template('index', title='OpenHR20', ungrouped_devices=ungrouped, groups=groups)
 
     @staticmethod
     def manage():
-        ungrouped = [d for d in devices.devices.values() if d.group is None]
-        return template('device-manager', title='Groups', ungrouped_devices=ungrouped, groups=devices.groups.values())
+        ungrouped = [d for d in daemon.devices.devices.values() if d.group is None]
+        return template('device-manager', title='Groups', ungrouped_devices=ungrouped, groups=daemon.devices.groups.values())
 
     @staticmethod
     def settings(addr):
         try:
-            if devices.is_remote_device(addr):
-                settings = devices.get_device_from_remote(addr).settings
+            if daemon.devices.is_remote_device(addr):
+                settings = daemon.devices.get_device_from_remote(addr).settings
             else:
-                settings = devices.get_device(addr).settings
+                settings = daemon.devices.get_device(addr).settings
             if 'ff' in settings:
                 layout = get_eeprom_layout(int('0x' + settings['ff'], 16))
                 return template('settings', title='Settings', layout=layout, device_settings=settings)
@@ -46,10 +46,10 @@ class PageController:
     @staticmethod
     def timers(addr):
         try:
-            if devices.is_remote_device(addr):
-                device = devices.get_device_from_remote(addr)
+            if daemon.devices.is_remote_device(addr):
+                device = daemon.devices.get_device_from_remote(addr)
             else:
-                device = devices.get_device(addr)
+                device = daemon.devices.get_device(addr)
             mode = device.settings['22']
             mode = 1 if mode is not None and int(mode, 16) > 0 else 0
             preset0 = device.settings['01']

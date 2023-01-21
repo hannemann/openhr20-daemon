@@ -60,6 +60,3 @@ class SerialIO:
         self.ser.close()
         print('Serial connection closed')
         sys.stdout.flush()
-
-
-serialIO = SerialIO()

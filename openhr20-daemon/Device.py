@@ -10,8 +10,8 @@ from Commands.CommandGetTimer import CommandGetTimer
 from Commands.CommandSetTimer import CommandSetTimer
 from Eeprom import get_eeprom_layout
 from Commands.Commands import commands
-from Group import Group
 import os
+import __init__ as daemon
 
 
 class Device:
@@ -151,7 +151,7 @@ class Device:
         CommandTemperature.validate(temperature)
         group = self.group
         if group is None:
-            group = Group('fake', 'fake', [self])
+            group = daemon.Group('fake', 'fake', [self])
         for device in group.devices:
             commands.add(device, CommandTemperature(temperature))
 
@@ -159,7 +159,7 @@ class Device:
         CommandMode.validate(mode)
         group = self.group
         if group is None:
-            group = Group('fake', 'fake', [self])
+            group = daemon.Group('fake', 'fake', [self])
         for device in group.devices:
             commands.add(device, CommandMode(mode))
 

@@ -1,7 +1,7 @@
 from bottle import route, response
-from Devices import devices
 import pickle
 import http.client
+import __init__ as daemon
 
 
 class RemoteController:
@@ -14,7 +14,7 @@ class RemoteController:
     def get_device_serialized(addr):
         response.content_type = 'application/octet-stream'
         try:
-            device = devices.get_device(addr)
+            device = daemon.devices.get_device(addr)
             return pickle.dumps(device)
         except KeyError:
             pass
@@ -23,14 +23,14 @@ class RemoteController:
     def get_group_serialized(name):
         response.content_type = 'application/octet-stream'
         try:
-            group = devices.groups[name]
+            group = daemon.devices.groups[name]
             return pickle.dumps(group)
         except KeyError:
             pass
 
     @staticmethod
     def redirect_command(req, addr):
-        remote = devices.get_remote(addr)
+        remote = daemon.devices.get_remote(addr)
         conn = http.client.HTTPConnection(remote)
         conn.request(req.method, req.fullpath, req.body.read().decode('utf-8'), dict(req.headers))
         conn.close()

@@ -3,8 +3,7 @@ import pickle
 import http.client
 import os
 import json
-from Device import Device
-from Group import Group
+import __init__ as daemon
 
 
 class Devices:
@@ -55,7 +54,7 @@ class Devices:
         return json.dumps([[''] * 8] * 8)
 
     def add_device(self, addr, name, stats, timers, settings, group):
-        self.devices[str(addr)] = Device(addr, name, stats, timers, settings, group)
+        self.devices[str(addr)] = daemon.Device(addr, name, stats, timers, settings, group)
         if group is not None:
             group.devices.append(self.devices[str(addr)])
             self.buffer.set('groups', group.key, json.dumps(group.dict()))
@@ -89,7 +88,7 @@ class Devices:
                 device.group = self.groups[key]
 
     def add_group(self, key, name, devs):
-        self.groups[key] = Group(key, name, devs)
+        self.groups[key] = daemon.Group(key, name, devs)
         self.buffer.set('groups', key, json.dumps(self.groups[key].dict()))
 
     def remove_group(self, key):
@@ -191,6 +190,3 @@ class Devices:
             return json.dumps([g.dict() for g in self.get_groups(with_remote).values()])
         else:
             return json.dumps([d.dict() for d in self.get_devices(with_remote).values()])
-
-
-devices = Devices()

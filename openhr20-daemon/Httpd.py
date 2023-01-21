@@ -4,10 +4,6 @@ import sys
 import os
 import pathlib
 import threading
-from httpd.Controllers.PageController import PageController
-from httpd.Controllers.CommandsController import CommandsController
-from httpd.Controllers.RemoteController import RemoteController
-from httpd.Controllers.DeviceController import DeviceController
 
 httpd_path = '/' + str(pathlib.Path(__file__).parent.absolute()).strip('/') + '/httpd/'
 bottle.TEMPLATE_PATH.insert(0, httpd_path + 'views')
@@ -54,8 +50,3 @@ class Httpd(threading.Thread):
         self.server.stop()
 
 
-httpd = Httpd()
-pageController = PageController(httpd_path)
-commandsController = CommandsController()
-remoteController = RemoteController()
-deviceController = DeviceController()

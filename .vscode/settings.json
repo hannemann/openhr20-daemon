@@ -9,5 +9,5 @@
   "files.associations": {
     "*.yaml": "home-assistant"
   },
-  "cSpell.words": ["mqtt", "openhr", "websockets"]
+  "cSpell.words": ["manu", "mqtt", "openhr", "websockets"]
 }

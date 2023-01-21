@@ -43,11 +43,17 @@ class WebSocket(threading.Thread):
                     print(' < WS {}: {}'.format(websocket.remote_address[0], message))
                     sys.stdout.flush()
 
-                if 'type' in message:
+                if 'type' in message and 'addr' in message:
                     if message['type'] == 'update_stats':
                         self.queue_all_stats()
-                    if message['type'] == 'cancel_commands' and 'addr' in message:
-                        daemon.WebsocketCommands.cancel_commands(str(message['addr']), websocket)
+                    if message['type'] == 'temp' and 'temp' in message:
+                        daemon.WebsocketCommands.set_temp(str(message['addr']), float(message['temp']))
+                    if message['type'] == 'mode' and 'mode' in message:
+                        daemon.WebsocketCommands.set_mode(str(message['addr']), str(message['mode']))
+                    if message['type'] == 'update':
+                        daemon.WebsocketCommands.update_stats(str(message['addr']))
+                    if message['type'] == 'cancel_commands':
+                        daemon.WebsocketCommands.cancel_commands(str(message['addr']))
 
         except websockets.exceptions.ConnectionClosedOK:
             pass

@@ -118,9 +118,15 @@ class ThermostatCard {
       delete this.wanted.parentNode.dataset.active;
       if (this.card.dataset.wanted !== this.wanted.value) {
         this.card.dataset.synced = "false";
-        await this.post(`${document.baseURI}temp/${this.addr}`, {
-          temp: this.wanted.value.toString(),
-        });
+
+        ws[this.card.dataset.ws].send(
+          JSON.stringify({
+            type: "temp",
+            addr: `${this.addr}`,
+            temp: this.wanted.value.toString(),
+          })
+        );
+
         console.info(
           "Temperature of '%s' set to %s °C",
           this.name,
@@ -129,50 +135,53 @@ class ThermostatCard {
       }
     } catch (e) {
       console.error(e);
-    } finally {
-      delete this.card.dataset.preventupdate;
-      clearTimeout(this.cancelTimeout);
     }
   }
 
   async modeHandler() {
     try {
-      let data = {
-        mode: this.card.dataset.mode === "manu" ? "auto" : "manu",
-      };
+      const mode = this.card.dataset.mode === "manu" ? "auto" : "manu";
       this.card.dataset.synced = "false";
-      await this.post(`${document.baseURI}mode/${this.addr}`, data);
-      console.info("Mode of '%s' set to %s", this.name, data.mode);
+
+      ws[this.card.dataset.ws].send(
+        JSON.stringify({
+          type: "mode",
+          addr: `${this.addr}`,
+          mode,
+        })
+      );
+
+      console.info("Mode of '%s' set to %s", this.name, mode);
     } catch (e) {
       console.error(e);
-    } finally {
-      delete this.card.dataset.preventupdate;
-      clearTimeout(this.cancelTimeout);
     }
   }
 
   async updateHandler() {
     try {
       this.card.dataset.synced = "false";
-      await this.post(`${document.baseURI}update/${this.addr}`);
+
+      ws[this.card.dataset.ws].send(
+        JSON.stringify({
+          type: "update",
+          addr: `${this.addr}`,
+        })
+      );
+
       console.info("Update of '%s' requested", this.name);
     } catch (e) {
       console.error(e);
-    } finally {
-      clearTimeout(this.cancelTimeout);
     }
   }
 
   async cancelHandler() {
     try {
-      await this.post(`${document.baseURI}cancel/${this.addr}`);
-
-      // ws[this.addr].send(
-      //   JSON.stringify({
-      //     type: "cancel_commands",
-      //     addr: `${this.addr}`,
-      //   })
-      // );
+      ws[this.card.dataset.ws].send(
+        JSON.stringify({
+          type: "cancel_commands",
+          addr: `${this.addr}`,
+        })
+      );
 
       console.info(
         "Cancel of all commands for device '%s' requested",
@@ -180,28 +189,7 @@ class ThermostatCard {
       );
     } catch (e) {
       console.error(e);
-    } finally {
-      clearTimeout(this.cancelTimeout);
     }
-  }
-
-  post(url, data) {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    let options = { method: "POST", signal };
-    if (data) {
-      options = {
-        ...options,
-        ...{
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        },
-      };
-    }
-    this.cancelTimeout = setTimeout(() => controller.abort(), 2000);
-    return fetch(url, options);
   }
 
   wantedDownHandler() {

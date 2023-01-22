@@ -38,7 +38,7 @@ class PageController:
                 settings = daemon.devices.get_device(addr).settings
             if 'ff' in settings:
                 layout = get_eeprom_layout(int('0x' + settings['ff'], 16))
-                return template('settings', title='Settings', layout=layout, device_settings=settings)
+                return template('settings', title='Settings', layout=layout, device_settings=settings, addr=addr)
         except KeyError:
             pass
         print(' < HTTP: {} settings'.format(addr))
@@ -62,7 +62,7 @@ class PageController:
                 {'id': 2, 'name': 'Comfort', 'temp': preset2 if preset2 is not None else '00'},
                 {'id': 3, 'name': 'Super Comfort', 'temp': preset3 if preset3 is not None else '00'},
             ]
-            return template('timers', title='Timers', mode=mode, timers=device.timers, presets=presets)
+            return template('timers', title='Timers', mode=mode, timers=device.timers, presets=presets, addr=addr)
         except KeyError:
             pass
         print(' < HTTP: {} timers'.format(addr))

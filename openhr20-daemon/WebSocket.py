@@ -43,17 +43,36 @@ class WebSocket(threading.Thread):
                     print(' < WS {}: {}'.format(websocket.remote_address[0], message))
                     sys.stdout.flush()
 
-                if 'type' in message and 'addr' in message:
+                if 'type' in message:
                     if message['type'] == 'update_stats':
                         self.queue_all_stats()
-                    if message['type'] == 'temp' and 'temp' in message:
-                        daemon.WebsocketCommands.set_temp(str(message['addr']), float(message['temp']))
-                    if message['type'] == 'mode' and 'mode' in message:
-                        daemon.WebsocketCommands.set_mode(str(message['addr']), str(message['mode']))
-                    if message['type'] == 'update':
-                        daemon.WebsocketCommands.update_stats(str(message['addr']))
-                    if message['type'] == 'cancel_commands':
-                        daemon.WebsocketCommands.cancel_commands(str(message['addr']))
+                    if 'addr' in message:
+                        if message['type'] == 'temp' and 'temp' in message:
+                            daemon.WebsocketCommands.set_temp(message)
+
+                        if message['type'] == 'mode' and 'mode' in message:
+                            daemon.WebsocketCommands.set_mode(message)
+
+                        if message['type'] == 'update':
+                            daemon.WebsocketCommands.update_stats(message)
+
+                        if message['type'] == 'reboot':
+                            daemon.WebsocketCommands.reboot(message)
+
+                        if message['type'] == 'request_settings':
+                            daemon.WebsocketCommands.request_settings(message)
+
+                        if message['type'] == 'save_settings':
+                            daemon.WebsocketCommands.save_settings(message)
+
+                        if message['type'] == 'request_timers':
+                            daemon.WebsocketCommands.request_timers(message)
+
+                        if message['type'] == 'save_timers':
+                            daemon.WebsocketCommands.save_timers(message)
+
+                        if message['type'] == 'cancel_commands':
+                            daemon.WebsocketCommands.cancel_commands(message)
 
         except websockets.exceptions.ConnectionClosedOK:
             pass
@@ -68,19 +87,22 @@ class WebSocket(threading.Thread):
                 message = self.queue.popleft()
                 for websocket in self.connected:
                     try:
-                        await websocket.send(json.dumps(message))
                         if self.debug:
                             print(' > WS {} {}/{}: {}'.format(
                                 websocket.remote_address[0], message['type'], message['addr'], message['payload']))
                             sys.stdout.flush()
+                        await websocket.send(json.dumps(message))
+                        if self.debug:
+                            print(' > WS message sent')
+                            sys.stdout.flush()
 
                     except websockets.exceptions.ConnectionClosedError as e:
                         if self.debug:
-                            print(e)
+                            print('Websocket send: {}'.format(e))
                         pass
                     except websockets.exceptions.ConnectionClosedOK as e:
                         if self.debug:
-                            print(e)
+                            print('Websocket send: {}'.format(e))
                         pass
 
             await asyncio.sleep(0.1)
@@ -97,6 +119,8 @@ class WebSocket(threading.Thread):
     def queue_all_stats(self):
         for device in daemon.devices.devices.values():
             self.send_device_stats(device)
+        for proxy in daemon.devices.remoteProxies.values():
+            proxy.send(json.dumps({'type': 'update_stats'}))
 
     def shutdown(self):
         if self.debug:

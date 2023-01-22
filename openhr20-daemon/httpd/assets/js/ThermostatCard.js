@@ -122,7 +122,7 @@ class ThermostatCard {
         ws.connection.send(
           JSON.stringify({
             type: "temp",
-            addr: `${this.addr}`,
+            addr: parseInt(this.addr),
             temp: this.wanted.value.toString(),
           })
         );
@@ -146,7 +146,7 @@ class ThermostatCard {
       ws.connection.send(
         JSON.stringify({
           type: "mode",
-          addr: `${this.addr}`,
+          addr: parseInt(this.addr),
           mode,
         })
       );
@@ -164,7 +164,7 @@ class ThermostatCard {
       ws.connection.send(
         JSON.stringify({
           type: "update",
-          addr: `${this.addr}`,
+          addr: parseInt(this.addr),
         })
       );
 
@@ -179,7 +179,7 @@ class ThermostatCard {
       ws.connection.send(
         JSON.stringify({
           type: "cancel_commands",
-          addr: `${this.addr}`,
+          addr: parseInt(this.addr),
         })
       );
 

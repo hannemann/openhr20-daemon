@@ -59,7 +59,7 @@ class ThermostatsUpdater {
   }
 
   socketOpenHandler(e) {
-    e.currentTarget.send(
+    ws.connection.send(
       JSON.stringify({
         type: "update_stats",
       })

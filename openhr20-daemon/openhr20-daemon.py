@@ -10,6 +10,7 @@ def signal_handler(sig, frame):
     daemon.serialIO.shutdown()
     daemon.mqtt.shutdown()
     daemon.httpd.shutdown()
+    daemon.devices.shutdown()
     sys.stderr.close()
     print("All threads stopped... exiting")
     sys.stdout.flush()
@@ -26,10 +27,14 @@ if __name__ == "__main__":
         daemon.mqtt.start()
         daemon.httpd.start()
         daemon.ws.start()
+        for addr, proxy in daemon.devices.remoteProxies.items():
+            proxy.start()
         daemon.openhr20.start()
         daemon.mqtt.join()
         daemon.httpd.join()
         daemon.ws.join()
+        for addr, proxy in daemon.devices.remoteProxies.items():
+            proxy.join()
         daemon.openhr20.join()
     else:
         sys.exit(1)

@@ -1,6 +1,6 @@
 % import json
 % rebase('layout/default', title=title, page='settings')
-<div class="thermostat-settings">
+<div class="thermostat-settings" data-addr="{{ addr }}">
     % for setting in layout:
     <div class="setting--card">
         <label>

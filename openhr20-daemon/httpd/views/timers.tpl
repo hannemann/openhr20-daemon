@@ -1,7 +1,7 @@
 % import json
 % rebase('layout/default', title=title, page='timers')
 % header = ['Weekly', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-<div class="thermostat-timers" data-mode="{{ mode }}">
+<div class="thermostat-timers" data-mode="{{ mode }}" data-addr="{{ addr }}">
     <div class="presets--card">
         <h3>Available presets</h3>
         % for preset in presets:

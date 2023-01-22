@@ -11,10 +11,12 @@ import Devices
 import Device
 import Group
 import WebsocketCommands
+import RemoteDeviceProxy
 
 Device = Device.Device
 Group = Group.Group
 WebsocketCommands = WebsocketCommands.WebsocketCommands
+RemoteDeviceProxy = RemoteDeviceProxy.RemoteDeviceProxy
 
 serialIO = SerialIO.SerialIO()
 openhr20 = OpenHR20.OpenHR20()

@@ -31,6 +31,6 @@ class RemoteController:
     @staticmethod
     def redirect_command(req, addr):
         remote = daemon.devices.get_remote(addr)
-        conn = http.client.HTTPConnection(remote)
+        conn = http.client.HTTPConnection(http.client.HTTPConnection(daemon.devices.get_remote_http_url(remote)))
         conn.request(req.method, req.fullpath, req.body.read().decode('utf-8'), dict(req.headers))
         conn.close()

@@ -1,3 +1,5 @@
+import { ws } from "./ThermostatsUpdater.js";
+
 class Settings {
   constructor() {
     if (document.querySelector(".thermostat-settings")) {
@@ -6,6 +8,12 @@ class Settings {
   }
 
   run() {
+    const proto = location.protocol.replace("http", "ws");
+    const port = document.querySelector(":root head base").dataset.wsPort;
+    const url = `${proto}//${location.hostname}:${port}`;
+    const addr = document.querySelector(".thermostat-settings").dataset.addr;
+    console.info("Init websocket connection to %s", url);
+    const connection = new WebSocket(url);
     this.settings = Array.from(
       document.querySelectorAll(".thermostat-settings .setting--card input")
     );
@@ -21,43 +29,41 @@ class Settings {
 
     document
       .querySelector('.thermostat-settings button[data-action="save"]')
-      .addEventListener("click", async () => {
-        let data = {};
-
+      .addEventListener("click", () => {
+        let settings = {};
         this.settings.map((s) => {
-          data[s.name] = s.valueAsNumber.toString(16).padStart(2, "0");
+          settings[s.name] = s.valueAsNumber.toString(16).padStart(2, "0");
         });
-        await fetch(
-          `${document.baseURI}settings/${location.pathname.split("/").pop()}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
+        connection.send(
+          JSON.stringify({
+            type: "save_settings",
+            addr: parseInt(addr),
+            settings,
+          })
         );
         location.href = document.baseURI;
       });
 
     document
       .querySelector('.thermostat-settings button[data-action="reboot"]')
-      .addEventListener("click", async () => {
-        await fetch(
-          `${document.baseURI}reboot/${location.pathname.split("/").pop()}`,
-          { method: "POST" }
+      .addEventListener("click", () => {
+        connection.send(
+          JSON.stringify({
+            type: "reboot",
+            addr: parseInt(addr),
+          })
         );
         location.href = document.baseURI;
       });
 
     document
       .querySelector('.thermostat-settings button[data-action="refresh"]')
-      .addEventListener("click", async () => {
-        await fetch(
-          `${document.baseURI}request_settings/${location.pathname
-            .split("/")
-            .pop()}`,
-          { method: "POST" }
+      .addEventListener("click", () => {
+        connection.send(
+          JSON.stringify({
+            type: "request_settings",
+            addr: parseInt(addr),
+          })
         );
         location.href = document.baseURI;
       });

@@ -9,6 +9,7 @@ import __init__ as daemon
 class Devices:
 
     debug = os.getenv('OPENHR20_DEBUG') == 'true'
+    remoteProxies = {}
 
     def __init__(self):
         self.file = os.getenv("DEVICES_FILE")
@@ -44,6 +45,10 @@ class Devices:
                 json.loads(self.buffer.get('settings', addr, fallback='{}')),
                 None
             )
+        for addr in self.buffer['remote_devices']:
+            if addr not in self.remoteProxies:
+                proxy = daemon.RemoteDeviceProxy(self.get_remote_ws_url(self.get_remote(str(addr))))
+                self.remoteProxies[str(addr)] = proxy
 
     @staticmethod
     def get_initial_stats(addr):
@@ -158,7 +163,7 @@ class Devices:
         return grps
 
     def get_remote(self, addr):
-        return self.buffer.get('remote_devices', str(addr), fallback=None)
+        return json.loads(self.buffer.get('remote_devices', addr, fallback=None))
 
     def is_remote_device(self, addr):
         return str(addr) in dict(self.buffer['remote_devices'])
@@ -166,7 +171,7 @@ class Devices:
     def get_device_from_remote(self, addr):
         remote = self.get_remote(addr)
         if remote is not None:
-            conn = http.client.HTTPConnection(remote)
+            conn = http.client.HTTPConnection(self.get_remote_http_url(remote))
             conn.request('GET', '/device/serialized/{}'.format(addr))
             device = pickle.loads(conn.getresponse().read())
             conn.close()
@@ -177,7 +182,7 @@ class Devices:
     def get_group_from_remote(self, name):
         remote = self.buffer.get('remote_groups', name, fallback=None)
         if remote is not None:
-            conn = http.client.HTTPConnection(remote)
+            conn = http.client.HTTPConnection(self.get_remote_http_url(remote))
             conn.request('GET', '/group/serialized/{}'.format(name))
             group = pickle.loads(conn.getresponse().read())
             conn.close()
@@ -185,8 +190,20 @@ class Devices:
         else:
             raise KeyError
 
+    @staticmethod
+    def get_remote_http_url(remote):
+        return '{}:{}'.format(remote['host'], remote['ports']['http'])
+
+    @staticmethod
+    def get_remote_ws_url(remote):
+        return '{}:{}'.format(remote['host'], remote['ports']['ws'])
+
     def __str__(self, with_remote=False, groups=False):
         if groups:
             return json.dumps([g.dict() for g in self.get_groups(with_remote).values()])
         else:
             return json.dumps([d.dict() for d in self.get_devices(with_remote).values()])
+
+    def shutdown(self):
+        for proxy in self.remoteProxies.values():
+            proxy.shutdown()

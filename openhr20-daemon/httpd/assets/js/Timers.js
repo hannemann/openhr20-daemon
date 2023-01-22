@@ -6,6 +6,12 @@ class Timers {
   }
 
   run() {
+    const proto = location.protocol.replace("http", "ws");
+    const port = document.querySelector(":root head base").dataset.wsPort;
+    const url = `${proto}//${location.hostname}:${port}`;
+    const addr = document.querySelector(".thermostat-timers").dataset.addr;
+    console.info("Init websocket connection to %s", url);
+    const connection = new WebSocket(url);
     document
       .querySelectorAll('.timer-slot input[type="range"]')
       .forEach((i) => {
@@ -33,7 +39,7 @@ class Timers {
 
     document
       .querySelector('.thermostat-timers button[data-action="save"]')
-      .addEventListener("click", async () => {
+      .addEventListener("click", () => {
         let data = {
           timers: {},
           mode: document.querySelector('input[name="G22"]:checked').value,
@@ -53,30 +59,25 @@ class Timers {
             ).toString(16),
           ].join("");
         });
-
-        await fetch(
-          `${document.baseURI}/set_timers/${location.pathname
-            .split("/")
-            .pop()}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
+        connection.send(
+          JSON.stringify({
+            type: "save_timers",
+            addr: parseInt(addr),
+            timers: data.timers,
+            mode: data.mode,
+          })
         );
         location.href = document.baseURI;
       });
 
     document
       .querySelector('.thermostat-timers button[data-action="refresh"]')
-      .addEventListener("click", async () => {
-        await fetch(
-          `${document.baseURI}/request_timers/${location.pathname
-            .split("/")
-            .pop()}`,
-          { method: "POST" }
+      .addEventListener("click", () => {
+        connection.send(
+          JSON.stringify({
+            type: "request_timers",
+            addr: parseInt(addr),
+          })
         );
         location.href = document.baseURI;
       });

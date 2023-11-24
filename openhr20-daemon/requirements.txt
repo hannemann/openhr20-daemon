@@ -3,7 +3,7 @@ future==0.18.3
 iso8601==1.1.0
 paho-mqtt==1.6.1
 pyserial==3.5
-PyYAML==6.0
+PyYAML==6.0.1
 websockets==10.4
 websocket-client==1.4.2
 python-dotenv==0.21.0
